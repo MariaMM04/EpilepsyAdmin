@@ -1,11 +1,12 @@
 package org.example.service;
 
 import javax.persistence.EntityManager;
-import org.example.configuration.JpaUtil;
+import org.example.JPA.JpaUtil;
 import org.example.entities_medicaldb.Patient;
+import org.example.entities_medicaldb.Doctor;
 import org.example.entities_securitydb.User;
 
-public class UserPatientLinker {
+public class UserPatient_DoctorLinker {
 
     public static Patient findPatientByUserEmail(String email) {
         EntityManager em = JpaUtil.getMedicalEMF().createEntityManager();
@@ -23,6 +24,23 @@ public class UserPatientLinker {
         }
 
         return patient;
+    }
+    public static Doctor findDoctorByUserEmail(String email) {
+        EntityManager em = JpaUtil.getMedicalEMF().createEntityManager();
+        Doctor doctor = null;
+
+        try {
+            doctor = em.createQuery(
+                            "SELECT d FROM Doctor d WHERE d.email = :email", Doctor.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (Exception e) {
+            System.out.println("Unable to find doctor with email: " + email);
+        } finally {
+            em.close();
+        }
+
+        return doctor;
     }
 
     public static User findUserByEmail(String email) {

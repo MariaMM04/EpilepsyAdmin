@@ -1,4 +1,4 @@
-package org.example.configuration;
+package org.example.JPA;
 
 
 import javax.persistence.EntityManagerFactory;
