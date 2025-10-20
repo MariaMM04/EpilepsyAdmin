@@ -62,8 +62,13 @@ public class MainMenu extends MenuTemplate {
             appMenu.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {
 
+            PatientProfileWindow ventanaPaciente = new PatientProfileWindow();
+            ventanaPaciente.setVisible(true);
+
         }else if(e.getSource()== createDoctorBt) {
 
+            DoctorProfileWindow ventanaDoctor = new DoctorProfileWindow();
+            ventanaDoctor.setVisible(true);
         }else if(e.getSource()== verifyConnectedClientsBt) {
 
         }else if(e.getSource()== stopServerBt) {
