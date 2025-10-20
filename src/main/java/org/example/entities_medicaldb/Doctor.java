@@ -22,7 +22,7 @@ public class Doctor {
     private String email;
 
 
-    // Realtions between tables
+    // Relations between tables
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;

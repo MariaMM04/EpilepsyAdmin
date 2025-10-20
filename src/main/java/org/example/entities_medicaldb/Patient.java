@@ -28,7 +28,7 @@ public class Patient {
     @Column(length = 50)
     private String gender;
 
-    // Realtions between tables
+    // Relations between tables
     @ManyToOne
     @JoinColumn(name = "report_id")
     private Report report;
