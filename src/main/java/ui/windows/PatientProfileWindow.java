@@ -1,45 +1,59 @@
-package org.example.ui.windows;
+package ui.windows;
 
 import org.example.entities_medicaldb.Patient;
 import org.example.JDBC.medicaldb.PatientJDBC;
+import ui.components.MenuTemplate;
+import ui.components.MyButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-public class PatientProfileWindow extends JFrame {
+public class PatientProfileWindow extends MenuTemplate {
+    private static final long serialVersionUID = 1L;
+
+    // Campos
+    private JTextField txtNombre, txtApellido, txtGenero, txtFecha, txtContacto, txtEmail;
+    private JLabel lblMensaje;
+    private MyButton btnGuardar;
+    private ImageIcon logoIcon;
+    private String titleText;
+    protected JPanel panelContent;
+    protected JPanel buttons;
 
     public PatientProfileWindow() {
-        setTitle("Perfil del Paciente");
-        setSize(400, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(7, 2));
 
-        // --- Campos del formulario ---
+        titleText = "PATIENT PROFILE";
+        logoIcon = new ImageIcon(getClass().getResource("/icons/night_guardian_mini_128.png"));
+
+        addComponents();
+        this.init(logoIcon, titleText);
+    }
+
+    private void addComponents() {
+
         JLabel lblNombre = new JLabel("Nombre:");
-        JTextField txtNombre = new JTextField();
-
         JLabel lblApellido = new JLabel("Apellido:");
-        JTextField txtApellido = new JTextField();
-
         JLabel lblGenero = new JLabel("Género:");
-        JTextField txtGenero = new JTextField();
-
         JLabel lblFecha = new JLabel("Fecha de nacimiento (YYYY-MM-DD):");
-        JTextField txtFecha = new JTextField();
-
         JLabel lblContacto = new JLabel("Teléfono:");
-        JTextField txtContacto = new JTextField();
-
         JLabel lblEmail = new JLabel("E-mail:");
-        JTextField txtEmail = new JTextField();
-
-        JButton btnGuardar = new JButton("Guardar cambios");
-        JLabel lblMensaje = new JLabel("", SwingConstants.CENTER);
+        lblMensaje = new JLabel("", SwingConstants.CENTER);
 
 
-        btnGuardar.addActionListener(e -> {
+        txtNombre = new JTextField();
+        txtApellido = new JTextField();
+        txtGenero = new JTextField();
+        txtFecha = new JTextField();
+        txtContacto = new JTextField();
+        txtEmail = new JTextField();
+
+
+        btnGuardar = new MyButton("Guardar cambios");
+
+        btnGuardar.addActionListener((ActionEvent e) -> {
             try {
                 Patient p = new Patient();
                 p.setName(txtNombre.getText());
@@ -48,28 +62,26 @@ public class PatientProfileWindow extends JFrame {
                 p.setEmail(txtEmail.getText());
                 p.setContact(txtContacto.getText());
 
-
                 try {
                     if (!txtFecha.getText().isEmpty()) {
                         LocalDate fecha = LocalDate.parse(txtFecha.getText());
                         p.setDateOfBirth(fecha);
                     }
                 } catch (DateTimeParseException exFecha) {
-                    lblMensaje.setText("Fecha inválida. Use formato YYYY-MM-DD");
+                    lblMensaje.setText("Fecha inválida (use YYYY-MM-DD)");
                     lblMensaje.setForeground(Color.RED);
-                    return; // no continúa si la fecha está mal
+                    return;
                 }
 
 
                 if (p.getName().isEmpty() || p.getGender().isEmpty() || p.getContact().isEmpty()) {
-                    lblMensaje.setText(" Error updating profile: faltan campos obligatorios");
+                    lblMensaje.setText("Error updating profile");
                     lblMensaje.setForeground(Color.RED);
                 } else {
-
                     PatientJDBC patientJDBC = new PatientJDBC();
                     patientJDBC.updatePatient(p);
                     lblMensaje.setText("Profile updated");
-                    lblMensaje.setForeground(new Color(0, 128, 0)); // verde
+                    lblMensaje.setForeground(new Color(0, 128, 0));
                 }
 
             } catch (Exception ex) {
@@ -79,12 +91,15 @@ public class PatientProfileWindow extends JFrame {
         });
 
 
-        add(lblNombre); add(txtNombre);
-        add(lblApellido); add(txtApellido);
-        add(lblGenero); add(txtGenero);
-        add(lblFecha); add(txtFecha);
-        add(lblContacto); add(txtContacto);
-        add(lblEmail); add(txtEmail);
-        add(btnGuardar); add(lblMensaje);
+        panelContent.setLayout(new GridLayout(7, 2, 10, 10));
+        panelContent.add(lblNombre); panelContent.add(txtNombre);
+        panelContent.add(lblApellido); panelContent.add(txtApellido);
+        panelContent.add(lblGenero); panelContent.add(txtGenero);
+        panelContent.add(lblFecha); panelContent.add(txtFecha);
+        panelContent.add(lblContacto); panelContent.add(txtContacto);
+        panelContent.add(lblEmail); panelContent.add(txtEmail);
+        panelContent.add(new JLabel("")); panelContent.add(lblMensaje);
+
+        buttons.add(btnGuardar);
     }
 }

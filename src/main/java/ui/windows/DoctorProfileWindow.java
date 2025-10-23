@@ -1,37 +1,55 @@
-package org.example.ui.windows;
+package ui.windows;
 
 import org.example.entities_medicaldb.Doctor;
 import org.example.JDBC.medicaldb.DoctorJDBC;
+import ui.components.MenuTemplate;
+import ui.components.MyButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
-public class DoctorProfileWindow extends JFrame {
+public class DoctorProfileWindow extends MenuTemplate {
+    private static final long serialVersionUID = 1L;
+
+
+    private JTextField txtNombre, txtApellido, txtEmail, txtContacto;
+    private JLabel lblMensaje;
+    private MyButton btnGuardar;
+    private ImageIcon logoIcon;
+    private String titleText;
+    protected JPanel panelContent;
+    protected JPanel buttons;
+
 
     public DoctorProfileWindow() {
-        setTitle("Perfil del Doctor");
-        setSize(400, 350);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(6, 2));
+        // Configuración inicial
+        titleText = "DOCTOR PROFILE";
+        logoIcon = new ImageIcon(getClass().getResource("/icons/night_guardian_mini_128.png"));
+
+        addComponents();
+        this.init(logoIcon, titleText);
+    }
+
+    private void addComponents() {
+        // Campos de texto
+        txtNombre = new JTextField();
+        txtApellido = new JTextField();
+        txtEmail = new JTextField();
+        txtContacto = new JTextField();
 
 
         JLabel lblNombre = new JLabel("Nombre:");
-        JTextField txtNombre = new JTextField();
-
         JLabel lblApellido = new JLabel("Apellido:");
-        JTextField txtApellido = new JTextField();
-
         JLabel lblEmail = new JLabel("E-mail:");
-        JTextField txtEmail = new JTextField();
-
         JLabel lblContacto = new JLabel("Teléfono:");
-        JTextField txtContacto = new JTextField();
-
-        JButton btnGuardar = new JButton("Guardar cambios");
-        JLabel lblMensaje = new JLabel("", SwingConstants.CENTER);
+        lblMensaje = new JLabel("", SwingConstants.CENTER);
 
 
-        btnGuardar.addActionListener(e -> {
+        btnGuardar = new MyButton("Guardar cambios");
+
+
+        btnGuardar.addActionListener((ActionEvent e) -> {
             try {
                 Doctor d = new Doctor();
                 d.setName(txtNombre.getText());
@@ -41,15 +59,14 @@ public class DoctorProfileWindow extends JFrame {
 
 
                 if (d.getName().isEmpty() || d.getContact().isEmpty() || d.getEmail().isEmpty()) {
-                    lblMensaje.setText("Error updating profile: faltan campos obligatorios");
+                    lblMensaje.setText("Error updating profile");
                     lblMensaje.setForeground(Color.RED);
                 } else {
                     DoctorJDBC doctorJDBC = new DoctorJDBC();
                     doctorJDBC.updateDoctor(d);
                     lblMensaje.setText("Profile updated");
-                    lblMensaje.setForeground(new Color(0, 128, 0)); // verde
+                    lblMensaje.setForeground(new Color(0, 128, 0));
                 }
-
             } catch (Exception ex) {
                 lblMensaje.setText("Error updating profile");
                 lblMensaje.setForeground(Color.RED);
@@ -57,10 +74,13 @@ public class DoctorProfileWindow extends JFrame {
         });
 
 
-        add(lblNombre); add(txtNombre);
-        add(lblApellido); add(txtApellido);
-        add(lblEmail); add(txtEmail);
-        add(lblContacto); add(txtContacto);
-        add(btnGuardar); add(lblMensaje);
+        panelContent.setLayout(new GridLayout(5, 2, 10, 10));
+        panelContent.add(lblNombre); panelContent.add(txtNombre);
+        panelContent.add(lblApellido); panelContent.add(txtApellido);
+        panelContent.add(lblEmail); panelContent.add(txtEmail);
+        panelContent.add(lblContacto); panelContent.add(txtContacto);
+        panelContent.add(new JLabel("")); panelContent.add(lblMensaje);
+
+        buttons.add(btnGuardar);
     }
 }
