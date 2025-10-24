@@ -62,8 +62,8 @@ public class DoctorProfileWindow extends MenuTemplate {
                     lblMensaje.setText("Error updating profile");
                     lblMensaje.setForeground(Color.RED);
                 } else {
-                    DoctorJDBC doctorJDBC = new DoctorJDBC();
-                    doctorJDBC.updateDoctor(d);
+                    //DoctorJDBC doctorJDBC = new DoctorJDBC();
+                    //doctorJDBC.updateDoctor(d);
                     lblMensaje.setText("Profile updated");
                     lblMensaje.setForeground(new Color(0, 128, 0));
                 }

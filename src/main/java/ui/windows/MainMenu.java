@@ -19,10 +19,16 @@ public class MainMenu extends MenuTemplate {
     private Application appMenu;
     private String company_name;
 
+    //Panels
+    private NewPatientPanel newPatientPanel;
+    private NewDoctorPanel newDoctorPanel;
+
     public MainMenu(Application appMenu) {
         //super();
         this.appMenu = appMenu;
         //Initialize panels
+        newPatientPanel = new NewPatientPanel(appMenu);
+        newDoctorPanel = new NewDoctorPanel(appMenu);
 
         addButtons();
         company_name = "NIGHT GUARDIAN: EPILEPSY";
@@ -62,13 +68,13 @@ public class MainMenu extends MenuTemplate {
             appMenu.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {
 
-            PatientProfileWindow ventanaPaciente = new PatientProfileWindow();
-            ventanaPaciente.setVisible(true);
+            appMenu.changeToPanel(newPatientPanel);
+            //ventanaPaciente.setVisible(true);
 
         }else if(e.getSource()== createDoctorBt) {
-
-            DoctorProfileWindow ventanaDoctor = new DoctorProfileWindow();
-            ventanaDoctor.setVisible(true);
+            appMenu.changeToPanel(newDoctorPanel);
+            //DoctorProfileWindow ventanaDoctor = new DoctorProfileWindow();
+            //ventanaDoctor.setVisible(true);
         }else if(e.getSource()== verifyConnectedClientsBt) {
 
         }else if(e.getSource()== stopServerBt) {

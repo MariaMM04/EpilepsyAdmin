@@ -1,5 +1,10 @@
 package ui.windows;
 
+import org.example.JDBC.medicaldb.DoctorJDBC;
+import org.example.JDBC.medicaldb.MedicalConnection;
+import org.example.JDBC.medicaldb.MedicalManager;
+import org.example.JDBC.medicaldb.PatientJDBC;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,8 +24,14 @@ public class Application extends JFrame {
 
     //Panels
     private ArrayList<JPanel> appPanels;
-    UserLogIn logInPanel;
-    MainMenu mainMenu;
+    private UserLogIn logInPanel;
+    private MainMenu mainMenu;
+
+
+    //Managers
+    public PatientJDBC patientJDBC;
+    public MedicalManager medicalManager;
+    public DoctorJDBC doctorJDBC;
 
     public static void main(String[] args) {
         Application app = new Application();
@@ -31,10 +42,19 @@ public class Application extends JFrame {
         initComponents();
         setBounds(100, 100, 602, 436);
 
+        //Panels
         appPanels = new ArrayList<JPanel>();
         logInPanel = new UserLogIn(this);
+        mainMenu = new MainMenu(this);
         appPanels.add(logInPanel);
-        this.setContentPane(logInPanel);
+        appPanels.add(mainMenu);
+
+        //Managers
+        medicalManager = new MedicalManager();
+        patientJDBC = medicalManager.getPatientJDBC();
+        doctorJDBC = medicalManager.getDoctorJDBC();
+
+        this.setContentPane(mainMenu);
     }
 
     public void initComponents() {
