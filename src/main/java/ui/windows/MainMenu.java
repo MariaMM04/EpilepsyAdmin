@@ -22,6 +22,7 @@ public class MainMenu extends MenuTemplate {
     //Panels
     private NewPatientPanel newPatientPanel;
     private NewDoctorPanel newDoctorPanel;
+    private SearchPatient searchPatientPanel;
 
     public MainMenu(Application appMenu) {
         //super();
@@ -29,6 +30,7 @@ public class MainMenu extends MenuTemplate {
         //Initialize panels
         newPatientPanel = new NewPatientPanel(appMenu);
         newDoctorPanel = new NewDoctorPanel(appMenu);
+        searchPatientPanel = new SearchPatient(appMenu);
 
         addButtons();
         company_name = "NIGHT GUARDIAN: EPILEPSY";
@@ -60,21 +62,19 @@ public class MainMenu extends MenuTemplate {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()== seeDoctorListBt) {
-            //appMenu.changeToPanel();
-        }else if(e.getSource()== seePatientListBt) {
-            //appMenu.changeToPanel();
+        if(e.getSource()== seePatientListBt) {
+            System.out.println("Open search patient view");
+            appMenu.changeToPanel(searchPatientPanel);
+        }else if(e.getSource()== seeDoctorListBt) {
+            System.out.println("Open search doctor view");
+            //appMenu.changeToPanel(searchDoctorPanel);
         }else if(e.getSource()== logOutBt) {
             appMenu.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {
-
+            System.out.println("Open new patient view");
             appMenu.changeToPanel(newPatientPanel);
-            //ventanaPaciente.setVisible(true);
-
         }else if(e.getSource()== createDoctorBt) {
             appMenu.changeToPanel(newDoctorPanel);
-            //DoctorProfileWindow ventanaDoctor = new DoctorProfileWindow();
-            //ventanaDoctor.setVisible(true);
         }else if(e.getSource()== verifyConnectedClientsBt) {
 
         }else if(e.getSource()== stopServerBt) {

@@ -187,8 +187,9 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             d.setSurname(surname.getText());
             d.setEmail(email.getText());
             d.setContact(phoneNumber.getText());
+            d.setSpeciality(speciality.getText());
+            d.setDepartment(office.getText());
 
-            LocalDate fecha;
             Integer phonenumber;
 
             //Validate Phone number
@@ -197,7 +198,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
                     phonenumber = Integer.parseInt(phoneNumber.getText());
                     d.setContact(phonenumber.toString());
                 }else {
-                    errorMessage.setText("Please, set a phone number of 6 digits");
+                    errorMessage.setText("Please, set a phone number of 9 digits");
                     errorMessage.setForeground(Color.RED);
                     return;
                 }
@@ -211,14 +212,11 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             //TODO: validate password
             //TODO: create user
 
-            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || password.getText() == "") {
+            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || office.getText().isEmpty() || password.getText() == "") {
                 errorMessage.setText("Please fill all the fields");
                 errorMessage.setForeground(Color.RED);
                 errorMessage.setVisible(true);
             } else {
-                //TODO: incluir metodo update en el JDBC
-                //PatientJDBC patientJDBC = new PatientJDBC();
-                //patientJDBC.updatePatient(d);
                 if(!appMain.doctorJDBC.insertDoctor(d)){
                     errorMessage.setText("Error creating patient");
                     errorMessage.setForeground(Color.RED);

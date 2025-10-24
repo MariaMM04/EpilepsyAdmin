@@ -216,7 +216,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                     phonenumber = Integer.parseInt(phoneNumber.getText());
                     p.setContact(phonenumber.toString());
                 }else {
-                    errorMessage.setText("Please, set a phone number of 6 digits");
+                    errorMessage.setText("Please, set a phone number of 9 digits");
                     errorMessage.setForeground(Color.RED);
                     return;
                 }
@@ -235,9 +235,6 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                 errorMessage.setForeground(Color.RED);
                 errorMessage.setVisible(true);
             } else {
-                //TODO: incluir metodo update en el JDBC
-                //PatientJDBC patientJDBC = new PatientJDBC();
-                //patientJDBC.updatePatient(p);
                 if(!appMain.patientJDBC.insertPatient(p)){
                     errorMessage.setText("Error creating patient");
                     errorMessage.setForeground(Color.RED);
