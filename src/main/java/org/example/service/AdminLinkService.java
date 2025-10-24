@@ -8,7 +8,7 @@ import org.example.entities_securitydb.User;
 
 /**
  * Service class that synchronizes operations between medicaldb and securitydb.
- * Centralizes the registration and deregistration of users, doctors, and patients.
+ * Uses logical deactivation (active = false) instead of physical deletion.
  */
 public class AdminLinkService {
 
@@ -24,56 +24,57 @@ public class AdminLinkService {
      * Creates a new doctor and their corresponding user.
      */
     public void createDoctorAndUser(Doctor doctor, User user) {
-        boolean userCreated = securityManager.getUserJDBC().insertUser(user);
-        boolean doctorCreated = medicalManager.getDoctorJDBC().insertDoctor(doctor);
-
-        if (userCreated && doctorCreated) {
-            System.out.println("Doctor and User created successfully.");
-        } else {
-            System.out.println("Some error occurred during creation.");
-        }
+        securityManager.getUserJDBC().insertUser(user);
+        medicalManager.getDoctorJDBC().insertDoctor(doctor);
+        System.out.println("Doctor and User created successfully: " + user.getEmail());
     }
 
     /**
      * Creates a new patient and their corresponding user.
      */
     public void createPatientAndUser(Patient patient, User user) {
-        boolean userCreated = securityManager.getUserJDBC().insertUser(user);
-        boolean patientCreated = medicalManager.getPatientJDBC().insertPatient(patient);
-
-        if (userCreated && patientCreated) {
-            System.out.println("Patient and User created successfully.");
-        } else {
-            System.out.println("Some error occurred during creation.");
-        }
+        securityManager.getUserJDBC().insertUser(user);
+        medicalManager.getPatientJDBC().insertPatient(patient);
+        System.out.println("Patient and User created successfully: " + user.getEmail());
     }
 
     /**
-     * Deletes a doctor and their associated email username.
+     * Deactivates a doctor and their corresponding user by email.
+     * Performs logical deletion by setting active = false.
      */
-    public void deleteDoctorAndUser(String email) {
-        boolean doctorDeleted = medicalManager.getDoctorJDBC().deleteDoctor(email);
-        boolean userDeleted = securityManager.getUserJDBC().deleteUser(email);
-
-        if (doctorDeleted || userDeleted) {
-            System.out.println("Doctor and corresponding User deleted successfully (" + email + ")");
-        } else {
-            System.out.println("No doctor or user found with email: " + email);
-        }
+    public void deactivateDoctorAndUser(String email) {
+        medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, false);
+        securityManager.getUserJDBC().updateUserActiveStatus(email, false);
+        System.out.println("Doctor and corresponding User deactivated (" + email + ")");
     }
 
     /**
-     * Delete a patient and their associated user by email.
+     * Deactivates a patient and their corresponding user by email.
+     * Performs logical deletion by setting active = false.
      */
-    public void deletePatientAndUser(String email) {
-        boolean patientDeleted = medicalManager.getPatientJDBC().deletePatient(email);
-        boolean userDeleted = securityManager.getUserJDBC().deleteUser(email);
+    public void deactivatePatientAndUser(String email) {
+        medicalManager.getPatientJDBC().updatePatientActiveStatus(email, false);
+        securityManager.getUserJDBC().updateUserActiveStatus(email, false);
+        System.out.println("Patient and corresponding User deactivated (" + email + ")");
+    }
 
-        if (patientDeleted || userDeleted) {
-            System.out.println("Patient and corresponding User deleted successfully (" + email + ")");
-        } else {
-            System.out.println("No patient or user found with email: " + email);
-        }
+    /**
+     * Reactivates a doctor and their corresponding user by email.
+     * Useful for restoring logically deleted accounts.
+     */
+    public void reactivateDoctorAndUser(String email) {
+        medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, true);
+        securityManager.getUserJDBC().updateUserActiveStatus(email, true);
+        System.out.println("Doctor and corresponding User reactivated (" + email + ")");
+    }
+
+    /**
+     * Reactivates a patient and their corresponding user by email.
+     */
+    public void reactivatePatientAndUser(String email) {
+        medicalManager.getPatientJDBC().updatePatientActiveStatus(email, true);
+        securityManager.getUserJDBC().updateUserActiveStatus(email, true);
+        System.out.println("Patient and corresponding User reactivated (" + email + ")");
     }
 }
 

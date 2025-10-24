@@ -1,13 +1,13 @@
 package org.example.JDBC.securitydb;
 
+import org.example.entities_securitydb.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.example.entities_securitydb.User;
 
 /**
- * Class responsible for JDBC operations related to the Users table.
- * Used by SecurityManager.
+ * Handles JDBC operations for the Users table.
+ * Only 'active' status can be modified (logical activation/deactivation).
  */
 public class UserJDBC {
 
@@ -18,16 +18,18 @@ public class UserJDBC {
     }
 
     /**
-     * Inserts new user in the Users table
+     * Inserts a new user into the database.
      */
     public boolean insertUser(User user) {
-        String sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
+        String sql = "INSERT INTO users (email, password, active, role_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
+            ps.setBoolean(3, user.isActive());
+            ps.setInt(4, user.getRoleId());
             ps.executeUpdate();
-            System.out.println("User inserted successfully: " + user.getEmail());
+            System.out.println("User inserted: " + user.getEmail());
             return true;
         } catch (SQLException e) {
             System.err.println("Error inserting user: " + e.getMessage());
@@ -36,10 +38,10 @@ public class UserJDBC {
     }
 
     /**
-     * Search user by email
+     * Retrieves users by email.
      */
     public User findUserByEmail(String email) {
-        String sql = "SELECT * FROM Users WHERE email = ?";
+        String sql = "SELECT * FROM users WHERE email = ?";
         User user = null;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -47,10 +49,7 @@ public class UserJDBC {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                user = new User(
-                        rs.getString("email"),
-                        rs.getString("password")
-                );
+                user = extractUserFromResultSet(rs);
                 System.out.println("User found: " + email);
             } else {
                 System.out.println("No user found with email: " + email);
@@ -65,21 +64,19 @@ public class UserJDBC {
     }
 
     /**
-     * Retrieves all the users from the table
+     * Retrieves all users
      */
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM Users";
+        String sql = "SELECT * FROM users";
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                users.add(new User(
-                        rs.getString("email"),
-                        rs.getString("password")
-                ));
+                users.add(extractUserFromResultSet(rs));
             }
+
             System.out.println("Retrieved " + users.size() + " users.");
 
         } catch (SQLException e) {
@@ -90,27 +87,42 @@ public class UserJDBC {
     }
 
     /**
-     * Deletes user by email
+     * Updates de active status of the user
      */
-    public boolean deleteUser(String email) {
-        String sql = "DELETE FROM Users WHERE email = ?";
+    public boolean updateUserActiveStatus(String email, boolean active) {
+        String sql = "UPDATE users SET active = ? WHERE email = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
+            ps.setBoolean(1, active);
+            ps.setString(2, email);
             int affected = ps.executeUpdate();
 
             if (affected > 0) {
-                System.out.println("User deleted: " + email);
+                System.out.println("User " + (active ? "activated" : "deactivated") + ": " + email);
                 return true;
             } else {
-                System.out.println("No user found to delete: " + email);
+                System.out.println("No user found to update: " + email);
                 return false;
             }
 
         } catch (SQLException e) {
-            System.err.println("Error deleting user: " + e.getMessage());
+            System.err.println("Error updating user active status: " + e.getMessage());
             return false;
         }
     }
+
+    /**
+     * Helper method. Creates a User object from the current ResultSet row.
+     */
+    private User extractUserFromResultSet(ResultSet rs) throws SQLException {
+        return new User(
+                rs.getInt("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getBoolean("active"),
+                rs.getInt("role_id")
+        );
+    }
 }
+
 

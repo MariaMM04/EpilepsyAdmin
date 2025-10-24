@@ -1,44 +1,53 @@
 package org.example.entities_medicaldb;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="Doctor")
 public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    // Fields
+    private int id;             // Primary key (auto-increment)
+    private String name;        // Doctor's first name
+    private String surname;     // Doctor's last name
+    private String contact;     // Optional phone or other contact info
+    private String email;       // Unique email identifier
+    private String department;  // Department or area of work
+    private String speciality;  // Medical speciality
+    private boolean active;     // Logical deletion flag (true = active)
 
-    @Column(nullable = false, length = 100)
-    private String surname;
-
-    @Column(length = 20)
-    private String contact;
-
-    @Column(nullable = false, unique = true, length = 150)
-    private String email;
-
-
-    // Relations between tables
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
-
-    // Empty Constructor
+    // Constructors
     public Doctor() {}
 
-    // Constructor
     public Doctor(String name, String surname, String contact) {
         this.name = name;
         this.surname = surname;
         this.contact = contact;
-        this.email = email;
+
     }
-    // Getters y Setters
+
+    public Doctor(String name, String surname, String contact, String email,
+                  String department, String speciality) {
+        this.name = name;
+        this.surname = surname;
+        this.contact = contact;
+        this.email = email;
+        this.department = department;
+        this.speciality = speciality;
+        this.active = true;
+    }
+
+    public Doctor(int id, String name, String surname, String contact, String email,
+                  String department, String speciality, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.contact = contact;
+        this.email = email;
+        this.department = department;
+        this.speciality = speciality;
+        this.active = active;
+    }
+
+    // Getters and Setters
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -52,6 +61,27 @@ public class Doctor {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Patient getPatient() { return patient; }
-    public void setPatient(Patient patient) { this.patient = patient; }
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+
+    public String getSpeciality() { return speciality; }
+    public void setSpeciality(String speciality) { this.speciality = speciality; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    // --- Utility ---
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", contact='" + contact + '\'' +
+                ", email='" + email + '\'' +
+                ", department='" + department + '\'' +
+                ", speciality='" + speciality + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

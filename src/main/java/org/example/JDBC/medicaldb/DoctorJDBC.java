@@ -1,14 +1,12 @@
 package org.example.JDBC.medicaldb;
 
 import org.example.entities_medicaldb.Doctor;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class responsible for handling JDBC operations for the Doctor table.
- * Used within MedicalManager
+ * Handles JDBC operations for the Doctor table.
  */
 public class DoctorJDBC {
 
@@ -19,20 +17,22 @@ public class DoctorJDBC {
     }
 
     /**
-     * Inserts new doctor into the data base
+     * Inserts a new doctor into the database.
      */
     public boolean insertDoctor(Doctor doctor) {
-        String sql = "INSERT INTO Doctor (name, surname, contact, email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO doctor (name, surname, contact, email, department, speciality, active) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, doctor.getName());
             ps.setString(2, doctor.getSurname());
             ps.setString(3, doctor.getContact());
             ps.setString(4, doctor.getEmail());
+            ps.setString(5, doctor.getDepartment());
+            ps.setString(6, doctor.getSpeciality());
+            ps.setBoolean(7, doctor.isActive());
             ps.executeUpdate();
-            System.out.println("Doctor inserted successfully: " + doctor.getEmail());
+            System.out.println("Doctor inserted: " + doctor.getEmail());
             return true;
-
         } catch (SQLException e) {
             System.err.println("Error inserting doctor: " + e.getMessage());
             return false;
@@ -40,10 +40,10 @@ public class DoctorJDBC {
     }
 
     /**
-     * Searchs doctor by email
+     * Retrieves doctors by email.
      */
     public Doctor findDoctorByEmail(String email) {
-        String sql = "SELECT * FROM Doctor WHERE email = ?";
+        String sql = "SELECT * FROM doctor WHERE email = ?";
         Doctor doctor = null;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -51,12 +51,7 @@ public class DoctorJDBC {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                doctor = new Doctor(
-                        rs.getString("name"),
-                        rs.getString("surname"),
-                        rs.getString("contact")
-                );
-                doctor.setEmail(rs.getString("email"));
+                doctor = extractDoctorFromResultSet(rs);
                 System.out.println("Doctor found: " + email);
             } else {
                 System.out.println("No doctor found with email: " + email);
@@ -71,23 +66,17 @@ public class DoctorJDBC {
     }
 
     /**
-     * Retrieves all doctors registered
+     * Retrieves all doctors
      */
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
-        String sql = "SELECT * FROM Doctor";
+        String sql = "SELECT * FROM doctor";
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                Doctor doctor = new Doctor(
-                        rs.getString("name"),
-                        rs.getString("surname"),
-                        rs.getString("contact")
-                );
-                doctor.setEmail(rs.getString("email"));
-                doctors.add(doctor);
+                doctors.add(extractDoctorFromResultSet(rs));
             }
 
             System.out.println("Retrieved " + doctors.size() + " doctors.");
@@ -100,26 +89,44 @@ public class DoctorJDBC {
     }
 
     /**
-     * Delete doctor by email
+     * Updates de active status of the doctor
      */
-    public boolean deleteDoctor(String email) {
-        String sql = "DELETE FROM Doctor WHERE email = ?";
+    public boolean updateDoctorActiveStatus(String email, boolean active) {
+        String sql = "UPDATE doctor SET active = ? WHERE email = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
+            ps.setBoolean(1, active);
+            ps.setString(2, email);
             int affected = ps.executeUpdate();
 
             if (affected > 0) {
-                System.out.println("Doctor deleted: " + email);
+                System.out.println("Doctor " + (active ? "activated" : "deactivated") + ": " + email);
                 return true;
             } else {
-                System.out.println("No doctor found to delete: " + email);
+                System.out.println("No doctor found to update: " + email);
                 return false;
             }
 
         } catch (SQLException e) {
-            System.err.println("Error deleting doctor: " + e.getMessage());
+            System.err.println("Error updating doctor active status: " + e.getMessage());
             return false;
         }
     }
+
+    /**
+     * Helper method. Creates a Doctor object from the current ResultSet row.
+     */
+    private Doctor extractDoctorFromResultSet(ResultSet rs) throws SQLException {
+        return new Doctor(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("surname"),
+                rs.getString("contact"),
+                rs.getString("email"),
+                rs.getString("department"),
+                rs.getString("speciality"),
+                rs.getBoolean("active")
+        );
+    }
 }
+

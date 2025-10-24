@@ -1,63 +1,46 @@
 package org.example.service;
 
-import javax.persistence.EntityManager;
-import org.example.JPA.JpaUtil;
+import org.example.JDBC.medicaldb.MedicalManager;
+import org.example.JDBC.securitydb.SecurityManager;
 import org.example.entities_medicaldb.Patient;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_securitydb.User;
 
+/**
+ * Utility service that provides linkage operations between
+ * users (securitydb) and doctors/patients (medicaldb).
+ * Replaces the JPA-based UserPatient_DoctorLinker.
+ */
 public class UserPatient_DoctorLinker {
 
-    public static Patient findPatientByUserEmail(String email) {
-        EntityManager em = JpaUtil.getMedicalEMF().createEntityManager();
-        Patient patient = null;
+    private final MedicalManager medicalManager;
+    private final SecurityManager securityManager;
 
-        try {
-            patient = em.createQuery(
-                            "SELECT p FROM Patient p WHERE p.email = :email", Patient.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-            System.out.println("Unable to find patient with email: " + email);
-        } finally {
-            em.close();
-        }
-
-        return patient;
-    }
-    public static Doctor findDoctorByUserEmail(String email) {
-        EntityManager em = JpaUtil.getMedicalEMF().createEntityManager();
-        Doctor doctor = null;
-
-        try {
-            doctor = em.createQuery(
-                            "SELECT d FROM Doctor d WHERE d.email = :email", Doctor.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-            System.out.println("Unable to find doctor with email: " + email);
-        } finally {
-            em.close();
-        }
-
-        return doctor;
+    public UserPatient_DoctorLinker(MedicalManager medicalManager, SecurityManager securityManager) {
+        this.medicalManager = medicalManager;
+        this.securityManager = securityManager;
     }
 
-    public static User findUserByEmail(String email) {
-        EntityManager em = JpaUtil.getSecurityEMF().createEntityManager();
-        User user = null;
+    /**
+     * Finds a patient by their associated user email.
+     * The relation is made by the shared "email" field between both databases.
+     */
+    public Patient findPatientByUserEmail(String email) {
+        return medicalManager.getPatientJDBC().findPatientByEmail(email);
+    }
 
-        try {
-            user = em.createQuery(
-                            "SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-            System.out.println("Unable to find user with email: " + email);
-        } finally {
-            em.close();
-        }
+    /**
+     * Finds a doctor by their associated user email.
+     * The relation is made by the shared "email" field between both databases.
+     */
+    public Doctor findDoctorByUserEmail(String email) {
+        return medicalManager.getDoctorJDBC().findDoctorByEmail(email);
+    }
 
-        return user;
+    /**
+     * Finds a user by their email in the security database.
+     */
+    public User findUserByEmail(String email) {
+        return securityManager.getUserJDBC().findUserByEmail(email);
     }
 }

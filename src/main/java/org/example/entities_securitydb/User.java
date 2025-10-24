@@ -1,33 +1,34 @@
 package org.example.entities_securitydb;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "Users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id;            // Primary key (auto-increment)
+    private String email;      // Linked with Patient.email (foreign reference)
+    private String password;   // Encrypted or hashed password
+    private boolean active;    // Account enabled/disabled flag
+    private int roleId;        // Foreign key referencing the Role table
 
-    @Column(nullable = false, unique = true, length = 150)
-    private String email; //linked with Patient.email in medical_db
-
-    @Column(nullable = false, length = 200)
-    private String password;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Role role;
-
+    // Constructors
     public User() {}
 
-    public User(String email, String password) {
+    public User(String email, String password, int roleId) {
         this.email = email;
         this.password = password;
+        this.roleId = roleId;
+        this.active = true;
     }
 
-    // Getters y Setters
+    public User(int id, String email, String password, boolean active, int roleId) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.active = active;
+        this.roleId = roleId;
+    }
+
+    // Getters and Setters
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -35,11 +36,19 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public Role getRole() { return role; }
-    public void setRole(Role role) {
-        this.role = role;
-        if (role!=null){
-        role.setUser(this);
-        }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public int getRoleId() { return roleId; }
+    public void setRoleId(int roleId) { this.roleId = roleId; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", active=" + active +
+                ", roleId=" + roleId +
+                '}';
     }
 }
