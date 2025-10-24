@@ -12,7 +12,6 @@ import java.util.Objects;
 public class UserLogIn extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
-    //private PanelCoverLogIn panelCoverLogIn;
     private JPanel panelLogIn;
     private MyButton applyLogIn;
     private MyButton changePassword;

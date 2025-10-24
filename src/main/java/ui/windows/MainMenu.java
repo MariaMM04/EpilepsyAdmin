@@ -23,6 +23,7 @@ public class MainMenu extends MenuTemplate {
     private NewPatientPanel newPatientPanel;
     private NewDoctorPanel newDoctorPanel;
     private SearchPatient searchPatientPanel;
+    private SearchDoctor searchDoctorPanel;
 
     public MainMenu(Application appMenu) {
         //super();
@@ -31,6 +32,7 @@ public class MainMenu extends MenuTemplate {
         newPatientPanel = new NewPatientPanel(appMenu);
         newDoctorPanel = new NewDoctorPanel(appMenu);
         searchPatientPanel = new SearchPatient(appMenu);
+        searchDoctorPanel = new SearchDoctor(appMenu);
 
         addButtons();
         company_name = "NIGHT GUARDIAN: EPILEPSY";
@@ -67,7 +69,7 @@ public class MainMenu extends MenuTemplate {
             appMenu.changeToPanel(searchPatientPanel);
         }else if(e.getSource()== seeDoctorListBt) {
             System.out.println("Open search doctor view");
-            //appMenu.changeToPanel(searchDoctorPanel);
+            appMenu.changeToPanel(searchDoctorPanel);
         }else if(e.getSource()== logOutBt) {
             appMenu.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {

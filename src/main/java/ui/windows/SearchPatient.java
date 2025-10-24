@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
 import net.miginfocom.swing.MigLayout;
+import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import ui.RandomData;
 import ui.components.MyButton;

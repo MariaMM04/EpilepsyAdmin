@@ -1,6 +1,5 @@
 package ui;
 
-import org.example.SymptomType;
 import org.example.entities_medicaldb.*;
 import java.time.LocalDate;
 import java.util.Random;

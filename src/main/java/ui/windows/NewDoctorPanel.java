@@ -161,7 +161,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         formContainer.add(password, "grow, skip 1");
 
         //Add buttons
-        cancelButton = new MyButton("CANVEL", Application.turquoise, Color.white);
+        cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
         cancelButton.addActionListener(this);
         //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
         add(cancelButton, "cell 1 9, grow, center");
