@@ -1,59 +1,57 @@
 package org.example.entities_medicaldb;
 
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "Signal")
 public class Signal {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id; // Primary key (auto-increment)
+    private String path; // Path to the recorded signal (ECG, ACC, etc.)
+    private LocalDate date; // Date of the signal recording
+    private String comments; // Optional notes about the signal
+    private int patientId; // Foreign key referencing the Patient table
 
-    @Column(nullable = false, length = 100)
-    private String recording;
-
-    @Column(nullable = false)
-    private LocalDate date;
-
-    @Column(nullable = false)
-    private Double frequency;
-
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
-
-    @Column(length = 500)
-    private String comments;
-
-    // Empty Constructor
+    // Constructors
     public Signal() {}
 
-    // Constructor
-    public Signal(String recording, LocalDate date, Double frequency, LocalDateTime timestamp, String comments) {
-        this.recording = recording;
+    public Signal(int id, String path, LocalDate date, String comments, int patientId) {
+        this.id = id;
+        this.path = path;
         this.date = date;
-        this.frequency = frequency;
-        this.timestamp = timestamp;
         this.comments = comments;
+        this.patientId = patientId;
     }
 
-    // Getters y Setters
-    public int getId() { return id; }
+    public Signal(String path, LocalDate date, String comments, int patientId) {
+        this.path = path;
+        this.date = date;
+        this.comments = comments;
+        this.patientId = patientId;
+    }
 
-    public String getRecording() { return recording; }
-    public void setRecording(String recording) { this.recording = recording; }
+    // Getters and Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getPath() { return path; }
+    public void setPath(String path) { this.path = path; }
 
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
 
-    public Double getFrequency() { return frequency; }
-    public void setFrequency(Double frequency) { this.frequency = frequency; }
-
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
-
     public String getComments() { return comments; }
     public void setComments(String comments) { this.comments = comments; }
+
+    public int getPatientId() { return patientId; }
+    public void setPatientId(int patientId) { this.patientId = patientId; }
+
+    @Override
+    public String toString() {
+        return "Signal{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", date=" + date +
+                ", comments='" + comments + '\'' +
+                ", patientId=" + patientId +
+                '}';
+    }
 }

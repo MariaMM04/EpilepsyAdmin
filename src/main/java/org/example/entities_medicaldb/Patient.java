@@ -1,57 +1,50 @@
 package org.example.entities_medicaldb;
 
 import java.time.LocalDate;
-import javax.persistence.*;
 
-@Entity
-@Table(name="Patient")
 public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    private int id;                 // Primary key (auto-increment)
+    private String name;            // Patient's first name
+    private String surname;         // Patient's last name
+    private String email;           // Unique email address (linked with Users table)
+    private String contact;         // Contact phone or alternative info
+    private LocalDate dateOfBirth;  // Date of birth
+    private String gender;          // Gender identity or biological sex
+    private boolean active;         // Logical deletion flag (true = active)
+    private int doctorId;           // Foreign key referencing assigned Doctor
 
-    @Column(nullable = false, length = 100)
-    private String surname;
-
-    @Column(nullable = false, unique = true, length = 150)
-    private String email;
-
-    @Column(length = 20)
-    private String contact;
-
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @Column(length = 50)
-    private String gender;
-
-    // Relations between tables
-    @ManyToOne
-    @JoinColumn(name = "report_id")
-    private Report report;
-
-    @ManyToOne
-    @JoinColumn(name = "signal_id")
-    private Signal signal;
-
-    // Empty Constructor
+    // Constructors
     public Patient() {}
 
-    // Constructor
-    public Patient(String name, String surname, String email, String contact, LocalDate dateOfBirth, String gender) {
+    public Patient(String name, String surname, String email, String contact,
+                   LocalDate dateOfBirth, String gender, int doctorId) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.contact = contact;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
+        this.doctorId = doctorId;
+        this.active = true;
     }
 
-    // Getters y Setters
+    public Patient(int id, String name, String surname, String email, String contact,
+                   LocalDate dateOfBirth, String gender, boolean active, int doctorId) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.contact = contact;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.active = active;
+        this.doctorId = doctorId;
+    }
+
+    // Getters and Setters
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -71,9 +64,24 @@ public class Patient {
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
 
-    public Report getReport() { return report; }
-    public void setReport(Report report) { this.report = report; }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
-    public Signal getSignal() { return signal; }
-    public void setSignal(Signal signal) { this.signal = signal; }
+    public int getDoctorId() { return doctorId; }
+    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", contact='" + contact + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", gender='" + gender + '\'' +
+                ", active=" + active +
+                ", doctorId=" + doctorId +
+                '}';
+    }
 }

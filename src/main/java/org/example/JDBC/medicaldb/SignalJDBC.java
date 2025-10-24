@@ -4,13 +4,12 @@ import org.example.entities_medicaldb.Signal;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class responsible for handling JDBC operations on the Signal table.
- * Used within MedicalManager.
+ * Handles JDBC operations for the Signal table.
+ * Used within the MedicalManager.
  */
 public class SignalJDBC {
 
@@ -21,32 +20,29 @@ public class SignalJDBC {
     }
 
     /**
-     * Inserts new signal into the data bases
+     * Inserts a new signal record into the database.
      */
-    public boolean insertSignal(Signal signal) {
-        String sql = "INSERT INTO Signal (recording, date, frequency, timestamp, comments) VALUES (?, ?, ?, ?, ?)";
+    public void insertSignal(Signal signal) {
+        String sql = "INSERT INTO signal (path, date, comments, patient_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, signal.getRecording());
+            ps.setString(1, signal.getPath());
             ps.setDate(2, signal.getDate() != null ? Date.valueOf(signal.getDate()) : null);
-            ps.setDouble(3, signal.getFrequency());
-            ps.setTimestamp(4, signal.getTimestamp() != null ? Timestamp.valueOf(signal.getTimestamp()) : null);
-            ps.setString(5, signal.getComments());
+            ps.setString(3, signal.getComments());
+            ps.setInt(4, signal.getPatientId());
             ps.executeUpdate();
-            System.out.println("Signal inserted successfully.");
-            return true;
-
+            System.out.println("Signal inserted successfully: " + signal.getPath());
         } catch (SQLException e) {
             System.err.println("Error inserting signal: " + e.getMessage());
-            return false;
         }
     }
 
     /**
-     * Searches signal by id
+     * Finds a signal by its ID.
+     * Returns a Signal object if found, or null if no match exists.
      */
     public Signal findSignalById(int id) {
-        String sql = "SELECT * FROM Signal WHERE id = ?";
+        String sql = "SELECT * FROM signal WHERE id = ?";
         Signal signal = null;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -54,13 +50,7 @@ public class SignalJDBC {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                signal = new Signal(
-                        rs.getString("recording"),
-                        rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null,
-                        rs.getDouble("frequency"),
-                        rs.getTimestamp("timestamp") != null ? rs.getTimestamp("timestamp").toLocalDateTime() : null,
-                        rs.getString("comments")
-                );
+                signal = extractSignalFromResultSet(rs);
                 System.out.println("Signal found with ID: " + id);
             } else {
                 System.out.println("No signal found with ID: " + id);
@@ -75,27 +65,21 @@ public class SignalJDBC {
     }
 
     /**
-     * Retrieves every signall registered
+     * Retrieves all signals stored in the database.
+     * Returns a list of Signal objects.
      */
     public List<Signal> getAllSignals() {
         List<Signal> signals = new ArrayList<>();
-        String sql = "SELECT * FROM Signal";
+        String sql = "SELECT * FROM signal";
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                signals.add(new Signal(
-                        rs.getString("recording"),
-                        rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null,
-                        rs.getDouble("frequency"),
-                        rs.getTimestamp("timestamp") != null ? rs.getTimestamp("timestamp").toLocalDateTime() : null,
-                        rs.getString("comments")
-                ));
+                signals.add(extractSignalFromResultSet(rs));
             }
 
             System.out.println("Retrieved " + signals.size() + " signals.");
-
         } catch (SQLException e) {
             System.err.println("Error retrieving signals: " + e.getMessage());
         }
@@ -104,10 +88,10 @@ public class SignalJDBC {
     }
 
     /**
-     * Deletes signal by id
+     * Deletes a signal permanently from the database by its ID.
      */
-    public boolean deleteSignal(int id) {
-        String sql = "DELETE FROM Signal WHERE id = ?";
+    public void deleteSignal(int id) {
+        String sql = "DELETE FROM signal WHERE id = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -115,15 +99,49 @@ public class SignalJDBC {
 
             if (affected > 0) {
                 System.out.println("Signal deleted (ID: " + id + ")");
-                return true;
             } else {
                 System.out.println("No signal found to delete with ID: " + id);
-                return false;
             }
-
         } catch (SQLException e) {
             System.err.println("Error deleting signal: " + e.getMessage());
-            return false;
         }
+    }
+
+    /**
+     * Retrieves all signals belonging to a specific patient.
+     * Returns a list of Signal objects.
+     */
+    public List<Signal> getSignalsByPatientId(int patientId) {
+        List<Signal> signals = new ArrayList<>();
+        String sql = "SELECT * FROM signal WHERE patient_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                signals.add(extractSignalFromResultSet(rs));
+            }
+
+            rs.close();
+            System.out.println("Retrieved " + signals.size() + " signals for patient ID: " + patientId);
+        } catch (SQLException e) {
+            System.err.println("Error retrieving signals by patient: " + e.getMessage());
+        }
+
+        return signals;
+    }
+
+    /**
+     * Utility method that converts a ResultSet row into a Signal object.
+     */
+    private Signal extractSignalFromResultSet(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String path = rs.getString("path");
+        LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
+        String comments = rs.getString("comments");
+        int patientId = rs.getInt("patient_id");
+
+        return new Signal(id, path, date, comments, patientId);
     }
 }
