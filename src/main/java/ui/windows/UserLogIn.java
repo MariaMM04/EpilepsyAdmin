@@ -2,6 +2,8 @@ package ui.windows;
 
 import net.miginfocom.swing.MigLayout;
 import ui.components.*;
+import org.example.entities_securitydb.*;
+import org.example.JDBC.securitydb.UserJDBC;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,29 +210,29 @@ public class UserLogIn extends JPanel implements ActionListener {
 
     private Boolean logIn() {
         String email = emailTxFLogIn.getText();
-        String password = passwordTxFLogIn.getText();
+       /* String password = passwordTxFLogIn.getText();
         System.out.println("email: " + email+" password: "+password);
         if(!email.isBlank() && !password.isBlank()) {
 
             appMenu.changeToMainMenu();
-            /*User user = appMenu.jpaUserMan.login(email, password);
+            User user = UserJDBC.login(email, password);
             System.out.println(user);
 
             //User is null if it doesn't exist
             if(user != null) {
-                appMenu.setUser(user);
+                Role.setUser(user);
                 return true;
             }else {
-                panelLogIn.showErrorMessage("Invalid user or password");
+               //panelLogIn.showErrorMessage("Invalid user or password");
                 return false;
-            }*/
+            }
 
             return true;
 
         }else {
             showErrorMessage("Complete all fields");
             return false;
-        }
+        }*/ return true;
     }
 
 
