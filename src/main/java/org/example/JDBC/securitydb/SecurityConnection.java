@@ -10,22 +10,20 @@ import java.sql.SQLException;
  */
 public class SecurityConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/securitydb?useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true";
-    private static final String USER = "root";
-    private static final String PASSWORD = "teleco2025";
+    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Securitydb.db";
 
     static {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading MySQL driver for securitydb", e);
+            throw new RuntimeException("Error loading SQLite driver for securitydb", e);
         }
     }
 
     /**
-     * Returns an active connection to the securitydb database.
+     * Returns an active connection to the SQLite security database.
      */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL);
     }
 }

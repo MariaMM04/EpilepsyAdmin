@@ -3,11 +3,7 @@ package org.example.JDBC.medicaldb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-// Importa aquí tus clases JDBC concretas (cuando las crees)
-import org.example.JDBC.medicaldb.PatientJDBC;
-import org.example.JDBC.medicaldb.DoctorJDBC;
-import org.example.JDBC.medicaldb.ReportJDBC;
-import org.example.JDBC.medicaldb.SignalJDBC;
+import org.example.JDBC.medicaldb.*;
 
 /**
  * Gestiona todas las operaciones JDBC relacionadas con la base de datos "medicaldb".
@@ -17,7 +13,7 @@ public class MedicalManager {
 
     private Connection connection;
 
-    // DAOs (Data Access Objects) o clases JDBC para cada entidad
+    // DAOs (Data Access Objects)
     private PatientJDBC patientJDBC;
     private DoctorJDBC doctorJDBC;
     private ReportJDBC reportJDBC;
@@ -26,9 +22,8 @@ public class MedicalManager {
     public MedicalManager() {
         try {
             this.connection = MedicalConnection.getConnection();
-            System.out.println("Connected to medicaldb");
+            System.out.println("Connected to SQLite medicaldb");
 
-            // Inicializa las clases JDBC de cada entidad
             this.patientJDBC = new PatientJDBC(connection);
             this.doctorJDBC = new DoctorJDBC(connection);
             this.reportJDBC = new ReportJDBC(connection);
@@ -63,7 +58,7 @@ public class MedicalManager {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("medicaldb connection closed.");
+                System.out.println("SQLite medicaldb connection closed.");
             }
         } catch (SQLException e) {
             System.err.println("Error closing medicaldb: " + e.getMessage());

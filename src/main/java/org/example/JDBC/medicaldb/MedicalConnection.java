@@ -10,24 +10,22 @@ import java.sql.SQLException;
  */
 public class MedicalConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/medicaldb?useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true";
-    private static final String USER = "root";
-    private static final String PASSWORD = "teleco2025";
+    // Ruta relativa al archivo dentro de tu proyecto
+    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Medicaldb.db";
 
     static {
         try {
-            // Clean JDBC driver loading (not always necessary, but good practice)
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading MySQL driver for medicaldb", e);
+            throw new RuntimeException("Error loading SQLite driver for medicaldb", e);
         }
     }
 
     /**
-     * Returns an active connection to the medicaldb database.
+     * Returns an active connection to the SQLite medical database.
      */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL);
     }
 }
 

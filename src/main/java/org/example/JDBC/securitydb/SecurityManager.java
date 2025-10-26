@@ -3,9 +3,7 @@ package org.example.JDBC.securitydb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-// Importa tus clases JDBC cuando las implementes
-import org.example.JDBC.securitydb.UserJDBC;
-import org.example.JDBC.securitydb.RoleJDBC;
+import org.example.JDBC.securitydb.*;
 
 /**
  * Gestiona las operaciones JDBC relacionadas con la base de datos "securitydb".
@@ -21,7 +19,7 @@ public class SecurityManager {
     public SecurityManager() {
         try {
             this.connection = SecurityConnection.getConnection();
-            System.out.println("Connected to securitydb ✅");
+            System.out.println("Connected to SQLite securitydb");
 
             // Inicializa las clases JDBC de cada entidad
             this.userJDBC = new UserJDBC(connection);
@@ -48,7 +46,7 @@ public class SecurityManager {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("securitydb connection closed.");
+                System.out.println("SQLite securitydb connection closed.");
             }
         } catch (SQLException e) {
             System.err.println("Error closing securitydb: " + e.getMessage());
