@@ -52,8 +52,8 @@ public class UserJDBC {
             if (rs.next()) {
                 user = new User(
                         rs.getString("email"),
-                        rs.getString("password")
-                );
+                        rs.getString("password"),
+                        rs.getBoolean("active"));
                 System.out.println("User found: " + email);
             } else {
                 System.out.println("No user found with email: " + email);
@@ -80,8 +80,8 @@ public class UserJDBC {
             while (rs.next()) {
                 users.add(new User(
                         rs.getString("email"),
-                        rs.getString("password")
-                ));
+                        rs.getString("password"),
+                        rs.getBoolean("active")));
             }
             System.out.println("Retrieved " + users.size() + " users.");
 
@@ -95,23 +95,24 @@ public class UserJDBC {
     /**
      * Deletes user by email
      */
-    public boolean deleteUser(String email) {
-        String sql = "DELETE FROM Users WHERE email = ?";
+    public boolean updateUserActiveStatus(String email, boolean active) {
+        String sql = "UPDATE users SET active = ? WHERE email = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
+            ps.setBoolean(1, active);
+            ps.setString(2, email);
             int affected = ps.executeUpdate();
 
             if (affected > 0) {
-                System.out.println("User deleted: " + email);
+                System.out.println("🟡 User " + (active ? "activated" : "deactivated") + ": " + email);
                 return true;
             } else {
-                System.out.println("No user found to delete: " + email);
+                System.out.println("⚠️ No user found to update: " + email);
                 return false;
             }
 
         } catch (SQLException e) {
-            System.err.println("Error deleting user: " + e.getMessage());
+            System.err.println("❌ Error updating user active status: " + e.getMessage());
             return false;
         }
     }
@@ -122,15 +123,15 @@ public class UserJDBC {
      * returns false if the user couldn't be inserted
      */
 
-    public boolean register(String email, String password) {
+    public boolean register(String email, String password, boolean active) {
 
-        if (email.isBlank() || email == null || password.isBlank() || password == null) { // If the email or password are empty do not create
+        if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
             return false;
         } else if (isUser(email)) {
             return false;
         } else try {
             {
-                insertUser(new User(email, password));
+                insertUser(new User(email, password,true));
             }
         } catch (Exception e) {
             return false;
@@ -156,8 +157,8 @@ public class UserJDBC {
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                User u = new User();
-                u.setRole(new Role(rs.getString("role")));
+                User u = new User(rs.getString("email"), rs.getString("password"), rs.getBoolean("active"));
+                u.setRoleId(rs.getInt("role_id"));
                 u.setEmail(rs.getString(email));
                 u.setPassword(rs.getString(password));
                 return u;

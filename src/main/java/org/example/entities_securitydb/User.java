@@ -9,7 +9,7 @@ public class User {
     private int roleId;        // Foreign key referencing the Role table
 
     // Constructors
-    public User() {}
+    public User(String email, String password, boolean active) {}
 
     public User(String email, String password, int roleId) {
         this.email = email;

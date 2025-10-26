@@ -1,34 +1,47 @@
 package org.example.entities_securitydb;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "Roles")
+/**
+ * Represents a user role (e.g., ADMIN, DOCTOR, PATIENT).
+ * JDBC version — no JPA annotations.
+ */
 public class Role {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    // --- Fields ---
+    private int id;           // Primary key (auto-increment)
+    private String rolename;  // Name of the role (ADMIN, DOCTOR, PATIENT)
+    private int userId;       // Foreign key referencing the User table
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String rolename;
-
-    @OneToOne
-    @JoinColumn(name="user_id", unique = true)
-    private static User user;
-
+    // --- Constructors ---
     public Role() {}
 
-    public Role(String name) {
-        this.rolename = name;
+    public Role(String rolename, int userId) {
+        this.rolename = rolename;
+        this.userId = userId;
     }
 
-    // Getters y Setters
+    public Role(int id, String rolename, int userId) {
+        this.id = id;
+        this.rolename = rolename;
+        this.userId = userId;
+    }
+
+    // --- Getters and Setters ---
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getRolename() { return rolename; }
-    public void setRolename(String name) { this.rolename = name; }
+    public void setRolename(String rolename) { this.rolename = rolename; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
+
+    // --- Utility ---
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", rolename='" + rolename + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
 }
