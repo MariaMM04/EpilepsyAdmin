@@ -150,17 +150,14 @@ public class UserJDBC {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
             return null; // invalid input
         }
-        String sql = ("SELECT * FROM users WHERE email = ? AND password = ?");
+        String sql = ("SELECT * FROM users WHERE email = ?"); // By only fetching the email we can check if it is unique or not
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             // Encriptar contraseña passwordEncrypted = bla bla
-            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 User u = new User(rs.getString("email"), rs.getString("password"), rs.getBoolean("active"));
                 u.setRoleId(rs.getInt("role_id"));
-                u.setEmail(rs.getString(email));
-                u.setPassword(rs.getString(password));
                 return u;
             }
         } catch (SQLException ex) {
