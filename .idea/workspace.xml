@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
+    <list default="true" id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="Work on the JDBC without JPA">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/DatabaseInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JPA/JPAUserManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,10 +102,5 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.example.*</FILTER>
-    </SUITE>
   </component>
 </project>

@@ -141,7 +141,8 @@ public class SignalJDBC {
         LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         String comments = rs.getString("comments");
         int patientId = rs.getInt("patient_id");
+        double sampleFrequency = rs.getDouble(("sample_frequency"));
 
-        return new Signal(id, path, date, comments, patientId);
+        return new Signal(id, path, date, comments, patientId, sampleFrequency);
     }
 }
