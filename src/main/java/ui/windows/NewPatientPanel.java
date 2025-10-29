@@ -235,13 +235,15 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                 errorMessage.setForeground(Color.RED);
                 errorMessage.setVisible(true);
             } else {
+                //TODO: Call JDBC functions
+                /*
                 if(!appMain.patientJDBC.insertPatient(p)){
                     errorMessage.setText("Error creating patient");
                     errorMessage.setForeground(Color.RED);
                     errorMessage.setVisible(true);
                     saved = false;
                     return;
-                }
+                }*/
 
                 saved = true;
                 errorMessage.setText("Profile created successfully");

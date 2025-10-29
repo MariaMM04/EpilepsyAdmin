@@ -1,5 +1,6 @@
 package ui.windows;
 
+import network.Server;
 import org.example.JDBC.medicaldb.DoctorJDBC;
 import org.example.JDBC.medicaldb.MedicalConnection;
 import org.example.JDBC.medicaldb.MedicalManager;
@@ -7,6 +8,7 @@ import org.example.JDBC.medicaldb.PatientJDBC;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Application extends JFrame {
@@ -29,13 +31,21 @@ public class Application extends JFrame {
 
 
     //Managers
-    public PatientJDBC patientJDBC;
-    public MedicalManager medicalManager;
-    public DoctorJDBC doctorJDBC;
+    //public PatientJDBC patientJDBC;
+    //public MedicalManager medicalManager;
+    //public DoctorJDBC doctorJDBC;
 
-    public static void main(String[] args) {
-        Application app = new Application();
-        app.setVisible(true);
+    public static void main(String[] args){
+        int serverPort = 9009;
+        //La aplicación se ejecuta en su propio hilo especial EDT (Event Dispatch Thread)
+        SwingUtilities.invokeLater(() -> {
+            Application app = new Application(); // inicializa tu GUI
+            app.setVisible(true);
+        });
+        Server server = new Server(serverPort);
+        // Create the server thread
+        Thread serverThread = new Thread(server);
+        serverThread.start();
     }
 
     public Application() {
@@ -50,9 +60,9 @@ public class Application extends JFrame {
         appPanels.add(mainMenu);
 
         //Managers
-        medicalManager = new MedicalManager();
+        /*medicalManager = new MedicalManager();
         patientJDBC = medicalManager.getPatientJDBC();
-        doctorJDBC = medicalManager.getDoctorJDBC();
+        doctorJDBC = medicalManager.getDoctorJDBC();*/
 
         this.setContentPane(mainMenu);
     }
