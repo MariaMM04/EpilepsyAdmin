@@ -29,6 +29,9 @@ public class Application extends JFrame {
     private UserLogIn logInPanel;
     private MainMenu mainMenu;
 
+    //Network
+    private int serverPort = 9009;
+    public Server server;
 
     //Managers
     //public PatientJDBC patientJDBC;
@@ -36,16 +39,11 @@ public class Application extends JFrame {
     //public DoctorJDBC doctorJDBC;
 
     public static void main(String[] args){
-        int serverPort = 9009;
         //La aplicación se ejecuta en su propio hilo especial EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
             Application app = new Application(); // inicializa tu GUI
             app.setVisible(true);
         });
-        Server server = new Server(serverPort);
-        // Create the server thread
-        Thread serverThread = new Thread(server);
-        serverThread.start();
     }
 
     public Application() {
@@ -63,6 +61,10 @@ public class Application extends JFrame {
         /*medicalManager = new MedicalManager();
         patientJDBC = medicalManager.getPatientJDBC();
         doctorJDBC = medicalManager.getDoctorJDBC();*/
+
+        //Network
+        server = new Server(serverPort);
+        server.start();
 
         this.setContentPane(mainMenu);
     }

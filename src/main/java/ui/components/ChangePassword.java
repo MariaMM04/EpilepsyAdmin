@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class ChangePassword extends JPanel {
 
-    private static final long serialVersionUID = 4890278966153276205L;
     private JLabel errorMessage;
 
     public ChangePassword(MyTextField password1, MyTextField password2, MyButton okbutton, MyButton cancelbutton) {

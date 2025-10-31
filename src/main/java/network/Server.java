@@ -8,92 +8,86 @@ import ui.windows.Application;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Server implements Runnable {
+//DUDAS:
+// se crea un thread para cada cliente conectado verdad? no para el servidor
+// dónde ejecutar el main? Puedo añadir en Application una instancia de Server para poder llamar a sus métodos?
+//      o al revés? pero los eventos los lanza la interfaz...
+//      pero para ejecutar el main en Application, el server no debería ser runnable? para poder estar esperando
+//      tod el rato a nuevos clientes en paralelo a la ejecución de la app.
+
+public class Server {
     private int port;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
     private ServerSocket serverSocket;
-    private Socket clientSocket;
-    private Application application;
+    private List<ClientHandler> clients;
+    private boolean running = false;
 
     public Server(int port) {
         this.port = port;
+        clients = new ArrayList<>();
     }
 
-    @Override
-    public void run() {
+    public void start(){
+        if (running) return;  //to avoid it starting 2 times
 
-        try{
-            serverSocket = new ServerSocket(port);
-            System.out.println("Server listening on port " + port);
-            clientSocket = serverSocket.accept();
-            System.out.println("Client connected: " + clientSocket.getInetAddress());
-            handleMessages(clientSocket);
-            // You can spawn a new thread here for each client
+        running = true;
+        //create its own thread to listen for new clients
+        Thread serverThread = new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(port);
+                System.out.println("Server started in port " + port);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleMessages(Socket clientSocket){
-        try {
-            bufferedReader = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(clientSocket.getOutputStream())
-            );
-            System.out.println("Text Received:\n");
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.toLowerCase().contains("stop")) {
-                    System.out.println("Stopping the server");
-                    releaseResources(bufferedReader, clientSocket, serverSocket);
-                    //System.exit(0);
-                    System.out.println("Server stopped");
-                    break;
-                }else if(line.toLowerCase().contains("get_patient")) {
-                    Patient patient = RandomData.generateRandomPatient();
-                    // Convert patient to string and send
-                    writer.write(patient.toString());
-                    writer.newLine(); // mark end of line
-                    writer.flush();   // send immediately
-                }else if(line.toLowerCase().contains("get_doctor")) {
-                    Doctor doctor = RandomData.generateRandomDoctor();
-                    // Convert patient to string and send
-                    writer.write(doctor.toString());
-                    writer.newLine(); // mark end of line
-                    writer.flush();   // send immediately
+                while (running) {
+                    Socket clientSocket = serverSocket.accept();
+                    ClientHandler handler = new ClientHandler(clientSocket, this);
+                    clients.add(handler);
+                    new Thread(handler).start(); //Start client thread
+                    //executor.submit(handler);
+                    System.out.println("New client connected. Total: " + clients.size());
                 }
-                System.out.println(line);
+
+            } catch (IOException e) {
+                if (running) e.printStackTrace(); // ignorar si fue detenido
             }
-        }catch (IOException e){
-            System.out.println("Error reading from client"+e.getMessage());
-        }
+        });
+
+        serverThread.start();
     }
 
-
-    private static void releaseResources(BufferedReader bufferedReader,
-                                         Socket socket, ServerSocket socketServidor) {
+    public void stop() throws ClientsStillConnectedException{
+        if (!running) return;
+        running = false;
         try {
-            bufferedReader.close();
-        } catch (IOException ex) {
-            System.out.println("Error closing socket"+ex.getMessage());
-        }
+            if(!clients.isEmpty()){
+                throw new ClientsStillConnectedException("There are still"+clients.size()+" clients connected");
+            }
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {}
+        clients.clear();
+        System.out.println("Server stopped");
+    }
 
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            System.out.println("Error closing socket"+ex.getMessage());
-        }
+    public int checkConnectedClients() {
+        return clients.size();
+    }
 
-        try {
-            socketServidor.close();
-        } catch (IOException ex) {
-            System.out.println("Error closing socket"+ex.getMessage());
+    public void removeClient(ClientHandler handler) {
+        clients.remove(handler);
+        System.out.println("Client disconnected. Total: " + clients.size());
+    }
+
+    public static class ClientsStillConnectedException extends Exception {
+        public ClientsStillConnectedException(String message) {
+            super(message);
         }
     }
 
 }
+
+
