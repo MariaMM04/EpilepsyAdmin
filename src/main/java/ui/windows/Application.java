@@ -38,9 +38,9 @@ public class Application extends JFrame {
     public Server server;
 
     //Managers
-    //public PatientJDBC patientJDBC;
-    //public MedicalManager medicalManager;
-    //public DoctorJDBC doctorJDBC;
+    public PatientJDBC patientJDBC;
+    public MedicalManager medicalManager;
+    public DoctorJDBC doctorJDBC;
     public org.example.JDBC.securitydb.SecurityManager securityManager;
     public UserJDBC userJDBC;
 
@@ -64,9 +64,9 @@ public class Application extends JFrame {
         appPanels.add(mainMenu);
 
         //Managers
-        //medicalManager = new MedicalManager();
-        /*patientJDBC = medicalManager.getPatientJDBC();
-        doctorJDBC = medicalManager.getDoctorJDBC();*/
+        medicalManager = new MedicalManager();
+        patientJDBC = medicalManager.getPatientJDBC();
+        doctorJDBC = medicalManager.getDoctorJDBC();
         securityManager = new org.example.JDBC.securitydb.SecurityManager();
         userJDBC = securityManager.getUserJDBC();
 

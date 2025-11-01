@@ -1,5 +1,7 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonObject;
+
 public class Doctor {
 
     // Fields
@@ -83,5 +85,29 @@ public class Doctor {
                 ", speciality='" + speciality + '\'' +
                 ", active=" + active +
                 '}';
+    }
+
+    public JsonObject toJason() {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", id);
+        json.addProperty("name", name);
+        json.addProperty("surname", surname);
+        json.addProperty("contact", contact);
+        json.addProperty("email", email);
+        json.addProperty("department", department);
+        json.addProperty("speciality", speciality);
+        return json;
+    }
+
+    public static Doctor fromJason(JsonObject json) {
+        Doctor doctor = new Doctor();
+        doctor.setId(json.get("id").getAsInt());
+        doctor.setName(json.get("name").getAsString());
+        doctor.setSurname(json.get("surname").getAsString());
+        doctor.setContact(json.get("contact").getAsString());
+        doctor.setEmail(json.get("email").getAsString());
+        doctor.setDepartment(json.get("department").getAsString());
+        doctor.setSpeciality(json.get("speciality").getAsString());
+        return doctor;
     }
 }

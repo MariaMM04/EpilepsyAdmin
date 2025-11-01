@@ -2,6 +2,7 @@ package network;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import org.example.entities_securitydb.Role;
@@ -22,12 +23,14 @@ public class ClientHandler implements Runnable {
     private Server server;
     private BufferedReader in;
     private BufferedWriter out;
+    private Gson gson;
 
     public ClientHandler(Socket socket, Server server) throws IOException {
         this.socket = socket;
         this.server = server;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        gson = new Gson();
     }
 
 
@@ -91,43 +94,51 @@ public class ClientHandler implements Runnable {
             String line;
             Gson gson = new Gson();
             while ((line = in.readLine()) != null) {
-                JsonObject request = gson.fromJson(line, JsonObject.class);
+                line = line.trim();
+                if (line.isEmpty()) {
+                    // Skip empty lines
+                    continue;
+                }
+
+                JsonObject request = null;
+                try {
+                   request = gson.fromJson(line, JsonObject.class);
+                }catch (JsonSyntaxException e){
+                    System.out.println(line);
+                    continue;
+                }
+
+                if (request == null) {
+                    System.out.println("Received null JSON, skipping: " + line);
+                    continue;
+                }
+
                 String type = request.get("type").getAsString();
 
-                if (type.equals("LOGIN_REQUEST")) {
+                if(type.equals("STOP_CLIENT")) {
+                    System.out.println("Stopping the client thread");
+                    releaseResources(in, out, socket);
+                    System.out.println("Client thread stopped");
+                    break;
+                } else if (type.equals("LOGIN_REQUEST")) {
                     JsonObject data = request.getAsJsonObject("data");
-                    String email = data.get("email").getAsString();
-                    String password = data.get("password").getAsString();
-
-                    JsonObject response = new JsonObject();
-                    response.addProperty("type", "LOGIN_RESPONSE");
-
-                    if (server.appMain.userJDBC.isUser(email)) {
-                        User user = server.appMain.userJDBC.login(email, password);
-                        if (user != null) {
-                            response.addProperty("status", "SUCCESS");
-                            JsonObject userObj = new JsonObject();
-                            userObj.addProperty("id", user.getId());
-                            userObj.addProperty("email", user.getEmail());
-                            //userObj.addProperty("role", user.getRole());
-                            userObj.addProperty("role", "Patient"); //TODO: change by actual role
-                            response.add("user", userObj);
-                        } else {
-                            response.addProperty("status", "ERROR");
-                            response.addProperty("message", "Invalid password");
-                        }
-                    } else {
-                        response.addProperty("status", "ERROR");
-                        response.addProperty("message", "User not found");
-                    }
-
-                    out.write(gson.toJson(response));
-                    out.newLine();
-                    out.flush();
+                    handleLogIn(data);
                 }
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e){
+            if(e.getClass() == SocketException.class){
+                try {
+                    System.out.println("Client stopped connection abruptly");
+                    releaseResources(in, out, socket);
+                    System.out.println("Client thread stopped");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }else{
+                System.out.println("Error reading from client"+e.getMessage());
+            }
+
         }
     }
 
@@ -147,6 +158,62 @@ public class ClientHandler implements Runnable {
 
     public String getSocketAddress(){
         return socket.getRemoteSocketAddress().toString();
+    }
+
+    /// If login success, message format:
+    /// {
+    ///   "type": "LOGIN_RESPONSE",
+    ///   "status": "SUCCESS",
+    ///   "user": {
+    ///     "id": 1,
+    ///     "email": "juan@demo.com",
+    ///     "role": "patient"
+    ///   }
+    /// }
+    /// If login failed, message format:
+    /// {
+    ///   "type": "LOGIN_RESPONSE",
+    ///   "status": "ERROR",
+    ///   "message": "Invalid credentials"
+    /// }
+    private void handleLogIn(JsonObject data) throws IOException {
+        String email = data.get("email").getAsString();
+        String password = data.get("password").getAsString();
+
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "LOGIN_RESPONSE");
+
+        if (server.appMain.userJDBC.isUser(email)) {
+            User user = server.appMain.userJDBC.login(email, password);
+            if (user != null) {
+                String role = "Patient";
+                response.addProperty("status", "SUCCESS");
+                JsonObject userObj = new JsonObject();
+                userObj.addProperty("id", user.getId());
+                userObj.addProperty("email", user.getEmail());
+                //userObj.addProperty("role", user.getRole());
+                userObj.addProperty("role", role); //TODO: change by actual role
+                response.add("user", userObj);
+
+                if(role.equals("Patient")) {
+                    Patient patient = server.appMain.patientJDBC.findPatientByEmail(user.getEmail());
+                    response.add("patient", patient.toJason());
+
+                    Doctor doctor = server.appMain.doctorJDBC.getDoctor(patient.getDoctorId());
+                    response.add("doctor", doctor.toJason());
+                }
+            } else {
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid password");
+            }
+        } else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "User not found");
+        }
+
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
     }
 
     //TODO: test function with database

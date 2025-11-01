@@ -1,5 +1,7 @@
 package org.example.entities_securitydb;
 
+import com.google.gson.JsonObject;
+
 public class User {
 
     private int id;            // Primary key (auto-increment)
@@ -54,5 +56,13 @@ public class User {
                 ", active=" + active +
                 ", roleId=" + roleId +
                 '}';
+    }
+
+    public JsonObject toJason() {
+        JsonObject jason = new JsonObject();
+        jason.addProperty("id", id);
+        jason.addProperty("email", email);
+        jason.addProperty("role", roleId); //TODO: change to role name
+        return jason;
     }
 }

@@ -1,5 +1,7 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonObject;
+
 import java.time.LocalDate;
 
 public class Patient {
@@ -83,5 +85,32 @@ public class Patient {
                 ", active=" + active +
                 ", doctorId=" + doctorId +
                 '}';
+    }
+
+    public JsonObject toJason() {
+        JsonObject jason = new JsonObject();
+        jason.addProperty("id", id);
+        jason.addProperty("name", name);
+        jason.addProperty("surname", surname);
+        jason.addProperty("email", email);
+        jason.addProperty("contact", contact);
+        jason.addProperty("dateOfBirth", dateOfBirth.toString());
+        jason.addProperty("gender", gender);
+        jason.addProperty("active", active);
+        jason.addProperty("doctorId", doctorId);
+        return jason;
+    }
+
+    public static Patient fromJson(JsonObject jason) {
+        Patient patient = new Patient();
+        patient.setId(jason.get("id").getAsInt());
+        patient.setName(jason.get("name").getAsString());
+        patient.setSurname(jason.get("surname").getAsString());
+        patient.setEmail(jason.get("email").getAsString());
+        patient.setContact(jason.get("contact").getAsString());
+        patient.setDateOfBirth(LocalDate.parse(jason.get("dateOfBirth").getAsString()));
+        patient.setGender(jason.get("gender").getAsString());
+        patient.setDoctorId(jason.get("doctorId").getAsInt());
+        return patient;
     }
 }
