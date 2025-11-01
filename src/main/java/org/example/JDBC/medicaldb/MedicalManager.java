@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.example.JDBC.medicaldb.*;
+import org.example.entities_securitydb.Role;
 
 /**
  * Gestiona todas las operaciones JDBC relacionadas con la base de datos "medicaldb".

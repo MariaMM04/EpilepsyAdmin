@@ -146,7 +146,8 @@ public class UserJDBC {
      */
 
     // DEVOLVER USER ENTERO
-    public static User login(String email, String password) {
+    //TODO: comprobar que la contraseña proporcionada coincide con la de la base de datos
+    public User login(String email, String password) {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
             return null; // invalid input
         }

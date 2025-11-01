@@ -1,8 +1,13 @@
 package network;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
+import org.example.entities_securitydb.Role;
+import org.example.entities_securitydb.User;
 import ui.RandomData;
+import ui.windows.Application;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,7 +29,9 @@ public class ClientHandler implements Runnable {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
-    @Override
+
+
+    /*@Override
     public void run() {
         System.out.println("Thread started for client: " + socket.getRemoteSocketAddress());
         System.out.println("Text Received:\n");
@@ -53,7 +60,11 @@ public class ClientHandler implements Runnable {
                     out.newLine(); // mark end of line
                     out.flush();   // send immediately
                     System.out.println("Doctor sent: " + doctor.toString());
-                } else{
+                }else if (line.toLowerCase().contains("login")) {
+                    System.out.println(line);
+                    handleLogIn(line);
+                }
+                else{
                     System.out.println(line);
                 }
             }
@@ -72,7 +83,54 @@ public class ClientHandler implements Runnable {
 
         }
 
+    }*/
+
+    @Override
+    public void run() {
+        try {
+            String line;
+            Gson gson = new Gson();
+            while ((line = in.readLine()) != null) {
+                JsonObject request = gson.fromJson(line, JsonObject.class);
+                String type = request.get("type").getAsString();
+
+                if (type.equals("LOGIN_REQUEST")) {
+                    JsonObject data = request.getAsJsonObject("data");
+                    String email = data.get("email").getAsString();
+                    String password = data.get("password").getAsString();
+
+                    JsonObject response = new JsonObject();
+                    response.addProperty("type", "LOGIN_RESPONSE");
+
+                    if (server.appMain.userJDBC.isUser(email)) {
+                        User user = server.appMain.userJDBC.login(email, password);
+                        if (user != null) {
+                            response.addProperty("status", "SUCCESS");
+                            JsonObject userObj = new JsonObject();
+                            userObj.addProperty("id", user.getId());
+                            userObj.addProperty("email", user.getEmail());
+                            //userObj.addProperty("role", user.getRole());
+                            userObj.addProperty("role", "Patient"); //TODO: change by actual role
+                            response.add("user", userObj);
+                        } else {
+                            response.addProperty("status", "ERROR");
+                            response.addProperty("message", "Invalid password");
+                        }
+                    } else {
+                        response.addProperty("status", "ERROR");
+                        response.addProperty("message", "User not found");
+                    }
+
+                    out.write(gson.toJson(response));
+                    out.newLine();
+                    out.flush();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 
     private void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
@@ -87,4 +145,56 @@ public class ClientHandler implements Runnable {
 
     }
 
+    public String getSocketAddress(){
+        return socket.getRemoteSocketAddress().toString();
+    }
+
+    //TODO: test function with database
+    private void handleLogIn(String message) throws IOException {
+        // Message example: LOGIN;email@example.com;password123
+        String[] parts = message.split(";");
+        if (parts.length != 3) {
+            out.write("LOGIN_FAIL;Invalid format");
+            out.newLine();
+            out.flush();
+            return;
+        }
+
+        String email = parts[1];
+        String password = parts[2];
+
+        // Check user
+        if (!server.appMain.userJDBC.isUser(email)) {
+        //if(!testIsUser(email)){
+            out.write("LOGIN_FAIL;User not found");
+            out.newLine();
+            out.flush();
+            return;
+        }
+
+        // Try login
+        User user = server.appMain.userJDBC.login(email, password);
+        //User user = testLogIn(email, password);
+        if (user != null) {
+            out.write("LOGIN_SUCCESS;" + user.toString());
+        } else {
+            out.write("LOGIN_FAIL;Wrong password");
+        }
+        out.newLine();
+        out.flush();
+    }
+
+    private User testLogIn(String email, String password) {
+        if(email.equals("test@example.com") && password.equals("1234")) {
+            return new User("test@example.com", "1234", true);
+        }
+        return null;
+    }
+
+    private boolean testIsUser(String email){
+        if(email.equals("test@example.com")) { //Added to test
+            return true;
+        }
+        return false;
+    }
 }

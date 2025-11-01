@@ -1,10 +1,14 @@
 package ui.windows;
 
-import ui.components.MenuTemplate;
-import ui.components.MyButton;
+import net.miginfocom.swing.MigLayout;
+import network.Server;
+import ui.components.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class MainMenu extends MenuTemplate {
     private static final long serialVersionUID = 6050014345831062858L;
@@ -14,9 +18,9 @@ public class MainMenu extends MenuTemplate {
     private JButton seePatientListBt;
     private JButton seeDoctorListBt;
     private JButton verifyConnectedClientsBt;
-    private JButton stopServerBt;
+    private JButton restartServerBt;
     private JButton logOutBt;
-    private Application appMenu;
+    private Application appMain;
     private String company_name;
 
     //Panels
@@ -25,14 +29,14 @@ public class MainMenu extends MenuTemplate {
     private SearchPatient searchPatientPanel;
     private SearchDoctor searchDoctorPanel;
 
-    public MainMenu(Application appMenu) {
+    public MainMenu(Application appMain) {
         //super();
-        this.appMenu = appMenu;
+        this.appMain = appMain;
         //Initialize panels
-        newPatientPanel = new NewPatientPanel(appMenu);
-        newDoctorPanel = new NewDoctorPanel(appMenu);
-        searchPatientPanel = new SearchPatient(appMenu);
-        searchDoctorPanel = new SearchDoctor(appMenu);
+        newPatientPanel = new NewPatientPanel(appMain);
+        newDoctorPanel = new NewDoctorPanel(appMain);
+        searchPatientPanel = new SearchPatient(appMain);
+        searchDoctorPanel = new SearchDoctor(appMain);
 
         addButtons();
         company_name = "NIGHT GUARDIAN: EPILEPSY";
@@ -50,7 +54,7 @@ public class MainMenu extends MenuTemplate {
         createPatientBt = new MyButton("Create Patient");
         createDoctorBt = new MyButton("Create Doctor");
         verifyConnectedClientsBt = new MyButton("Verify Connected Clients");
-        stopServerBt = new MyButton("Stop Server");
+        restartServerBt = new MyButton("Restart Server");
         logOutBt = new MyButton("Log Out");
 
         buttons.add(createPatientBt);
@@ -58,7 +62,7 @@ public class MainMenu extends MenuTemplate {
         buttons.add(seeDoctorListBt);
         buttons.add(seePatientListBt);
         buttons.add(verifyConnectedClientsBt);
-        buttons.add(stopServerBt);
+        buttons.add(restartServerBt);
         buttons.add(logOutBt);
     }
 
@@ -66,22 +70,88 @@ public class MainMenu extends MenuTemplate {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()== seePatientListBt) {
             System.out.println("Open search patient view");
-            appMenu.changeToPanel(searchPatientPanel);
+            appMain.changeToPanel(searchPatientPanel);
         }else if(e.getSource()== seeDoctorListBt) {
             System.out.println("Open search doctor view");
-            appMenu.changeToPanel(searchDoctorPanel);
+            appMain.changeToPanel(searchDoctorPanel);
         }else if(e.getSource()== logOutBt) {
-            appMenu.changeToUserLogIn();
+            appMain.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {
             System.out.println("Open new patient view");
-            appMenu.changeToPanel(newPatientPanel);
+            appMain.changeToPanel(newPatientPanel);
         }else if(e.getSource()== createDoctorBt) {
-            appMenu.changeToPanel(newDoctorPanel);
+            appMain.changeToPanel(newDoctorPanel);
         }else if(e.getSource()== verifyConnectedClientsBt) {
-
-        }else if(e.getSource()== stopServerBt) {
-
+            showCheckConnectedClients(appMain);
+        }else if(e.getSource()== restartServerBt) {
+            if(appMain.server.isRunning()){
+                Application.showMessageDialog(appMain, "The server is already running");
+            }else{
+                appMain.server.start();
+                Application.showMessageDialog(appMain, "Server Started");
+            }
         }
 
     }
+
+    private void showCheckConnectedClients(JFrame parentFrame) {
+        /*ArrayList<String> clients = new ArrayList<>();
+        clients.add("Client 1: socket1");
+        clients.add("Client 2: socket2");
+        clients.add("Client 3: socket3");*/
+        ArrayList<String> clients;
+        if(appMain.server.isRunning()){
+            clients = appMain.server.getConnectedClients();
+            MyButton goBackBt = new MyButton();
+            MyButton stopServerBt = new MyButton();
+
+            CheckConnectedClients panel = new CheckConnectedClients(clients, goBackBt, stopServerBt );
+            panel.setBackground(Color.white);
+            panel.setPreferredSize(new Dimension(400, 300));
+
+            JDialog dialog = new JDialog(parentFrame, "Check connected clients", false); //dont allow interacting with other panels at the same time
+            dialog.getContentPane().add(panel);
+            dialog.getContentPane().setBackground(Color.white);
+            dialog.pack();
+            dialog.setLocationRelativeTo(parentFrame);
+            //dialog.setSize(400, 200);
+
+            goBackBt.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {dialog.dispose();}
+            });
+
+            stopServerBt.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(!appMain.server.isRunning()){
+                        panel.showErrorMessage("Server is not running");
+                    }
+                    else if(clients.size()>0) {
+                        panel.showErrorMessage("Close all the connections before stopping the server");
+                    }else{
+                        try {
+                            //int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+                            //TODO: ask for correct password
+                            String password = JOptionPane.showInputDialog(parentFrame, "Enter the password:");
+                            if(password.equals("1234")){
+                                appMain.server.stop();
+                                panel.showErrorMessage("Server stopped");
+                            }else{
+                                panel.showErrorMessage("Incorrect password");
+                            }
+                        } catch (Server.ClientsStillConnectedException ex) {
+                            System.out.println(ex.getMessage());
+                        }
+                    }
+                }
+            });
+
+            dialog.setVisible(true);
+        }
+    }
+
+
+
+
 }

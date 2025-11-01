@@ -2,14 +2,29 @@ package org.example.JDBC.securitydb;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.example.JDBC.securitydb.*;
+import org.example.entities_securitydb.Role;
+import org.example.entities_securitydb.User;
 
 /**
  * Gestiona las operaciones JDBC relacionadas con la base de datos "securitydb".
  * Similar al antiguo ConnectionManager pero modular y específico de seguridad.
  */
 public class SecurityManager {
+
+    public static void main(String[] args){
+        SecurityManager sm = new SecurityManager();
+        //User u = new User("test@example.com", "1234", true);
+        //sm.userJDBC.insertUser(u);
+
+        List<User> users =  sm.userJDBC.getAllUsers();
+        for(User user : users){
+            System.out.println(user);
+        }
+    }
 
     private Connection connection;
 

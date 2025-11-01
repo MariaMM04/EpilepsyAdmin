@@ -25,10 +25,12 @@ public class Server {
     private ServerSocket serverSocket;
     private List<ClientHandler> clients;
     private boolean running = false;
+    public Application appMain;
 
-    public Server(int port) {
+    public Server(int port,  Application appMain) {
         this.port = port;
         clients = new ArrayList<>();
+        this.appMain = appMain;
     }
 
     public void start(){
@@ -58,23 +60,31 @@ public class Server {
         serverThread.start();
     }
 
+    public boolean isRunning(){
+        return running;
+    }
+
     public void stop() throws ClientsStillConnectedException{
         if (!running) return;
-        running = false;
         try {
             if(!clients.isEmpty()){
                 throw new ClientsStillConnectedException("There are still"+clients.size()+" clients connected");
             }
             if (serverSocket != null) {
                 serverSocket.close();
+                running = false;
             }
         } catch (IOException e) {}
         clients.clear();
         System.out.println("Server stopped");
     }
 
-    public int checkConnectedClients() {
-        return clients.size();
+    public ArrayList<String> getConnectedClients() {
+        ArrayList<String>  connectedClients = new ArrayList<>();
+        for (int i = 0; i < clients.size(); i++) {
+            connectedClients.add("Client "+(i+1)+": "+clients.get(i).getSocketAddress());
+        }
+        return connectedClients;
     }
 
     public void removeClient(ClientHandler handler) {

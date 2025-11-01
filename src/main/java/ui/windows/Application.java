@@ -1,13 +1,17 @@
 package ui.windows;
 
+import net.miginfocom.swing.MigLayout;
 import network.Server;
 import org.example.JDBC.medicaldb.DoctorJDBC;
 import org.example.JDBC.medicaldb.MedicalConnection;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.medicaldb.PatientJDBC;
+import org.example.JDBC.securitydb.*;
+import ui.components.MyButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -37,6 +41,8 @@ public class Application extends JFrame {
     //public PatientJDBC patientJDBC;
     //public MedicalManager medicalManager;
     //public DoctorJDBC doctorJDBC;
+    public org.example.JDBC.securitydb.SecurityManager securityManager;
+    public UserJDBC userJDBC;
 
     public static void main(String[] args){
         //La aplicación se ejecuta en su propio hilo especial EDT (Event Dispatch Thread)
@@ -58,12 +64,14 @@ public class Application extends JFrame {
         appPanels.add(mainMenu);
 
         //Managers
-        /*medicalManager = new MedicalManager();
-        patientJDBC = medicalManager.getPatientJDBC();
+        //medicalManager = new MedicalManager();
+        /*patientJDBC = medicalManager.getPatientJDBC();
         doctorJDBC = medicalManager.getDoctorJDBC();*/
+        securityManager = new org.example.JDBC.securitydb.SecurityManager();
+        userJDBC = securityManager.getUserJDBC();
 
         //Network
-        server = new Server(serverPort);
+        server = new Server(serverPort, this);
         server.start();
 
         this.setContentPane(mainMenu);
@@ -75,7 +83,29 @@ public class Application extends JFrame {
         setLayout(null);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/icons/night_guardian_mini_500.png")).getImage());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.out.println("Window is closing...");
+
+                // Do cleanup here:
+                // close sockets, stop threads, save data, etc.
+                if (server.isRunning()) {
+                    try {
+                        server.stop();
+                        // Exit if you want:
+                        System.exit(0);
+                    } catch (Server.ClientsStillConnectedException ex) {
+                        System.out.println("Clients still connected");
+                        showMessageDialog(null, "There are still clients connected. Close all connections before stopping the server");
+                    }
+                }else{
+                    System.out.println("Server is already stopped");
+                }
+            }
+        });
 
     }
 
@@ -111,4 +141,44 @@ public class Application extends JFrame {
             }
         }
     }
+
+    public static void showMessageDialog(JFrame parentFrame, String message) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("wrap, fill, inset 15", "[center]", "push[]25[]push"));
+        panel.setBackground(Color.white);
+        panel.setPreferredSize(new Dimension(400, 300));
+
+        JLabel label = new JLabel(message);
+        label.setFont(new Font("sansserif", 1, 25));
+        label.setForeground(Application.dark_purple);
+        //panel.add(label, "center, wrap");
+
+        JTextArea labelLikeText = new JTextArea(message);
+        labelLikeText.setLineWrap(true);
+        labelLikeText.setWrapStyleWord(true);
+        labelLikeText.setEditable(false);
+        labelLikeText.setOpaque(false); // looks like a JLabel
+        labelLikeText.setFont(new Font("sansserif", 1, 20));
+        labelLikeText.setBackground(Color.white);
+        labelLikeText.setForeground(Application.dark_purple);
+        panel.add(labelLikeText, "growx, center, wrap");
+
+        MyButton okButton = new MyButton("OK", Application.turquoise, Color.white);
+        panel.add(okButton, "center");
+
+        JDialog dialog = new JDialog(parentFrame, "Message dialog", false); //dont allow interacting with other panels at the same time
+        dialog.getContentPane().add(panel);
+        dialog.getContentPane().setBackground(Color.white);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parentFrame);
+        //dialog.setSize(400, 200);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {dialog.dispose();}
+        });
+
+        dialog.setVisible(true);
+    }
+
 }
