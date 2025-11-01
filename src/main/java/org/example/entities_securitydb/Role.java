@@ -9,7 +9,6 @@ public class Role {
     // --- Fields ---
     private int id;           // Primary key (auto-increment)
     private String rolename;  // Name of the role (ADMIN, DOCTOR, PATIENT)
-    private int userId;       // Foreign key referencing the User table
 
     // --- Constructors ---
     public Role() {}
@@ -18,15 +17,9 @@ public class Role {
         this.rolename = rolename;
     }
 
-    public Role(String rolename, int userId) {
-        this.rolename = rolename;
-        this.userId = userId;
-    }
-
-    public Role(int id, String rolename, int userId) {
+    public Role(int id, String rolename) {
         this.id = id;
         this.rolename = rolename;
-        this.userId = userId;
     }
 
     // --- Getters and Setters ---
@@ -36,8 +29,6 @@ public class Role {
     public String getRolename() { return rolename; }
     public void setRolename(String rolename) { this.rolename = rolename; }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
 
     // --- Utility ---
     @Override
@@ -45,7 +36,6 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", rolename='" + rolename + '\'' +
-                ", userId=" + userId +
                 '}';
     }
 }
