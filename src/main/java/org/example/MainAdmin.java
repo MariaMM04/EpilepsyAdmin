@@ -31,12 +31,12 @@ public class MainAdmin {
         // CREATE DOCTOR + USER
         // -----------------------------------------------------
         Doctor doctor = new Doctor("Laura", "Santos", "612345678");
-        doctor.setEmail("laura@hospital.com");
+        doctor.setEmail("laura@gmail.com");
         doctor.setDepartment("Neurology");
         doctor.setSpeciality("Epilepsy Research");
         doctor.setActive(true);
 
-        User doctorUser = new User("laura@hospital.com", "secure123", 56);
+        User doctorUser = new User("laura@gmail.com", "secure123", 1);
         doctorUser.setActive(true);
 
         adminService.createDoctorAndUser(doctor, doctorUser);
@@ -47,14 +47,14 @@ public class MainAdmin {
         Patient patient = new Patient(
                 "Carlos",
                 "López",
-                "carlos@correo.com",
+                "carlos@gmail.com",
                 "654789123",
                 LocalDate.of(1995, 2, 15),
                 "Male",1
         );
         patient.setActive(true);
 
-        User patientUser = new User("carlos@correo.com", "patient123", 23);
+        User patientUser = new User("carlos@gmail.com", "patient123", 2);
         patientUser.setActive(true);
 
         adminService.createPatientAndUser(patient, patientUser);
@@ -63,15 +63,15 @@ public class MainAdmin {
         // DEACTIVATE BOTH
         // -----------------------------------------------------
         System.out.println("\n--- Deactivating doctor and patient ---");
-        adminService.deactivateDoctorAndUser("laura@hospital.com");
-        adminService.deactivatePatientAndUser("carlos@correo.com");
+        adminService.deactivateDoctorAndUser("laura@gmail.com");
+        adminService.deactivatePatientAndUser("carlos@gmail.com");
 
         // -----------------------------------------------------
         // REACTIVATE BOTH
         // -----------------------------------------------------
         System.out.println("\n--- Reactivating doctor and patient ---");
-        adminService.reactivateDoctorAndUser("laura@hospital.com");
-        adminService.reactivatePatientAndUser("carlos@correo.com");
+        adminService.reactivateDoctorAndUser("laura@gmail.com");
+        adminService.reactivatePatientAndUser("carlos@gmail.com");
 
         // -----------------------------------------------------
         // CLOSE CONNECTIONS

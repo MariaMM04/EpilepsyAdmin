@@ -8,7 +8,7 @@ public class User {
     private String email;      // Linked with Patient.email (foreign reference)
     private String password;   // Encrypted or hashed password
     private boolean active;    // Account enabled/disabled flag
-    private int roleId;        // Foreign key referencing the Role table
+    private int role_id;        // Foreign key referencing the Role table
 
     // Constructors
     public User(String email, String password, boolean active) {
@@ -17,19 +17,19 @@ public class User {
         this.active = active;
     }
 
-    public User(String email, String password, int roleId) {
+    public User(String email, String password, int role_id) {
         this.email = email;
         this.password = password;
-        this.roleId = roleId;
+        this.role_id = role_id;
         this.active = true;
     }
 
-    public User(int id, String email, String password, boolean active, int roleId) {
+    public User(int id, String email, String password, boolean active, int role_id) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.role_id = role_id;
         this.active = active;
-        this.roleId = roleId;
     }
 
     // Getters and Setters
@@ -45,8 +45,8 @@ public class User {
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
 
-    public int getRoleId() { return roleId; }
-    public void setRoleId(int roleId) { this.roleId = roleId; }
+    public int getRole_id() { return role_id; }
+    public void setRole_id(int role_id) { this.role_id = role_id; }
 
     @Override
     public String toString() {
@@ -54,7 +54,7 @@ public class User {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", active=" + active +
-                ", roleId=" + roleId +
+                ", roleId=" + role_id +
                 '}';
     }
 

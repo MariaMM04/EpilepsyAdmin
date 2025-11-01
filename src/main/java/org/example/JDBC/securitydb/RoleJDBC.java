@@ -23,11 +23,10 @@ public class RoleJDBC {
      * The role must include the role name and, optionally, the associated user ID.
      */
     public void insertRole(Role role) {
-        String sql = "INSERT INTO roles (rolename, user_id) VALUES (?, ?)";
+        String sql = "INSERT INTO roles (rolename) VALUES (?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, role.getRolename());
-            ps.setInt(2, role.getUserId());
             ps.executeUpdate();
             System.out.println("Role inserted successfully: " + role.getRolename());
         } catch (SQLException e) {
@@ -111,7 +110,6 @@ public class RoleJDBC {
     private Role extractRoleFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String rolename = rs.getString("rolename");
-        int userId = rs.getInt("user_id");
-        return new Role(id, rolename, userId);
+        return new Role(id, rolename);
     }
 }

@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User; // Import User class
 
 
@@ -24,11 +23,12 @@ public class UserJDBC {
      * Inserts new user in the Users table
      */
     public boolean insertUser(User user) {
-        String sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
+        String sql = "INSERT INTO Users (email, password, role_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
+            ps.setInt(3, user.getRole_id());
             ps.executeUpdate();
             System.out.println("User inserted successfully: " + user.getEmail());
             return true;
@@ -158,7 +158,7 @@ public class UserJDBC {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 User u = new User(rs.getString("email"), rs.getString("password"), rs.getBoolean("active"));
-                u.setRoleId(rs.getInt("role_id"));
+                u.setRole_id(rs.getInt("role_id"));
                 return u;
             }
         } catch (SQLException ex) {
