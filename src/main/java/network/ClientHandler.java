@@ -121,8 +121,13 @@ public class ClientHandler implements Runnable {
                     System.out.println("Client thread stopped");
                     break;
                 } else if (type.equals("LOGIN_REQUEST")) {
+                    System.out.println("LOGIN REQUEST");
                     JsonObject data = request.getAsJsonObject("data");
                     handleLogIn(data);
+                } else if (type.equals("REQUEST_DOCTOR_BY_EMAIL")) {
+                    System.out.println("REQUEST DOCTOR_BY_EMAIL");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleRequestDoctorByEmail(data);
                 }
 
             }
@@ -141,8 +146,6 @@ public class ClientHandler implements Runnable {
 
         }
     }
-
-
 
     private void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
         server.removeClient(this);
@@ -186,22 +189,24 @@ public class ClientHandler implements Runnable {
         if (server.appMain.userJDBC.isUser(email)) {
             User user = server.appMain.userJDBC.login(email, password);
             if (user != null) {
-                String role = "Patient";
                 response.addProperty("status", "SUCCESS");
                 JsonObject userObj = new JsonObject();
                 userObj.addProperty("id", user.getId());
                 userObj.addProperty("email", user.getEmail());
-                //userObj.addProperty("role", user.getRole());
-                userObj.addProperty("role", role); //TODO: change by actual role
+                Role role = server.appMain.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+                userObj.addProperty("role", role.getRolename());
                 response.add("user", userObj);
 
-                if(role.equals("Patient")) {
+                /*if(role.getRolename().equals("Patient")) {
                     Patient patient = server.appMain.patientJDBC.findPatientByEmail(user.getEmail());
                     response.add("patient", patient.toJason());
 
                     Doctor doctor = server.appMain.doctorJDBC.getDoctor(patient.getDoctorId());
                     response.add("doctor", doctor.toJason());
-                }
+                }else if(role.getRolename().equals("Doctor")) {
+                    Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(user.getEmail());
+                    response.add("doctor", doctor.toJason());
+                }*/
             } else {
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Invalid password");
@@ -209,6 +214,34 @@ public class ClientHandler implements Runnable {
         } else {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
+        }
+
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
+    }
+
+    private void handleRequestDoctorByEmail(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_DOCTOR_BY_EMAIL_RESPONSE");
+
+        String email = data.get("email").getAsString();
+        Integer user_id = data.get("user_id").getAsInt();
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+
+        if(user != null && email.equals(user.getEmail())) {
+            Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(email);
+            if(doctor != null) {
+                response.addProperty("status", "SUCCESS");
+                JsonObject doctorObj = doctor.toJason();
+                response.add("doctor", doctorObj);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor not found");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
         }
 
         out.write(gson.toJson(response));

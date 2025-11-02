@@ -2,6 +2,7 @@ package org.example.JDBC.medicaldb;
 
 import org.example.entities_medicaldb.Patient;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,13 +119,15 @@ public class PatientJDBC {
      * Helper method. Creates a Patient object from the current ResultSet row.
      */
     private Patient extractPatientFromResultSet(ResultSet rs) throws SQLException {
+        //Timestamp ts = rs.getTimestamp("date_of_birth");
+        //LocalDate dateOfBirth = ts != null ? ts.toLocalDateTime().toLocalDate() : null;
         return new Patient(
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getString("surname"),
                 rs.getString("email"),
                 rs.getString("contact"),
-                rs.getDate("date_of_birth") != null ? rs.getDate("date_of_birth").toLocalDate() : null,
+                rs.getObject("date_of_birth", LocalDate.class),
                 rs.getString("gender"),
                 rs.getBoolean("active"),
                 rs.getInt("doctor_id")

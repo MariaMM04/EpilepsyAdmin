@@ -24,6 +24,12 @@ public class SecurityManager {
         for(User user : users){
             System.out.println(user);
         }
+
+        List<Role> roles = sm.roleJDBC.getAllRoles();
+        for(Role rol : roles){
+            System.out.println(rol);
+        }
+
     }
 
     private Connection connection;

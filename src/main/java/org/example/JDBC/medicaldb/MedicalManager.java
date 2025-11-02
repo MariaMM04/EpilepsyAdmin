@@ -2,8 +2,11 @@ package org.example.JDBC.medicaldb;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.example.JDBC.medicaldb.*;
+import org.example.entities_medicaldb.Doctor;
+import org.example.entities_medicaldb.Patient;
 import org.example.entities_securitydb.Role;
 
 /**
@@ -11,6 +14,20 @@ import org.example.entities_securitydb.Role;
  * Equivale a un ConnectionManager pero solo para el contexto médico.
  */
 public class MedicalManager {
+
+    public static void main(String[] args) {
+        MedicalManager medicalManager = new MedicalManager();
+        /*List<Patient> patients =  medicalManager.getPatientJDBC().getAllPatients();
+        for (Patient patient : patients) {
+            System.out.println(patient.toString());
+        }*/
+
+        /*List<Doctor> doctors =  medicalManager.getDoctorJDBC().getAllDoctors();
+        for (Doctor doctor : doctors) {
+            System.out.println(doctor.toString());
+        }*/
+        medicalManager.close();
+    }
 
     private Connection connection;
 

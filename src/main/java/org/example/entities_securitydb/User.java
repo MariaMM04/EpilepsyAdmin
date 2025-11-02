@@ -46,13 +46,14 @@ public class User {
     public void setActive(boolean active) { this.active = active; }
 
     public int getRole_id() { return role_id; }
-    public void setRole_id(int role_id) { this.role_id = role_id; }
+    public void setRole_id(int role_id) { this.role_id = role_id;}
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", active=" + active +
                 ", roleId=" + role_id +
                 '}';
@@ -62,7 +63,7 @@ public class User {
         JsonObject jason = new JsonObject();
         jason.addProperty("id", id);
         jason.addProperty("email", email);
-        jason.addProperty("role", roleId); //TODO: change to role name
+        jason.addProperty("role", role_id); //TODO: change to role name
         return jason;
     }
 }

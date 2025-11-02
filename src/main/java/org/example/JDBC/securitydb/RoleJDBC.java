@@ -62,6 +62,33 @@ public class RoleJDBC {
     }
 
     /**
+     * Finds a role by its name.
+     * Returns a Role object if found, or null if not found.
+     */
+    public Role findRoleByID(int id) {
+        String sql = "SELECT * FROM roles WHERE id = ?";
+        Role role = null;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                role = extractRoleFromResultSet(rs);
+                System.out.println("Role found: " + id);
+            } else {
+                System.out.println("No role found with ID: " + id);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error finding role: " + e.getMessage());
+        }
+
+        return role;
+    }
+
+    /**
      * Retrieves all roles stored in the database.
      * Returns a list of Role objects.
      */

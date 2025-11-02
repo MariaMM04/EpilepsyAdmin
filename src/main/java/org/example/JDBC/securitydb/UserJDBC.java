@@ -51,12 +51,45 @@ public class UserJDBC {
 
             if (rs.next()) {
                 user = new User(
+                        rs.getInt("id"),
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getBoolean("active"));
+                        rs.getBoolean("active"),
+                        rs.getInt("role_id"));
                 System.out.println("User found: " + email);
             } else {
                 System.out.println("No user found with email: " + email);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error finding user: " + e.getMessage());
+        }
+
+        return user;
+    }
+
+    /**
+     * Search user by email
+     */
+    public User findUserByID(int id) {
+        String sql = "SELECT * FROM Users WHERE id = ?";
+        User user = null;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getBoolean("active"),
+                        rs.getInt("role_id"));
+                System.out.println("User found: " + id);
+            } else {
+                System.out.println("No user found with ID: " + id);
             }
 
             rs.close();
@@ -79,9 +112,11 @@ public class UserJDBC {
 
             while (rs.next()) {
                 users.add(new User(
+                        rs.getInt("id"),
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getBoolean("active")));
+                        rs.getBoolean("active"),
+                        rs.getInt("role_id")));
             }
             System.out.println("Retrieved " + users.size() + " users.");
 
@@ -157,7 +192,13 @@ public class UserJDBC {
             // Encriptar contraseña passwordEncrypted = bla bla
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                User u = new User(rs.getString("email"), rs.getString("password"), rs.getBoolean("active"));
+                User u = new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getBoolean("active"),
+                        rs.getInt("role_id")
+                );
                 u.setRole_id(rs.getInt("role_id"));
                 return u;
             }
