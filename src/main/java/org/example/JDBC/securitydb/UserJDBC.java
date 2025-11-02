@@ -53,6 +53,7 @@ public class UserJDBC {
                 user = new User(
                         rs.getString("email"),
                         rs.getString("password"),
+                        rs.getInt("role_id"),
                         rs.getBoolean("active"));
                 System.out.println("User found: " + email);
             } else {
@@ -81,6 +82,7 @@ public class UserJDBC {
                 users.add(new User(
                         rs.getString("email"),
                         rs.getString("password"),
+                        rs.getInt("role_id"),
                         rs.getBoolean("active")));
             }
             System.out.println("Retrieved " + users.size() + " users.");
@@ -104,15 +106,15 @@ public class UserJDBC {
             int affected = ps.executeUpdate();
 
             if (affected > 0) {
-                System.out.println("🟡 User " + (active ? "activated" : "deactivated") + ": " + email);
+                System.out.println("User " + (active ? "activated" : "deactivated") + ": " + email);
                 return true;
             } else {
-                System.out.println("⚠️ No user found to update: " + email);
+                System.out.println("No user found to update: " + email);
                 return false;
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error updating user active status: " + e.getMessage());
+            System.err.println("Error updating user active status: " + e.getMessage());
             return false;
         }
     }
