@@ -11,7 +11,13 @@ public class User {
     private int role_id;        // Foreign key referencing the Role table
 
     // Constructors
-    public User(String email, String password, boolean active) {
+    public User(String email, String password,int role_id, boolean active) {
+        this.email = email;
+        this.password = password;
+        this.role_id = role_id;
+        this.active = active;
+    }
+    public User(String email, String password,boolean active) {
         this.email = email;
         this.password = password;
         this.active = active;
