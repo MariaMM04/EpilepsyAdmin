@@ -1,7 +1,11 @@
 package org.example.JDBC.medicaldb;
 
+import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +71,32 @@ public class PatientJDBC {
     }
 
     /**
+     * Retrieves patient by ID.
+     */
+    public Patient findPatientByID(Integer id) {
+        String sql = "SELECT * FROM patient WHERE id = ?";
+        Patient patient = null;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                patient = extractPatientFromResultSet(rs);
+                System.out.println("Patient found: " + id);
+            } else {
+                System.out.println("No patient found with email: " + id);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error finding patient: " + e.getMessage());
+        }
+
+        return patient;
+    }
+
+    /**
      * Retrieves all patients
      */
     public List<Patient> getAllPatients() {
@@ -75,6 +105,30 @@ public class PatientJDBC {
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                patients.add(extractPatientFromResultSet(rs));
+            }
+
+            System.out.println("Retrieved " + patients.size() + " patients.");
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving patients: " + e.getMessage());
+        }
+
+        return patients;
+    }
+
+    /**
+     * Retrieves all patients
+     */
+    public List<Patient> getPatientsOfDoctor(int doctorId) {
+        List<Patient> patients = new ArrayList<>();
+        String sql = "SELECT * FROM patient WHERE  doctor_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 patients.add(extractPatientFromResultSet(rs));
@@ -118,18 +172,29 @@ public class PatientJDBC {
      * Helper method. Creates a Patient object from the current ResultSet row.
      */
     private Patient extractPatientFromResultSet(ResultSet rs) throws SQLException {
+        //Timestamp ts = rs.getTimestamp("date_of_birth");
+        //LocalDate dateOfBirth = ts != null ? ts.toLocalDateTime().toLocalDate() : null;
+        LocalDate dateOfBirth = null;
+        long millis = rs.getLong("date_of_birth");
+        if (!rs.wasNull()) {
+            dateOfBirth = Instant.ofEpochMilli(millis)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
         return new Patient(
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getString("surname"),
                 rs.getString("email"),
                 rs.getString("contact"),
-                rs.getDate("date_of_birth") != null ? rs.getDate("date_of_birth").toLocalDate() : null,
+                dateOfBirth,
                 rs.getString("gender"),
                 rs.getBoolean("active"),
                 rs.getInt("doctor_id")
         );
     }
+
+
 }
 
 

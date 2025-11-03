@@ -7,6 +7,8 @@ import org.example.JDBC.medicaldb.MedicalConnection;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.medicaldb.PatientJDBC;
 import org.example.JDBC.securitydb.*;
+import org.example.entities_securitydb.User;
+import org.example.service.AdminLinkService;
 import ui.components.MyButton;
 
 import javax.swing.*;
@@ -36,10 +38,12 @@ public class Application extends JFrame {
     //Network
     private int serverPort = 9009;
     public Server server;
+    public User user;
 
     //Managers
     public PatientJDBC patientJDBC;
     public MedicalManager medicalManager;
+    public AdminLinkService adminLinkService;
     public DoctorJDBC doctorJDBC;
     public org.example.JDBC.securitydb.SecurityManager securityManager;
     public UserJDBC userJDBC;
@@ -54,14 +58,8 @@ public class Application extends JFrame {
 
     public Application() {
         initComponents();
-        setBounds(100, 100, 602, 436);
-
-        //Panels
-        appPanels = new ArrayList<JPanel>();
-        logInPanel = new UserLogIn(this);
-        mainMenu = new MainMenu(this);
-        appPanels.add(logInPanel);
-        appPanels.add(mainMenu);
+        //setBounds(100, 100, 602, 436);
+        setBounds(100, 100, 650, 500);
 
         //Managers
         medicalManager = new MedicalManager();
@@ -69,10 +67,18 @@ public class Application extends JFrame {
         doctorJDBC = medicalManager.getDoctorJDBC();
         securityManager = new org.example.JDBC.securitydb.SecurityManager();
         userJDBC = securityManager.getUserJDBC();
+        adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
         server = new Server(serverPort, this);
         server.start();
+
+        //Panels
+        appPanels = new ArrayList<JPanel>();
+        logInPanel = new UserLogIn(this);
+        mainMenu = new MainMenu(this);
+        appPanels.add(logInPanel);
+        appPanels.add(mainMenu);
 
         this.setContentPane(mainMenu);
     }
@@ -117,6 +123,7 @@ public class Application extends JFrame {
 
     public void changeToPanel(JPanel panel) {
         hideAllPanels();
+        appPanels.add(panel);
         panel.setVisible(true);
         this.setContentPane(panel);
     }

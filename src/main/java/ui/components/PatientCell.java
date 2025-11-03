@@ -7,6 +7,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.Border;
 
 import net.miginfocom.swing.MigLayout;
+import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import ui.windows.Application;
 
@@ -78,6 +79,21 @@ public class PatientCell implements ListCellRenderer<Patient> {
         listCell.add(phoneText, "grow, left");
         listCell.add(emailHeading, "grow, left");
         listCell.add(emailText, "grow, left");
+
+        JLabel doctorHeading = new JLabel("Doctor Assigned:");
+        doctorHeading.setForeground(titleColor);
+        doctorHeading.setFont(titleFont);
+        JLabel doctorText = new JLabel("None");
+        doctorText.setForeground(contentColor);
+        doctorText.setFont(contentFont);
+
+        if(value.getDoctor() != null){
+            Doctor doctor = value.getDoctor();
+            doctorText.setText(doctor.getName()+" "+doctor.getSurname());
+        }
+
+        listCell.add(doctorHeading, "grow, left");
+        listCell.add(doctorText, "grow, left");
 
         if(isSelected)
         {

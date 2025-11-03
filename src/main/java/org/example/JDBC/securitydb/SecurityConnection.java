@@ -10,7 +10,7 @@ import java.sql.SQLException;
  */
 public class SecurityConnection {
 
-    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Securitydb.db";
+    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Securitydb_try.db";
 
     static {
         try {

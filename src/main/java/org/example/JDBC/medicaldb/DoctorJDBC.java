@@ -66,6 +66,32 @@ public class DoctorJDBC {
     }
 
     /**
+     * Retrieves doctors by email.
+     */
+    public Doctor findDoctorById(Integer id) {
+        String sql = "SELECT * FROM doctor WHERE id = ?";
+        Doctor doctor = null;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                doctor = extractDoctorFromResultSet(rs);
+                System.out.println("Doctor found: " + id);
+            } else {
+                System.out.println("No doctor found with email: " + id);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error finding doctor: " + e.getMessage());
+        }
+
+        return doctor;
+    }
+
+    /**
      * Retrieves doctors by ID.
      */
     public Doctor getDoctor(int id) {

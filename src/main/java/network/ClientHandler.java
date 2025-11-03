@@ -1,6 +1,7 @@
 package network;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.example.entities_medicaldb.Doctor;
@@ -13,6 +14,7 @@ import ui.windows.Application;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -121,8 +123,25 @@ public class ClientHandler implements Runnable {
                     System.out.println("Client thread stopped");
                     break;
                 } else if (type.equals("LOGIN_REQUEST")) {
+                    System.out.println("LOGIN REQUEST");
                     JsonObject data = request.getAsJsonObject("data");
                     handleLogIn(data);
+                } else if (type.equals("REQUEST_DOCTOR_BY_EMAIL")) {
+                    System.out.println("REQUEST DOCTOR_BY_EMAIL");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleRequestDoctorByEmail(data);
+                } else if (type.equals("REQUEST_PATIENTS_FROM_DOCTOR")) {
+                    System.out.println("REQUEST_PATIENTS_FROM_DOCTOR");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleRequestPatientsFromDoctor(data);
+                } else if (type.equals("REQUEST_PATIENT_BY_EMAIL")) {
+                    System.out.println("REQUEST_PATIENT_BY_EMAIL");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleRequestPatientByEmail(data);
+                }   else if (type.equals("REQUEST_DOCTOR_BY_ID")) {
+                    System.out.println("REQUEST DOCTOR_BY_ID");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleRequestDoctorById(data);
                 }
 
             }
@@ -141,8 +160,6 @@ public class ClientHandler implements Runnable {
 
         }
     }
-
-
 
     private void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
         server.removeClient(this);
@@ -186,22 +203,24 @@ public class ClientHandler implements Runnable {
         if (server.appMain.userJDBC.isUser(email)) {
             User user = server.appMain.userJDBC.login(email, password);
             if (user != null) {
-                String role = "Patient";
                 response.addProperty("status", "SUCCESS");
                 JsonObject userObj = new JsonObject();
                 userObj.addProperty("id", user.getId());
                 userObj.addProperty("email", user.getEmail());
-                //userObj.addProperty("role", user.getRole());
-                userObj.addProperty("role", role); //TODO: change by actual role
+                Role role = server.appMain.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+                userObj.addProperty("role", role.getRolename());
                 response.add("user", userObj);
 
-                if(role.equals("Patient")) {
+                /*if(role.getRolename().equals("Patient")) {
                     Patient patient = server.appMain.patientJDBC.findPatientByEmail(user.getEmail());
                     response.add("patient", patient.toJason());
 
                     Doctor doctor = server.appMain.doctorJDBC.getDoctor(patient.getDoctorId());
                     response.add("doctor", doctor.toJason());
-                }
+                }else if(role.getRolename().equals("Doctor")) {
+                    Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(user.getEmail());
+                    response.add("doctor", doctor.toJason());
+                }*/
             } else {
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Invalid password");
@@ -209,6 +228,125 @@ public class ClientHandler implements Runnable {
         } else {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
+        }
+
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
+    }
+
+    private void handleRequestDoctorByEmail(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_DOCTOR_BY_EMAIL_RESPONSE");
+
+        String email = data.get("email").getAsString();
+        Integer user_id = data.get("user_id").getAsInt();
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+        Role role =  server.appMain.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+
+        if(user != null && email.equals(user.getEmail()) && role.getRolename().equals("Doctor")) {
+            Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(email);
+            if(doctor != null) {
+                response.addProperty("status", "SUCCESS");
+                JsonObject doctorObj = doctor.toJason();
+                response.add("doctor", doctorObj);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor not found");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
+    }
+
+    private void handleRequestDoctorById(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_DOCTOR_BY_ID_RESPONSE");
+
+        Integer doctor_id = data.get("doctor_id").getAsInt();
+        Integer patient_id = data.get("patient_id").getAsInt();
+        Integer user_id = data.get("user_id").getAsInt();
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+        Role role =  server.appMain.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        Patient patient = server.appMain.patientJDBC.findPatientByID(patient_id);
+
+        if(user != null && patient != null && patient.getEmail().equals(user.getEmail()) && role.getRolename().equals("Patient")) {
+            Doctor doctor = server.appMain.doctorJDBC.findDoctorById(doctor_id);
+            if(doctor != null) {
+                response.addProperty("status", "SUCCESS");
+                JsonObject doctorObj = doctor.toJason();
+                response.add("doctor", doctorObj);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor not found");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
+    }
+
+    private void handleRequestPatientByEmail(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_PATIENT_BY_EMAIL_RESPONSE");
+
+        String email = data.get("email").getAsString();
+        Integer user_id = data.get("user_id").getAsInt();
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+
+        if(user != null && email.equals(user.getEmail())) {
+            Patient patient = server.appMain.patientJDBC.findPatientByEmail(email);
+            if(patient != null) {
+                response.addProperty("status", "SUCCESS");
+                JsonObject doctorObj = patient.toJason();
+                response.add("patient", doctorObj);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor not found");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+        out.write(gson.toJson(response));
+        out.newLine();
+        out.flush();
+    }
+
+    private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_PATIENTS_FROM_DOCTOR_RESPONSE");
+
+        Integer doctorId = data.get("doctor_id").getAsInt();
+        Integer user_id = data.get("user_id").getAsInt();
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+        Doctor doctor = server.appMain.doctorJDBC.getDoctor(doctorId);
+
+        if(user != null && doctor != null && doctor.getEmail().equals(user.getEmail())) {
+
+            response.addProperty("status", "SUCCESS");
+
+            List<Patient> patients = server.appMain.medicalManager.getPatientJDBC().getPatientsOfDoctor(doctorId);
+
+            JsonArray patientArray = new JsonArray();
+            for (Patient p : patients) {
+                patientArray.add(p.toJason());
+            }
+
+            response.add("patients", patientArray);
+
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
         }
 
         out.write(gson.toJson(response));

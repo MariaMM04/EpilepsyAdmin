@@ -142,6 +142,7 @@ public class UserLogIn extends JPanel implements ActionListener {
         if(e.getSource() == applyLogIn) {
             System.out.println("LogIn");
             if(logIn()) {
+                appMenu.changeToMainMenu();
                 resetPanel();
             }
 
@@ -210,36 +211,39 @@ public class UserLogIn extends JPanel implements ActionListener {
 
     private Boolean logIn() {
         String email = emailTxFLogIn.getText();
-       /* String password = passwordTxFLogIn.getText();
+        String password = passwordTxFLogIn.getText();
         System.out.println("email: " + email+" password: "+password);
         if(!email.isBlank() && !password.isBlank()) {
-
-            appMenu.changeToMainMenu();
-            User user = UserJDBC.login(email, password);
+            User user = appMenu.userJDBC.login(email, password);
             System.out.println(user);
 
             //User is null if it doesn't exist
             if(user != null) {
-                Role.setUser(user);
-                return true;
+                Role role = appMenu.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+                if(role.getRolename().equals("Administrator")) {
+                    appMenu.user = user;
+                    return true;
+                }else{
+                    showErrorMessage("Unauthorized access");
+                    return false;
+                }
+
             }else {
-               //panelLogIn.showErrorMessage("Invalid user or password");
+               showErrorMessage("Invalid user or password");
                 return false;
             }
-
-            return true;
 
         }else {
             showErrorMessage("Complete all fields");
             return false;
-        }*/ return true;
+        }
     }
 
 
     public Boolean canChangePassword() {
         String email = emailTxFLogIn.getText();
-        /*if(email != null && !email.isBlank()){
-            Boolean isUser = appMenu.jpaUserMan.isUser(email);
+        if(email != null && !email.isBlank()){
+            Boolean isUser = appMenu.userJDBC.isUser(email);
             if(isUser) {
                 return true;
             }else {
@@ -249,9 +253,7 @@ public class UserLogIn extends JPanel implements ActionListener {
         }else {
             showErrorMessage("Write the email first");
             return false;
-        }*/
-        return true;
-
+        }
     }
 
     private Boolean validatePassword(String password) {

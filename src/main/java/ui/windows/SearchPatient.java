@@ -11,6 +11,7 @@ import java.util.List;
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
+import org.example.entities_securitydb.User;
 import ui.RandomData;
 import ui.components.MyButton;
 import ui.components.MyTextField;
@@ -44,7 +45,7 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
         for(int i = 0; i < 10; i++) {
             patients.add(RandomData.generateRandomPatient());
         }
-        showPatients(patients);
+        //showPatients(patients);
         System.out.println("Search Patient Panel Successfully created");
         //showPatients(null);
     }
@@ -100,17 +101,13 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
         this.add(errorMessage, "cell 0 5, span 2, left");
         errorMessage.setVisible(false);
 
-        //showPatients(appMain.patientMan.searchPatientsBySurname("Blanco"));
-        //showDoctors(createRandomDoctors());
+        scrollPane1 = new JScrollPane();
+        scrollPane1.setOpaque(false);
+        scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
     }
     //TODO: Change for patient cell
     protected void showPatients(List<Patient> patients) {
-
-        //JPanel gridPanel = new JPanel(new GridLayout(patients.size(), 0));
-        JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setOpaque(false);
-        scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //scrollPane1.setViewportView(gridPanel);
 
         patientsDefListModel = new DefaultListModel<Patient>();
         if(patients != null) {
@@ -120,16 +117,12 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
             }
         }
 
-
         patientsList = new JList<Patient>(patientsDefListModel);
         patientsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         patientsList.setCellRenderer(new PatientCell());
         patientsList.addMouseListener(this);
         scrollPane1.setViewportView(patientsList);
-
         scrollPane1.setPreferredSize(this.getPreferredSize());
-
-        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
     }
 
     private void showErrorMessage(String message) {

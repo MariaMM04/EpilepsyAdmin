@@ -20,10 +20,18 @@ public class SecurityManager {
         //User u = new User("test@example.com", "1234", true);
         //sm.userJDBC.insertUser(u);
 
+        //User user1 = new User("admin@example.com", "1234", 3, true);
+        //sm.userJDBC.insertUser(user1);
         List<User> users =  sm.userJDBC.getAllUsers();
         for(User user : users){
             System.out.println(user);
         }
+
+        List<Role> roles = sm.roleJDBC.getAllRoles();
+        for(Role rol : roles){
+            System.out.println(rol);
+        }
+
     }
 
     private Connection connection;

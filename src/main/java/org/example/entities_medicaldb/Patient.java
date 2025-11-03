@@ -15,6 +15,7 @@ public class Patient {
     private String gender;          // Gender identity or biological sex
     private boolean active;         // Logical deletion flag (true = active)
     private int doctorId;           // Foreign key referencing assigned Doctor
+    private Doctor doctor;
 
     // Constructors
     public Patient() {}
@@ -29,6 +30,7 @@ public class Patient {
         this.gender = gender;
         this.doctorId = doctorId;
         this.active = true;
+        this.doctor = null;
     }
 
     public Patient(int id, String name, String surname, String email, String contact,
@@ -42,6 +44,7 @@ public class Patient {
         this.gender = gender;
         this.active = active;
         this.doctorId = doctorId;
+        this.doctor = null;
     }
 
     // Getters and Setters
@@ -71,6 +74,14 @@ public class Patient {
 
     public int getDoctorId() { return doctorId; }
     public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 
     @Override
     public String toString() {

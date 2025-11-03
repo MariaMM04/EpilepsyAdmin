@@ -52,13 +52,14 @@ public class User {
     public void setActive(boolean active) { this.active = active; }
 
     public int getRole_id() { return role_id; }
-    public void setRole_id(int role_id) { this.role_id = role_id; }
+    public void setRole_id(int role_id) { this.role_id = role_id;}
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", active=" + active +
                 ", roleId=" + role_id +
                 '}';

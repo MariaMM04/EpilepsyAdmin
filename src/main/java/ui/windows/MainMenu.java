@@ -2,13 +2,18 @@ package ui.windows;
 
 import net.miginfocom.swing.MigLayout;
 import network.Server;
+import org.example.entities_medicaldb.Doctor;
+import org.example.entities_medicaldb.Patient;
 import ui.components.*;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainMenu extends MenuTemplate {
     private static final long serialVersionUID = 6050014345831062858L;
@@ -70,14 +75,19 @@ public class MainMenu extends MenuTemplate {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()== seePatientListBt) {
             System.out.println("Open search patient view");
+            List<Patient> patients = appMain.adminLinkService.getAllPatientsWithDoctor();
+            searchPatientPanel.showPatients(patients);
             appMain.changeToPanel(searchPatientPanel);
         }else if(e.getSource()== seeDoctorListBt) {
             System.out.println("Open search doctor view");
+            List<Doctor> doctors = appMain.doctorJDBC.getAllDoctors();
+            searchDoctorPanel.showDoctors(doctors);
             appMain.changeToPanel(searchDoctorPanel);
         }else if(e.getSource()== logOutBt) {
             appMain.changeToUserLogIn();
         }else if(e.getSource()== createPatientBt) {
             System.out.println("Open new patient view");
+            newPatientPanel.updateView();
             appMain.changeToPanel(newPatientPanel);
         }else if(e.getSource()== createDoctorBt) {
             appMain.changeToPanel(newDoctorPanel);

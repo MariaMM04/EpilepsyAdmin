@@ -2,7 +2,8 @@ package ui.windows;
 
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
-import org.example.entities_medicaldb.Patient;
+import org.example.entities_securitydb.Role;
+import org.example.entities_securitydb.User;
 import ui.components.MyButton;
 import ui.components.MyComboBox;
 import ui.components.MyTextField;
@@ -12,8 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.util.Objects;
+
+//TODO; add
 
 public class NewDoctorPanel extends JPanel implements ActionListener {
     private Application appMain;
@@ -30,8 +32,8 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
     private JLabel specHeading;
     private MyTextField speciality;
     private MyComboBox<String> nextStep;
-    private JLabel officeHeading;
-    private MyTextField office;
+    private JLabel departmentHeading;
+    private MyTextField department;
 
     private JLabel title;
     protected String titleText = " ";
@@ -78,17 +80,17 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         speciality = new MyTextField();
         speciality.setHint("Neurologist | Epilepsy Specialist ");
         speciality.setEnabled(true);
-        office = new MyTextField();
-        office.setHint(
+        department = new MyTextField();
+        department.setHint(
                 "Hospital General Universitario Gregorio Marañón");
-        office.setEnabled(true);
+        department.setEnabled(true);
         formContainer = new JPanel();
         initDoctorForm();
     }
 
     private void initDoctorForm() {
         //this.setLayout(new MigLayout("fill, inset 15, gap 0, wrap 4, debug", "[][][][]", "[][][][][][][][][][]"));
-        this.setLayout(new MigLayout("fill, debug", "[25%][25%][25%][25%]", "[][][][][][][][][][]"));
+        this.setLayout(new MigLayout("fill", "[25%][25%][25%][25%]", "[][][][][][][][][][]"));
         this.setBackground(Color.white);
         //this.setBackground(Application.light_purple);
         formContainer.setBackground(Color.white);
@@ -128,13 +130,13 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         specHeading.setFont(contentFont);
         specHeading.setForeground(contentColor);
         formContainer.add(specHeading, "grow");
-        officeHeading = new JLabel("Office/Department*");
-        officeHeading.setFont(contentFont);
-        officeHeading.setForeground(contentColor);
-        formContainer.add(officeHeading, "grow");
+        departmentHeading = new JLabel("Department*");
+        departmentHeading.setFont(contentFont);
+        departmentHeading.setForeground(contentColor);
+        formContainer.add(departmentHeading, "grow");
 
         formContainer.add(speciality, "grow");
-        formContainer.add(office, "grow");
+        formContainer.add(department, "grow");
 
         //ROW 3
         phoneHeading = new JLabel("Phone Number*");
@@ -188,7 +190,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             d.setEmail(email.getText());
             d.setContact(phoneNumber.getText());
             d.setSpeciality(speciality.getText());
-            d.setDepartment(office.getText());
+            d.setDepartment(department.getText());
 
             Integer phonenumber;
 
@@ -208,37 +210,27 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
                 return;
             }
 
-            //TODO: validate email
-            //TODO: validate password
-            //TODO: create user
 
-            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || office.getText().isEmpty() || password.getText() == "") {
-                errorMessage.setText("Please fill all the fields");
-                errorMessage.setForeground(Color.RED);
-                errorMessage.setVisible(true);
-            } else {
-                //TODO: Call JDBC functions
-                /*
-                if(!appMain.doctorJDBC.insertDoctor(d)){
-                    errorMessage.setText("Error creating patient");
-                    errorMessage.setForeground(Color.RED);
-                    errorMessage.setVisible(true);
+            if(!validateEmail(d.getEmail())){return;}
+            if(!validatePassword(password.getText())){return;}
+            Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Doctor");
+            User u = new User(d.getEmail(), password.getText(), role.getId(), true);
+
+            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty() || password.getText() == "") {
+                showErrorMessage("Please fill all the fields");
+            }else {
+                if(!appMain.adminLinkService.createUserAndDoctor(u, d)){
+                    showErrorMessage("Error creating user and doctor");
                     saved = false;
                     return;
-                }*/
-
+                }
                 saved = true;
-                errorMessage.setText("Profile created successfully");
-                errorMessage.setForeground(new Color(0, 128, 0));
-                errorMessage.setVisible(true);
                 resetView();
                 appMain.changeToMainMenu();
             }
 
         } catch (Exception ex) {
-            errorMessage.setText("Error creating profile");
-            errorMessage.setForeground(Color.RED);
-            errorMessage.setVisible(true);
+            showErrorMessage("Error creating user and doctor");
         }
     }
 
@@ -297,5 +289,49 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         });
 
         dialog.setVisible(true);
+    }
+
+    /// Checks if the password has at least 8 characters, and contains at least 1 number
+    private Boolean validatePassword(String password) {
+        boolean passwordVacia = (Objects.isNull(password)) || password.isEmpty();
+        boolean goodPassword=false;
+        System.out.println("password vacía "+passwordVacia);
+        if(!passwordVacia && password.length() >= 8) {
+            for(int i=0; i<password.length(); i++) {
+
+                //The password must contain at least one number
+                if(Character.isDigit(password.charAt(i))) {
+                    goodPassword = true;
+                }
+            }
+            if(!goodPassword) {
+                showErrorMessage("The password must contain at least one number.");
+                return false;
+            }
+        }else {
+            showErrorMessage("Password's minimum lenght is of 8 characters");
+            return false;
+        }
+        return true;
+
+    }
+
+    /// checks if the email is valid and id it's an institutional email (@nightguardian.com)
+    public Boolean validateEmail(String email) {
+        if(!email.isBlank() && email.contains("@")) {
+            String[] emailSplit = email.split("@");
+            if(emailSplit.length >1 && emailSplit[1].equals("nightguardian.com")){
+                return true;
+            }
+        }
+        //System.out.println("Valid email? "+validEmail);
+        showErrorMessage("Invalid Email");
+        return false;
+    }
+
+    private void showErrorMessage(String message) {
+        errorMessage.setText(message);
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setVisible(true);
     }
 }
