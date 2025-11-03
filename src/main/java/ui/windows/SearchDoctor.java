@@ -44,7 +44,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         for(int i = 0; i < 10; i++) {
             doctors.add(RandomData.generateRandomDoctor());
         }
-        showDoctors(doctors);
+        //showDoctors(doctors);
         System.out.println("Search Doctors Panel Successfully created");
         //showPatients(null);
     }
@@ -100,16 +100,14 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         this.add(errorMessage, "cell 0 5, span 2, left");
         errorMessage.setVisible(false);
 
+        scrollPane1 = new JScrollPane();
+        scrollPane1.setOpaque(false);
+        scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
         //showPatients(appMain.patientMan.searchPatientsBySurname("Blanco"));
         //showDoctors(createRandomDoctors());
     }
     protected void showDoctors(List<Doctor> patients) {
-
-        //JPanel gridPanel = new JPanel(new GridLayout(patients.size(), 0));
-        JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setOpaque(false);
-        scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //scrollPane1.setViewportView(gridPanel);
 
         doctorsDefListModel = new DefaultListModel<Doctor>();
         if(patients != null) {
@@ -119,16 +117,12 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
             }
         }
 
-
         doctorsList = new JList<Doctor>(doctorsDefListModel);
         doctorsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         doctorsList.setCellRenderer(new DoctorCell());
         doctorsList.addMouseListener(this);
         scrollPane1.setViewportView(doctorsList);
-
         scrollPane1.setPreferredSize(this.getPreferredSize());
-
-        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
     }
 
     private void showErrorMessage(String message) {
@@ -144,6 +138,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         //TODO: reset panel when going back to menu
         hideErrorMessage();
         searchByTextField.setText("");
+        doctorsDefListModel.clear();
     }
 
     public void actionPerformed(ActionEvent e) {

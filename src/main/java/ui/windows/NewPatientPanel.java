@@ -1,17 +1,24 @@
 package ui.windows;
 
-import net.bytebuddy.asm.Advice;
+import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import net.miginfocom.swing.MigLayout;
+import org.example.entities_securitydb.Role;
+import org.example.entities_securitydb.User;
 import ui.components.*;
 
+import javax.print.Doc;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
+
+//TODO: insert section to assign doctor
 
 public class NewPatientPanel extends JPanel implements ActionListener {
     private Application appMain;
@@ -30,6 +37,8 @@ public class NewPatientPanel extends JPanel implements ActionListener {
     private MyTextField birthDate;
     private JLabel passwordHeading;
     private MyTextField password;
+    private MyComboBox<String> doctors;
+    private JLabel docsHeading;
 
     private JLabel title;
     protected String titleText = " ";
@@ -47,6 +56,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
     private Color textFieldBg = new Color(230, 245, 241);
 
     private Boolean saved;
+    List<Doctor> docs;
 
     //private JDateChooser birthDate;
     public NewPatientPanel(Application appMain) {
@@ -84,6 +94,11 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         birthDate.setEnabled(true);
         password = new MyTextField();
         formContainer = new JPanel();
+        doctors = new MyComboBox<>();
+        docs = appMain.doctorJDBC.getAllDoctors();
+        for (Doctor doc : docs) {
+            doctors.addItem(doc.getName()+" "+doc.getSurname()+"; "+doc.getSpeciality()+" specialist");
+        }
         initPatientForm();
     }
 
@@ -93,7 +108,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         this.setBackground(Color.white);
         //this.setBackground(Application.lighter_turquoise);
         formContainer.setBackground(Color.white);
-        formContainer.setLayout(new MigLayout("fill, inset 10, gap 5, wrap 2", "[grow 50][grow 50]", "[][][][][][][]push"));
+        formContainer.setLayout(new MigLayout("fill, inset 15, gap 5, wrap 2", "[50%][50%]", "[][][][][][][][]push"));
 
         //Add Title
         title = new JLabel(titleText);
@@ -138,43 +153,40 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         birthDateHeading.setForeground(contentColor);
         formContainer.add(birthDateHeading, "grow");
 
-        passwordHeading = new JLabel("Password*");
-        passwordHeading.setFont(contentFont);
-        passwordHeading.setForeground(contentColor);
-        formContainer.add(passwordHeading, "grow");
-
         //ROW 4
         formContainer.add(gender, "grow");
         formContainer.add(birthDate,  "grow"); //TODO create birth date chooser
 
         //ROW 5
-        emailHeading = new JLabel("Email*");
-        emailHeading.setFont(contentFont);
-        emailHeading.setForeground(contentColor);
-        formContainer.add(emailHeading, "grow");
 
         phoneHeading = new JLabel("Phone Number*");
         phoneHeading.setFont(contentFont);
         phoneHeading.setForeground(contentColor);
         formContainer.add(phoneHeading, "grow");
 
+        docsHeading = new JLabel("Assigned Doctor*");
+        docsHeading.setFont(contentFont);
+        docsHeading.setForeground(contentColor);
+        formContainer.add(docsHeading, "grow");
+
         //ROW 5
-        formContainer.add(email, "grow");
         formContainer.add(phoneNumber, "grow");
+        formContainer.add(doctors, "grow");
 
         //ROW 6
+        emailHeading = new JLabel("Email*");
+        emailHeading.setFont(contentFont);
+        emailHeading.setForeground(contentColor);
+        formContainer.add(emailHeading, "grow");
+
+        passwordHeading = new JLabel("Password*");
+        passwordHeading.setFont(contentFont);
+        passwordHeading.setForeground(contentColor);
         formContainer.add(passwordHeading, "grow");
-        formContainer.add(password, "grow, skip 1");
 
-        //Add buttons
-        cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
-        cancelButton.addActionListener(this);
-        //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
-        add(cancelButton, "cell 1 9, growx, center");
-
-        saveChangesBt = new MyButton("SAVE AND GO BACK", Application.turquoise, Color.white);
-        saveChangesBt.addActionListener(this);
-        add(saveChangesBt, "cell 2 9, growx, center");
+        //ROW 7
+        formContainer.add(email, "grow");
+        formContainer.add(password, "grow");
 
         errorMessage = new JLabel();
         errorMessage.setFont(new Font("sansserif", Font.BOLD, 12));
@@ -183,6 +195,18 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         //this.add(errorMessage, "cell 0 8, span, left");
         this.add(errorMessage, "cell 0 8, span, center");
         errorMessage.setVisible(true);
+
+        //Add buttons
+        cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
+        cancelButton.addActionListener(this);
+        //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
+        add(cancelButton, "cell 0 9, span, split 2, center");
+        //add(cancelButton, "cell 1 9, growx, center");
+
+        saveChangesBt = new MyButton("SAVE AND GO BACK", Application.turquoise, Color.white);
+        saveChangesBt.addActionListener(this);
+        add(saveChangesBt, "center");
+
 
     }
 
@@ -226,37 +250,35 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                 return;
             }
 
-            //TODO: validate email
-            //TODO: validate password
-            //TODO: create user
+            //validate Email
+            if(!validateEmail(p.getEmail())) {return;}
+
+            //Validate password
+            if(!validatePassword(password.getText())) {return;}
+
+            //Create user
+            Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Patient");
+            User u = new User(p.getEmail(), password.getText(), role.getId());
+
+            //Assign Doctor
+            int index = doctors.getSelectedIndex();
+            p.setDoctorId(docs.get(index).getId());
 
             if (p.getName().isEmpty() || p.getSurname().isEmpty()|| p.getGender().isEmpty() || p.getEmail().isEmpty() || p.getContact().isEmpty() || password.getText() == "") {
-                errorMessage.setText("Please fill all the fields");
-                errorMessage.setForeground(Color.RED);
-                errorMessage.setVisible(true);
-            } else {
-                //TODO: Call JDBC functions
-                /*
-                if(!appMain.patientJDBC.insertPatient(p)){
-                    errorMessage.setText("Error creating patient");
-                    errorMessage.setForeground(Color.RED);
-                    errorMessage.setVisible(true);
+                showErrorMessage("Please fill all the fields");
+            }else {
+                if(!appMain.adminLinkService.createUserAndPatient(u, p)){
+                    showErrorMessage("Error creating user and patient");
                     saved = false;
                     return;
-                }*/
-
+                }
                 saved = true;
-                errorMessage.setText("Profile created successfully");
-                errorMessage.setForeground(new Color(0, 128, 0));
-                errorMessage.setVisible(true);
                 resetView();
                 appMain.changeToMainMenu();
             }
 
         } catch (Exception ex) {
-            errorMessage.setText("Error creating profile");
-            errorMessage.setForeground(Color.RED);
-            errorMessage.setVisible(true);
+            showErrorMessage("Error creating user and patient");
         }
     }
 
@@ -285,6 +307,14 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         gender.setSelectedIndex(0);
         errorMessage.setVisible(false);
         saved = false;
+    }
+
+    public void updateView(){
+        docs.clear();
+        docs = appMain.medicalManager.getDoctorJDBC().getAllDoctors();
+        for (Doctor doc : docs) {
+            doctors.addItem(doc.getName()+" "+doc.getSurname()+"; "+doc.getSpeciality()+" specialist");
+        }
     }
 
     private void showQuestionPanel(JFrame parentFrame, String question) {
@@ -316,5 +346,49 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         });
 
         dialog.setVisible(true);
+    }
+
+    /// Checks if the password has at least 8 characters, and contains at least 1 number
+    private Boolean validatePassword(String password) {
+        boolean passwordVacia = (Objects.isNull(password)) || password.isEmpty();
+        boolean goodPassword=false;
+        System.out.println("password vacía "+passwordVacia);
+        if(!passwordVacia && password.length() >= 8) {
+            for(int i=0; i<password.length(); i++) {
+
+                //The password must contain at least one number
+                if(Character.isDigit(password.charAt(i))) {
+                    goodPassword = true;
+                }
+            }
+            if(!goodPassword) {
+                showErrorMessage("The password must contain at least one number.");
+                return false;
+            }
+        }else {
+            showErrorMessage("Password's minimum lenght is of 8 characters");
+            return false;
+        }
+        return true;
+
+    }
+
+    /// checks if the email is valid and id it's an institutional email (@nightguardian.com)
+    public Boolean validateEmail(String email) {
+        if(!email.isBlank() && email.contains("@")) {
+            String[] emailSplit = email.split("@");
+            if(emailSplit.length >1 && emailSplit[1].equals("nightguardian.com")){
+                return true;
+            }
+        }
+        //System.out.println("Valid email? "+validEmail);
+        showErrorMessage("Invalid Email");
+        return false;
+    }
+
+    private void showErrorMessage(String message) {
+        errorMessage.setText(message);
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setVisible(true);
     }
 }
