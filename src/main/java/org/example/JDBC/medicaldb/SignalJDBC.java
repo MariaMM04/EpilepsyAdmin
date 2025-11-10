@@ -2,12 +2,15 @@ package org.example.JDBC.medicaldb;
 
 import org.example.entities_medicaldb.Signal;
 
+import java.io.*;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Handles JDBC operations for the Signal table.
@@ -22,6 +25,50 @@ public class SignalJDBC {
     }
 
     /**
+     * Turns the information of the path into a byte[]
+     */
+    private static byte[] compressFile(String path) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (FileInputStream fis = new FileInputStream(path);
+             GZIPOutputStream gzip = new GZIPOutputStream(bos)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                gzip.write(buffer, 0, len);
+            }
+        }
+        System.out.println("File compressed successfully to");
+        return bos.toByteArray();
+    }
+
+
+    /**
+     * Turns the information of the byte[] to a path
+     */
+    public static void decompressToFile(byte[] compressedData, String outputPath) throws IOException {
+        // Creates the path if it doesn't exist
+        File outputFile = new File(outputPath);
+        File parentDir = outputFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
+        // Descompresses the bytes
+        try (GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(compressedData));
+             FileOutputStream fileOut = new FileOutputStream(outputFile)) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzipIn.read(buffer)) != -1) {
+                fileOut.write(buffer, 0, len);
+            }
+        }
+
+        System.out.println("File decompressed successfully to: " + outputPath);
+    }
+
+
+    /**
      * Inserts a new signal record into the database.
      */
     public void insertSignal(Signal signal) {
@@ -29,13 +76,14 @@ public class SignalJDBC {
         String sql = "INSERT INTO signal (path, date, comments, patient_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, signal.getPath());
+            ps.setBytes(1, compressFile(signal.getPath()));
             ps.setDate(2, signal.getDate() != null ? Date.valueOf(signal.getDate()) : null);
             ps.setString(3, signal.getComments());
             ps.setInt(4, signal.getPatientId());
+            ps.setDouble(5,signal.getSampleFrequency());
             ps.executeUpdate();
             System.out.println("Signal inserted successfully: " + signal.getPath());
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             System.err.println("Error inserting signal: " + e.getMessage());
         }
     }
@@ -140,7 +188,16 @@ public class SignalJDBC {
      */
     private Signal extractSignalFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
-        String path = rs.getString("path");
+        byte[] compressed = rs.getBytes("path");
+
+        // Descompress to a temporal file
+        String path = "output/signal_" + id + ".xlsx";
+        try {
+            decompressToFile(compressed, path);
+        } catch (IOException e) {
+            System.err.println("Error decompressing signal: " + e.getMessage());
+        }
+        //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         LocalDate date = null;
         long millis = rs.getLong("date");
         if (!rs.wasNull()) {
@@ -152,6 +209,7 @@ public class SignalJDBC {
         String comments = rs.getString("comments");
         int patientId = rs.getInt("patient_id");
         double sampleFrequency = rs.getDouble(("sample_frequency"));
+
         return new Signal(id, path, date, comments, patientId, sampleFrequency);
     }
 
