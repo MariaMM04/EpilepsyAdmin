@@ -35,61 +35,6 @@ public class ClientHandler implements Runnable {
         gson = new Gson();
     }
 
-
-    /*@Override
-    public void run() {
-        System.out.println("Thread started for client: " + socket.getRemoteSocketAddress());
-        System.out.println("Text Received:\n");
-        String line;
-        try {
-            while ((line = in.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
-                if (line.toLowerCase().contains("stop")) {
-                    System.out.println("Stopping the client thread");
-                    releaseResources(in, out, socket);
-                    //System.exit(0);
-                    System.out.println("Client thread stopped");
-                    break;
-                } else if (line.toLowerCase().contains("get_patient")) {
-                    Patient patient = RandomData.generateRandomPatient();
-                    // Convert patient to string and send
-                    out.write(patient.toString());
-                    out.newLine(); // mark end of line
-                    out.flush();   // send immediately
-                    System.out.println("Patient sent: " + patient.toString());
-                } else if (line.toLowerCase().contains("get_doctor")) {
-                    Doctor doctor = RandomData.generateRandomDoctor();
-                    // Convert patient to string and send
-                    out.write(doctor.toString());
-                    out.newLine(); // mark end of line
-                    out.flush();   // send immediately
-                    System.out.println("Doctor sent: " + doctor.toString());
-                }else if (line.toLowerCase().contains("login")) {
-                    System.out.println(line);
-                    handleLogIn(line);
-                }
-                else{
-                    System.out.println(line);
-                }
-            }
-        } catch (IOException e){
-            if(e.getClass() == SocketException.class){
-                try {
-                    System.out.println("Client stopped connection abruptly");
-                    releaseResources(in, out, socket);
-                    System.out.println("Client thread stopped");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }else{
-                System.out.println("Error reading from client"+e.getMessage());
-            }
-
-        }
-
-    }*/
-
     @Override
     public void run() {
         try {
@@ -142,6 +87,10 @@ public class ClientHandler implements Runnable {
                     System.out.println("REQUEST DOCTOR_BY_ID");
                     JsonObject data = request.getAsJsonObject("data");
                     handleRequestDoctorById(data);
+                }else if (type.equals("SAVE_COMMENTS_SIGNAL")) {
+                    System.out.println("SAVE_COMMENTS_SIGNAL");
+                    JsonObject data = request.getAsJsonObject("data");
+                    handleSaveCommentsSignal(data);
                 }
 
             }
@@ -199,28 +148,27 @@ public class ClientHandler implements Runnable {
 
         JsonObject response = new JsonObject();
         response.addProperty("type", "LOGIN_RESPONSE");
+        String accessPermits = data.get("access_permits").getAsString();
 
         if (server.appMain.userJDBC.isUser(email)) {
             User user = server.appMain.userJDBC.login(email, password);
+            System.out.println(user);
+
             if (user != null) {
-                response.addProperty("status", "SUCCESS");
-                JsonObject userObj = new JsonObject();
-                userObj.addProperty("id", user.getId());
-                userObj.addProperty("email", user.getEmail());
                 Role role = server.appMain.securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
-                userObj.addProperty("role", role.getRolename());
-                response.add("user", userObj);
-
-                /*if(role.getRolename().equals("Patient")) {
-                    Patient patient = server.appMain.patientJDBC.findPatientByEmail(user.getEmail());
-                    response.add("patient", patient.toJason());
-
-                    Doctor doctor = server.appMain.doctorJDBC.getDoctor(patient.getDoctorId());
-                    response.add("doctor", doctor.toJason());
-                }else if(role.getRolename().equals("Doctor")) {
-                    Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(user.getEmail());
-                    response.add("doctor", doctor.toJason());
-                }*/
+                if(role.getRolename().equals(accessPermits)) {
+                    response.addProperty("status", "SUCCESS");
+                    JsonObject userObj = new JsonObject();
+                    userObj.addProperty("id", user.getId());
+                    userObj.addProperty("email", user.getEmail());
+                    //TODO: Add data property
+                    //TODO: check roleName == access_permits
+                    userObj.addProperty("role", role.getRolename());
+                    response.add("data", userObj);
+                }else{
+                    response.addProperty("status", "ERROR");
+                    response.addProperty("message", "Authorization denied");
+                }
             } else {
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Invalid password");
@@ -248,6 +196,7 @@ public class ClientHandler implements Runnable {
             Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(email);
             if(doctor != null) {
                 response.addProperty("status", "SUCCESS");
+                //TODO: Add data section
                 JsonObject doctorObj = doctor.toJason();
                 response.add("doctor", doctorObj);
             }else{
@@ -334,14 +283,15 @@ public class ClientHandler implements Runnable {
         if(user != null && doctor != null && doctor.getEmail().equals(user.getEmail())) {
 
             response.addProperty("status", "SUCCESS");
-
             List<Patient> patients = server.appMain.medicalManager.getPatientJDBC().getPatientsOfDoctor(doctorId);
 
+            //TODO; Add data section
             JsonArray patientArray = new JsonArray();
             for (Patient p : patients) {
                 patientArray.add(p.toJason());
             }
 
+            //change property by data
             response.add("patients", patientArray);
 
         }else {
@@ -354,52 +304,36 @@ public class ClientHandler implements Runnable {
         out.flush();
     }
 
-    //TODO: test function with database
-    private void handleLogIn(String message) throws IOException {
-        // Message example: LOGIN;email@example.com;password123
-        String[] parts = message.split(";");
-        if (parts.length != 3) {
-            out.write("LOGIN_FAIL;Invalid format");
-            out.newLine();
-            out.flush();
-            return;
+
+    private void handleSaveCommentsSignal(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SAVE_COMMENTS_SIGNAL_RESPONSE");
+
+        String comments = data.get("comments").getAsString();
+        Integer user_id = data.get("user_id").getAsInt();
+        Integer signal_id = data.get("signal_id").getAsInt();
+        Integer patient_id = data.get("patient_id").getAsInt();
+
+        //If its the doctor
+        User user = server.appMain.userJDBC.findUserByID(user_id);
+        Doctor doctor = server.appMain.doctorJDBC.findDoctorByEmail(user.getEmail());
+        //And this is their patient
+        Doctor doctor1 = server.appMain.doctorJDBC.getDoctorFromPatient(patient_id);
+
+        if(user != null && doctor.getEmail().equals(user.getEmail()) && doctor1.equals(doctor)) {
+            if(server.appMain.medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {
+                response.addProperty("status", "SUCCESS");
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Error saving comments");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
         }
 
-        String email = parts[1];
-        String password = parts[2];
-
-        // Check user
-        if (!server.appMain.userJDBC.isUser(email)) {
-        //if(!testIsUser(email)){
-            out.write("LOGIN_FAIL;User not found");
-            out.newLine();
-            out.flush();
-            return;
-        }
-
-        // Try login
-        User user = server.appMain.userJDBC.login(email, password);
-        //User user = testLogIn(email, password);
-        if (user != null) {
-            out.write("LOGIN_SUCCESS;" + user.toString());
-        } else {
-            out.write("LOGIN_FAIL;Wrong password");
-        }
+        out.write(gson.toJson(response));
         out.newLine();
         out.flush();
-    }
-
-    private User testLogIn(String email, String password) {
-        if(email.equals("test@example.com") && password.equals("1234")) {
-            return new User("test@example.com", "1234", true);
-        }
-        return null;
-    }
-
-    private boolean testIsUser(String email){
-        if(email.equals("test@example.com")) { //Added to test
-            return true;
-        }
-        return false;
     }
 }

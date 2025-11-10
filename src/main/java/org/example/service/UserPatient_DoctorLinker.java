@@ -43,4 +43,9 @@ public class UserPatient_DoctorLinker {
     public User findUserByEmail(String email) {
         return securityManager.getUserJDBC().findUserByEmail(email);
     }
+
+    public Patient findPatientByUserId(int user_id) {
+        User u = securityManager.getUserJDBC().findUserByID(user_id);
+        return findPatientByUserEmail(u.getEmail());
+    }
 }

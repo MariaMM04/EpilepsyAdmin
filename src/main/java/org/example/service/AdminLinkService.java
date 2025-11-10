@@ -150,5 +150,11 @@ public class AdminLinkService {
         }
         return patients;
     }
+
+    public Patient findPatientByUserId(int user_id) {
+        User u = securityManager.getUserJDBC().findUserByID(user_id);
+        return medicalManager.getPatientJDBC().findPatientByEmail(u.getEmail());
+    }
 }
+
 

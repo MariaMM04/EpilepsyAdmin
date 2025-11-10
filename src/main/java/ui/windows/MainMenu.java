@@ -76,12 +76,12 @@ public class MainMenu extends MenuTemplate {
         if(e.getSource()== seePatientListBt) {
             System.out.println("Open search patient view");
             List<Patient> patients = appMain.adminLinkService.getAllPatientsWithDoctor();
-            searchPatientPanel.showPatients(patients);
+            searchPatientPanel.updatePatientDefModel(patients);
             appMain.changeToPanel(searchPatientPanel);
         }else if(e.getSource()== seeDoctorListBt) {
             System.out.println("Open search doctor view");
             List<Doctor> doctors = appMain.doctorJDBC.getAllDoctors();
-            searchDoctorPanel.showDoctors(doctors);
+            searchDoctorPanel.updateDoctorDefModel(doctors);
             appMain.changeToPanel(searchDoctorPanel);
         }else if(e.getSource()== logOutBt) {
             appMain.changeToUserLogIn();

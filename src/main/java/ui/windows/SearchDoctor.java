@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
@@ -14,7 +15,7 @@ import ui.RandomData;
 import ui.components.DoctorCell;
 import ui.components.MyButton;
 import ui.components.MyTextField;
-import ui.components.PatientCell;
+
 import javax.swing.*;
 
 public class SearchDoctor extends JPanel implements ActionListener, MouseListener {
@@ -29,13 +30,14 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     protected String searchText = "Search By Surname";
     protected MyTextField searchByTextField;
     protected MyButton searchButton;
-    protected MyButton cancelButton;
-    protected MyButton openFormButton;
+    protected MyButton resetListButton;
+    //protected MyButton openFormButton;
     protected JLabel errorMessage;
     protected MyButton goBackButton;
     //protected Application appMain;
     protected JList<Doctor> doctorsList;
     protected DefaultListModel<Doctor> doctorsDefListModel;
+    private List<Doctor> allDoctors;
 
     public SearchDoctor(Application appMain) {
         this.appMain = appMain;
@@ -69,24 +71,24 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
 
         searchByTextField = new MyTextField("ex. Doe...");
         searchByTextField.setBackground(Application.lighter_turquoise);
-        searchByTextField.setHint("YYYY-MM-DD");
+        searchByTextField.setHint("ex. Doe");
         add(searchByTextField, "cell 0 2 2 1, alignx center, grow");
 
         //cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
-        cancelButton = new MyButton("CANCEL");
+        resetListButton = new MyButton("RESET");
         //cancelButton.setBackground(new Color(7, 164, 121));
         //cancelButton.setForeground(new Color(250, 250, 250));
-        cancelButton.addActionListener(this);
-        add(cancelButton, "cell 0 3, left, gapy 5, grow");
+        resetListButton.addActionListener(this);
+        add(resetListButton, "cell 0 3, left, gapy 5, grow");
 
         searchButton = new MyButton("SEARCH");
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        openFormButton = new MyButton("OPEN FILE");
+        /*openFormButton = new MyButton("OPEN FILE");
         openFormButton.addActionListener(this);
         add(openFormButton, "cell 0 4, center, gapy 5, span 2, grow");
-        openFormButton.setVisible(true);
+        openFormButton.setVisible(true);*/
 
         goBackButton = new MyButton("BACK TO MENU", Application.turquoise, Color.white);
         goBackButton.addActionListener(this);
@@ -103,26 +105,35 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         scrollPane1 = new JScrollPane();
         scrollPane1.setOpaque(false);
         scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
-        //showPatients(appMain.patientMan.searchPatientsBySurname("Blanco"));
-        //showDoctors(createRandomDoctors());
-    }
-    protected void showDoctors(List<Doctor> patients) {
 
         doctorsDefListModel = new DefaultListModel<Doctor>();
-        if(patients != null) {
-            for (Doctor r : patients) {
-                doctorsDefListModel.addElement(r);
-
-            }
-        }
-
         doctorsList = new JList<Doctor>(doctorsDefListModel);
         doctorsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         doctorsList.setCellRenderer(new DoctorCell());
         doctorsList.addMouseListener(this);
         scrollPane1.setViewportView(doctorsList);
         scrollPane1.setPreferredSize(this.getPreferredSize());
+        add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
+        //showPatients(appMain.patientMan.searchPatientsBySurname("Blanco"));
+        //showDoctors(createRandomDoctors());
+    }
+
+    protected void updateDoctorDefModel(List<Doctor> doctors) {
+        if(doctors == null || doctors.isEmpty()) {
+            showErrorMessage("No Doctors found!");
+            //openFormButton.setVisible(false);
+        }else{
+            if(allDoctors == null) {
+                allDoctors = doctors;
+            }
+            //openFormButton.setVisible(true);
+        }
+
+        doctorsDefListModel.removeAllElements();
+        for (Doctor r : doctors) {
+            doctorsDefListModel.addElement(r);
+
+        }
     }
 
     private void showErrorMessage(String message) {
@@ -139,20 +150,47 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         hideErrorMessage();
         searchByTextField.setText("");
         doctorsDefListModel.clear();
+        allDoctors = null;
+    }
+
+    private void clearView(){
+        searchByTextField.setText("");
+        updateDoctorDefModel(allDoctors);
+        if(allDoctors.isEmpty()) {
+            showErrorMessage("No Doctors found");
+            //openFormButton.setVisible(false);
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == goBackButton) {
+            resetPanel();
             appMain.changeToMainMenu();
-        }else if(e.getSource() == openFormButton){
-            Doctor patient = doctorsList.getSelectedValue();
-            if(patient == null) {
-                showErrorMessage("No patient Selected");
+        }else if(e.getSource() == searchButton) {
+            errorMessage.setVisible(false);
+            String input = searchByTextField.getText();
+            System.out.println(input);
+            String search = searchByTextField.getText().trim().toLowerCase();
+
+            List<Doctor> filteredDocs = allDoctors.stream()
+                    .filter(d -> d.getSurname().toLowerCase().contains(search))
+                    .collect(Collectors.toList());
+
+            updateDoctorDefModel(filteredDocs);
+            if(filteredDocs.isEmpty()) {
+                showErrorMessage("No Doctor found");
+                //openFormButton.setVisible(false);
             }else {
-                showErrorMessage("Selected patient: " + patient.getName()+" "+patient.getSurname());
-                resetPanel();
-                //appMain.changeToPanel(new PatientInfo(appMain, patient));
-                //appMain.changeToAdmitPatient(patient);
+                //openFormButton.setVisible(true);
+            }
+
+        }else if(e.getSource() == resetListButton){
+            updateDoctorDefModel(allDoctors);
+            if(allDoctors.isEmpty()) {
+                showErrorMessage("No Doctor found");
+                //openFormButton.setVisible(false);
+            }else {
+                //openFormButton.setVisible(true);
             }
         }
         /*if(e.getSource() == searchButton) {

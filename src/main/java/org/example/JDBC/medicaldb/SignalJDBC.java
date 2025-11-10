@@ -3,7 +3,9 @@ package org.example.JDBC.medicaldb;
 import org.example.entities_medicaldb.Signal;
 
 import java.sql.*;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class SignalJDBC {
      * Inserts a new signal record into the database.
      */
     public void insertSignal(Signal signal) {
+        //TODO = falta la sampling_frequency
         String sql = "INSERT INTO signal (path, date, comments, patient_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -138,11 +141,61 @@ public class SignalJDBC {
     private Signal extractSignalFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String path = rs.getString("path");
-        LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
+        LocalDate date = null;
+        long millis = rs.getLong("date");
+        if (!rs.wasNull()) {
+            date = Instant.ofEpochMilli(millis)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
+        //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         String comments = rs.getString("comments");
         int patientId = rs.getInt("patient_id");
         double sampleFrequency = rs.getDouble(("sample_frequency"));
-
         return new Signal(id, path, date, comments, patientId, sampleFrequency);
     }
+
+    public boolean updateSignalComments(int signalId, String newComments) {
+        String sql = "UPDATE Signal SET comments = ? WHERE id = ?";
+
+        try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newComments);
+            pstmt.setInt(2, signalId);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Comments updated successfully for signal ID: " + signalId);
+                return true;
+            } else {
+                System.out.println("No signal found with ID: " + signalId);
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error updating comments: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        MedicalManager medicalManager = new MedicalManager();
+        //carlos32@gmail.com = id 5 = signal num = 0
+
+        Signal signal = new Signal();
+        signal.setPatientId(5);
+        signal.setPath("path");
+        signal.setDate(LocalDate.now());
+        signal.setComments("");
+        signal.setSampleFrequency(100.0);
+
+        medicalManager.getSignalJDBC().insertSignal(signal);
+        List<Signal> signals = medicalManager.getSignalJDBC().getAllSignals();
+        System.out.println("All signals found: " + signals.size());
+        for (Signal s : signals) {
+            System.out.println(s);
+        }
+
+    }
+
 }

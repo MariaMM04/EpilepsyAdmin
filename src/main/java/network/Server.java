@@ -45,6 +45,7 @@ public class Server {
 
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
+                    System.out.println("Client connected from IP: "+clientSocket.getInetAddress().getHostAddress());
                     ClientHandler handler = new ClientHandler(clientSocket, this);
                     clients.add(handler);
                     new Thread(handler).start(); //Start client thread

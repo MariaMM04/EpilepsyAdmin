@@ -7,22 +7,15 @@
     <list default="true" id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="Changes in user and userjdbc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/components/PatientCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/components/PatientCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/UserPatient_DoctorLinker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/UserPatient_DoctorLinker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/MainMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/NewDoctorPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/NewDoctorPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +62,7 @@
     "Application.SecurityManager.executor": "Run",
     "Application.Server.executor": "Run",
     "Application.ServerThreads.executor": "Run",
+    "Application.SignalJDBC.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -124,19 +118,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="network.Server" />
-      <module name="EpilepsyAdmin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="network.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ServerThreads" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="network.ServerThreads" />
       <module name="EpilepsyAdmin" />
@@ -150,13 +131,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SignalJDBC" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.medicaldb.SignalJDBC" />
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.JDBC.medicaldb.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
+        <item itemvalue="Application.SignalJDBC" />
         <item itemvalue="Application.SecurityManager" />
         <item itemvalue="Application.MedicalManager" />
         <item itemvalue="Application.ServerThreads" />
-        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
@@ -179,6 +173,11 @@
       <workItem from="1761834006824" duration="3001000" />
       <workItem from="1761901514799" duration="7380000" />
       <workItem from="1761917619856" duration="20083000" />
+      <workItem from="1762423270345" duration="1222000" />
+      <workItem from="1762505534258" duration="1231000" />
+      <workItem from="1762509645150" duration="2407000" />
+      <workItem from="1762532587696" duration="1609000" />
+      <workItem from="1762683514280" duration="18971000" />
     </task>
     <servers />
   </component>

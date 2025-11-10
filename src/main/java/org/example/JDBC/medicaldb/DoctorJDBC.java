@@ -1,6 +1,8 @@
 package org.example.JDBC.medicaldb;
 
 import org.example.entities_medicaldb.Doctor;
+import org.example.entities_medicaldb.Patient;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +181,29 @@ public class DoctorJDBC {
                 rs.getString("speciality"),
                 rs.getBoolean("active")
         );
+    }
+
+    public Doctor getDoctorFromPatient(Integer patient_id){
+        String sql = "SELECT d.* FROM Doctor d JOIN Patient p ON p.doctor_id = d.id WHERE p.id = ?";
+        Doctor doctor = null;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, patient_id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                doctor = extractDoctorFromResultSet(rs);
+                System.out.println("Doctor found of patient: " + patient_id);
+            } else {
+                System.out.println("No Doctor found for patient: " + patient_id);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error finding doctor: " + e.getMessage());
+        }
+
+        return doctor;
     }
 }
 
