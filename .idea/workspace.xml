@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="changes in data base">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="changes in data base">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Doctor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,30 +49,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Application.executor": "Run",
-    "Application.MedicalManager.executor": "Run",
-    "Application.SecurityManager.executor": "Run",
-    "Application.Server.executor": "Run",
-    "Application.ServerThreads.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mamen/Documents/Java/EpilepsyAdmin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Application.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MedicalManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SecurityManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ServerThreads.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mamen/Documents/Java/EpilepsyAdmin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Maria\IdeaProjects\EpilepsyAdmin\src\main\java\org\example\DataBases" />
@@ -218,5 +218,10 @@
     <MESSAGE value="Changes in user and userjdbc" />
     <MESSAGE value="changes in data base" />
     <option name="LAST_COMMIT_MESSAGE" value="changes in data base" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.example.*</FILTER>
+    </SUITE>
   </component>
 </project>
