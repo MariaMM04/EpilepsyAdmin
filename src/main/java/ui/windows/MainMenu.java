@@ -1,19 +1,16 @@
 package ui.windows;
 
-import net.miginfocom.swing.MigLayout;
 import network.Server;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import ui.components.*;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MainMenu extends MenuTemplate {
     private static final long serialVersionUID = 6050014345831062858L;
@@ -45,9 +42,6 @@ public class MainMenu extends MenuTemplate {
 
         addButtons();
         company_name = "NIGHT GUARDIAN: EPILEPSY";
-        //company_name = "<html>NIGHT GUARDIAN<br>EPILEPSY</html>";
-        //company_name ="<html><div style='text-align: center;'>NIGHT GUARDIAN<br>EPILEPSY</div></html>";
-
         logoIcon = new ImageIcon(getClass().getResource("/icons/night_guardian_mini_128.png"));
         this.init(logoIcon, company_name);
     }
@@ -97,7 +91,7 @@ public class MainMenu extends MenuTemplate {
             if(appMain.server.isRunning()){
                 Application.showMessageDialog(appMain, "The server is already running");
             }else{
-                appMain.server.start();
+                appMain.server.startServer();
                 Application.showMessageDialog(appMain, "Server Started");
             }
         }

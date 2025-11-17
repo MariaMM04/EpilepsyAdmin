@@ -1,8 +1,5 @@
 package network;
 
-import org.example.entities_medicaldb.Doctor;
-import org.example.entities_medicaldb.Patient;
-import ui.RandomData;
 import ui.windows.Application;
 
 import java.io.*;
@@ -10,8 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //DUDAS:
 // se crea un thread para cada cliente conectado verdad? no para el servidor
@@ -19,13 +14,12 @@ import java.util.logging.Logger;
 //      o al revés? pero los eventos los lanza la interfaz...
 //      pero para ejecutar el main en Application, el server no debería ser runnable? para poder estar esperando
 //      tod el rato a nuevos clientes en paralelo a la ejecución de la app.
-
 public class Server {
     private int port;
     private ServerSocket serverSocket;
     private List<ClientHandler> clients;
     private boolean running = false;
-    public Application appMain;
+    Application appMain; //To access the centralized medicalManager and securityManager
 
     public Server(int port,  Application appMain) {
         this.port = port;
@@ -33,7 +27,7 @@ public class Server {
         this.appMain = appMain;
     }
 
-    public void start(){
+    public void startServer(){
         if (running) return;  //to avoid it starting 2 times
 
         running = true;
@@ -49,7 +43,6 @@ public class Server {
                     ClientHandler handler = new ClientHandler(clientSocket, this);
                     clients.add(handler);
                     new Thread(handler).start(); //Start client thread
-                    //executor.submit(handler);
                     System.out.println("New client connected. Total: " + clients.size());
                 }
 

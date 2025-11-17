@@ -3,7 +3,6 @@ package ui.windows;
 import net.miginfocom.swing.MigLayout;
 import network.Server;
 import org.example.JDBC.medicaldb.DoctorJDBC;
-import org.example.JDBC.medicaldb.MedicalConnection;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.medicaldb.PatientJDBC;
 import org.example.JDBC.securitydb.*;
@@ -71,7 +70,7 @@ public class Application extends JFrame {
 
         //Network
         server = new Server(serverPort, this);
-        server.start();
+        server.startServer();
 
         //Panels
         appPanels = new ArrayList<JPanel>();
@@ -96,14 +95,13 @@ public class Application extends JFrame {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 System.out.println("Window is closing...");
 
-                // Do cleanup here:
-                // close sockets, stop threads, save data, etc.
                 if (server.isRunning()) {
                     try {
                         server.stop();
                         // Exit if you want:
                         System.exit(0);
                     } catch (Server.ClientsStillConnectedException ex) {
+                        //TODO: el admin tiene que poder parar los clientes
                         System.out.println("Clients still connected");
                         showMessageDialog(null, "There are still clients connected. Close all connections before stopping the server");
                     }
