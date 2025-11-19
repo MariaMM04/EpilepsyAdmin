@@ -8,8 +8,13 @@ import org.example.entities_securitydb.User; // Import User class
 
 
 /**
- * Class responsible for JDBC operations related to the Users table.
- * Used by SecurityManager.
+ * The {@code UserJDBC} class is a Data Access Object class responsible for all JDBC operations related to the
+ * {@code Users} table. This class is typically used by {@link SecurityManager} to perform operations
+ * over the security database and to provide the active Connection which is shared by all methods in this DAO
+ *
+ * @author MariaMM04
+ * @author Pblan
+ * @author MamenCortes
  */
 public class UserJDBC {
 
@@ -20,7 +25,13 @@ public class UserJDBC {
     }
 
     /**
-     * Inserts new user in the Users table
+     * Inserts an existing {@code User} into the medical database {@code medicaldb} by a SQL query specified
+     * inside the method
+     *
+     * @param user      An existing user
+     * @return          boolean value of the performed insertion. May be:
+     *                  <code> true </code> if the user was successfully inserted into the database
+     *                  <code> false </code> otherwise
      */
     public boolean insertUser(User user) {
         String sql = "INSERT INTO Users (email, password, role_id) VALUES (?, ?, ?)";
@@ -37,9 +48,11 @@ public class UserJDBC {
             return false;
         }
     }
-
     /**
-     * Search user by email
+     * Retrieves {@code User} by its email address from the medical database by a SQL query.
+     *
+     * @param email     the desired user's we want to retrieve email address
+     * @return          the desired user we want to retrieve
      */
     public User findUserByEmail(String email) {
         String sql = "SELECT * FROM Users WHERE email = ?";
@@ -70,7 +83,10 @@ public class UserJDBC {
     }
 
     /**
-     * Search user by email
+     * Retrieves {@code User} by its unique identifier (id) from the security database by a SQL query.
+     *
+     * @param id     the unique identifier of the user we want to retrieve
+     * @return       the desired user we want to retrieve
      */
     public User findUserByID(int id) {
         String sql = "SELECT * FROM Users WHERE id = ?";
@@ -101,7 +117,9 @@ public class UserJDBC {
     }
 
     /**
-     * Retrieves all the users from the table
+     * Retrieves all {@code User} instances stored in the security database by a SQL query.
+     *
+     * @return  A list of all the users inside the medical database
      */
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
@@ -128,7 +146,13 @@ public class UserJDBC {
     }
 
     /**
-     * Deletes user by email
+     * Updates the active status of the {@code User} instance with the corresponding email.
+     *
+     * @param email     the email of the updated user.
+     * @param active    the user's logical flag
+     * @return          boolean value of the performed update. May be:
+     *                  <code> true </code> if the user was successfully updated into the database
+     *                  <code> false </code> otherwise
      */
     public boolean updateUserActiveStatus(String email, boolean active) {
         String sql = "UPDATE users SET active = ? WHERE email = ?";
@@ -153,11 +177,17 @@ public class UserJDBC {
     }
 
     /**
-     * Inserts a user in the DB.
-     * Returns true if the user is inserted.
-     * returns false if the user couldn't be inserted
+     * Registers a new user in the database after performing password validation.
+     *
+     * @param email     the new user's email
+     * @param password  the new user's password
+     * @param active    the new users active flag. May be:
+     *                  <code> true </code> if the user was successfully updated into the database
+     *                  <code> false </code> otherwise
+     * @return          boolean value of the performed registration. May be:
+     *                  <code> true </code> if the user was successfully registered into the database
+     *                  <code> false </code> otherwise
      */
-
     public boolean register(String email, String password, boolean active) {
 
         if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
@@ -176,8 +206,12 @@ public class UserJDBC {
 
 
     /**
-     * Retrieves a user from the DB with a given name and password.
-     * If the user doesn't exist or the password doesn't match, returns null
+     * Retrieves a user from the DB with a given email and password. If the user does not exist or the password
+     * does not match, it prints an error.
+     *
+     * @param email     the user's email
+     * @param password  the user's password
+     * @return          This {@code User} instance logged in
      */
 
     // DEVOLVER USER ENTERO
@@ -211,6 +245,14 @@ public class UserJDBC {
     /**
      * Checks if a user exists by a given email
      */
+
+    /**
+     * Checks if a user exists by a given email inside the {@code securitydb} database
+     * @param email     the email of the desired user
+     * @return          boolean value of the performed login. May be:
+     *                  <code> true </code> if the user was successfully logged into the database
+     *                  <code> false </code> otherwise
+     */
     public boolean isUser(String email) {
         if (email == null || email.isBlank()){
             return false;// invalid input
@@ -228,7 +270,13 @@ public class UserJDBC {
 
 
     /**
-     * Changes the password of a given user
+     * Changes the password of the given user of the database.
+     *
+     * @param u         the user that will have its password modified
+     * @param password  the new password for the desired user
+     * @return          boolean value of the performed modification. May be:
+     *                  <code> true </code> if the password was successfully modified
+     *                  <code> false </code> otherwise
      */
     public boolean changePassword(User u, String password) {
         if (u==null || u.getId() <= 0 || password == null || password.isBlank()){

@@ -10,8 +10,15 @@ import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User;
 
 /**
- * Gestiona las operaciones JDBC relacionadas con la base de datos "securitydb".
- * Similar al antiguo ConnectionManager pero modular y específico de seguridad.
+ * Central manager for the JDBC operations related to the {@code securitydb} database.
+ * This class is focused exclusively on the security layer. It defines:
+ * <ul>
+ *     <li> Opens and maintains a single {@link Connection} to the {@code securitydb} database</li>
+ *     <li> Initializes the Data Access Object classes {@link UserJDBC} and {@link RoleJDBC} </li>
+ * </ul>
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class SecurityManager {
 
@@ -35,10 +42,14 @@ public class SecurityManager {
     }
 
     private Connection connection;
-
     private UserJDBC userJDBC;
     private RoleJDBC roleJDBC;
 
+    /**
+     * Creates a new {@code SecurityManager}, establishing a connection with the database and initializing
+     * the Data Access Objects {@link UserJDBC} and {@link RoleJDBC}.
+     * If the connection cannot be established to the database, an error message will print.
+     */
     public SecurityManager() {
         try {
             this.connection = SecurityConnection.getConnection();
@@ -65,6 +76,10 @@ public class SecurityManager {
         return roleJDBC;
     }
 
+    /**
+     * Closes safely the connection to the {@code securitydb} database if it is open.
+     * If it cannot be closed, it will print an error message.
+     */
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {

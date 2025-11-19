@@ -5,8 +5,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Utility class for connecting to the "securitydb" database.
- * Used within SecurityManager.
+ * The {@code SecurityConnection} class is a utility class responsible for creating JDBC connections
+ * to the {@code securitydb} database.
+ * This class is typically used by other classes such as {@link SecurityManager} to interact with the
+ * security-related data (users and roles) stored in the database. The class defines:
+ * <ul>
+ *     <li> The JDBC URL pointing to the {@code securitydb} database</li>
+ *     <li> Provides {@link #getConnection()} to obtain the active Connection instance</li>
+ * </ul>
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class SecurityConnection {
 
@@ -21,7 +30,11 @@ public class SecurityConnection {
     }
 
     /**
-     * Returns an active connection to the SQLite security database.
+     * Obtains a new JDBC {@link Connection} to the security database. Each call returns a new connection
+     * instance that uses the URL defines in the field values.
+     *
+     * @return      An active Connection to the database
+     * @throws SQLException if a database access errors occurs or the URL is invalid
      */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL);

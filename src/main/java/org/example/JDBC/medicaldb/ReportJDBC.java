@@ -11,19 +11,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Handles JDBC operations for the Report table.
- * Works with the simplified entity (no 'active' column).
+ * The {@code ReportJDBC} class handles JDBC operations for the simplified {@code Report} entity without the
+ * {@code active} column. Newly created instances are considered active by default.
+ * This class is typically created and managed by {@link MedicalManager} which provides a shared
+ * {@link Connection} to the medical database.
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class ReportJDBC {
 
     private final Connection connection;
 
+    /**
+     * Creates a {@code ReportJDBC} instance that uses the given JDBC {@link Connection} to access the
+     * Report table in the database
+     *
+     * @param connection    active JDBC connection to the {@code medicaldb} database
+     */
+
     public ReportJDBC(Connection connection) {
         this.connection = connection;
-    }
 
+    }
     /**
-     * Inserts a new report into the database.
+     * Inserts an existing {@code Report} into the medical database {@code medicaldb} by a SQL query specified
+     * inside the method
+     *
+     * @param report    An existing report
+     * @return          boolean value of the performed insertion. May be:
+     *                  <code> true </code> if the report was successfully inserted into the database
+     *                  <code> false </code> otherwise
      */
     public boolean insertReport(Report report) {
         String sql = "INSERT INTO report (date, symptoms, notes, patient_id, doctor_id) VALUES (?, ?, ?, ?, ?)";
@@ -52,7 +70,10 @@ public class ReportJDBC {
     }
 
     /**
-     * Retrieves a single report by its ID.
+     * Retrieves {@code Report} by its unique identifier (id) from the medical database by a SQL query.
+     *
+     * @param id     the desired report's we want to retrieve id
+     * @return       the desired report we want to retrieve
      */
     public Report findReportById(int id) {
         String sql = "SELECT * FROM report WHERE id = ?";
@@ -78,7 +99,9 @@ public class ReportJDBC {
     }
 
     /**
-     * Retrieves all reports.
+     * Retrieves all {@code Report} instances stored in the medical database by a SQL query.
+     *
+     * @return  A list of all the reports inside the medical database
      */
     public List<Report> getAllReports() {
         List<Report> reports = new ArrayList<>();
@@ -101,7 +124,10 @@ public class ReportJDBC {
     }
 
     /**
-     * Retrieves all reports belonging to a specific patient.
+     * Retrieves all {@code Report} instances associated to the desired patient.
+     *
+     * @param patientId    the patient's unique identifier associated to the desired report
+     * @return             a list of all Report instances
      */
     public List<Report> getReportsByPatientId(int patientId) {
         List<Report> reports = new ArrayList<>();
@@ -126,7 +152,12 @@ public class ReportJDBC {
     }
 
     /**
-     * Permanently deletes a report from the database.
+     * Permanently deletes the {@code Report} instance specifying its unique identifier
+     *
+     * @param id    the report's id that will be deleted
+     * @return          boolean value of the performed deletion. May be:
+     *                  <code> true </code> if the report was successfully deleted from the database
+     *                  <code> false </code> otherwise
      */
     public boolean deleteReport(int id) {
         String sql = "DELETE FROM report WHERE id = ?";
@@ -150,7 +181,11 @@ public class ReportJDBC {
     }
 
     /**
-     * Helper method. Creates a Report object from the current ResultSet row.
+     * Helper method that creates a {@code Report} instance from the current ResultSet row.
+     *
+     * @param rs        the ResultSet which contains the information to create a Report instance as a SQL query
+     * @return          the created Report instance
+     * @throws SQLException     if the SQL query is invalid
      */
     private Report extractReportFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");

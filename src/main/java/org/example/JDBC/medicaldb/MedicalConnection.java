@@ -5,8 +5,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Utility class for connecting to the "medicaldb" database.
- * Used within MedicalManager.
+ * The {@code MedicalConnection} class centralizes the creation of JDBC connections to the {@code medicaldb}
+ * database. This utility class will be invoked by {@code MedicalManager} to retrieve medical information (patients,
+ * doctors, reports, signals...) from the database. The class encapsulates:
+ * <ul>
+ *     <li> Defines the JDBC URL pointing to the {@code Medicaldb_try.db} file, which is a path file to the database</li>
+ * </ul>
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class MedicalConnection {
 
@@ -22,7 +29,10 @@ public class MedicalConnection {
     }
 
     /**
-     * Returns an active connection to the SQLite medical database.
+     * Returns an active {@code Connection} instance to the SQLite medical database {@code medicaldb}
+     *
+     * @return  an active {@link Connection} to the medical database
+     * @throws SQLException if a database access error occurs or the URL is invalid
      */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL);

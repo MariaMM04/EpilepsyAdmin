@@ -9,6 +9,9 @@ import java.util.List;
 
 /**
  * Handles JDBC operations for the Doctor table.
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class DoctorJDBC {
 
@@ -19,7 +22,13 @@ public class DoctorJDBC {
     }
 
     /**
-     * Inserts a new doctor into the database.
+     * Inserts an existing {@code Doctor} into the medical database {@code medicaldb} by a SQL query specified
+     * inside the method
+     *
+     * @param doctor    An existing doctor
+     * @return          boolean value of the performed insertion. May be:
+     *                  <code> true </code> if the doctor was successfully inserted into the database
+     *                  <code> false </code> otherwise
      */
     public boolean insertDoctor(Doctor doctor) {
         String sql = "INSERT INTO doctor (name, surname, contact, email, department, speciality, active) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -42,7 +51,10 @@ public class DoctorJDBC {
     }
 
     /**
-     * Retrieves doctors by email.
+     * Retrieves {@code Doctor} by its email address from the medical database by a SQL query.
+     *
+     * @param email     the desired doctor's we want to retrieve email address
+     * @return          the desired doctor we want to retrieve
      */
     public Doctor findDoctorByEmail(String email) {
         String sql = "SELECT * FROM doctor WHERE email = ?";
@@ -68,7 +80,11 @@ public class DoctorJDBC {
     }
 
     /**
-     * Retrieves doctors by email.
+     * Retrieves {@code Doctor} by its unique identifier (id) from the medical database by a SQL query.
+     * //TODO: cual es la diferencia entre este y el siguiente metodo
+     *
+     * @param id     the desired doctor's we want to retrieve id
+     * @return       the desired doctor we want to retrieve
      */
     public Doctor findDoctorById(Integer id) {
         String sql = "SELECT * FROM doctor WHERE id = ?";
@@ -94,7 +110,11 @@ public class DoctorJDBC {
     }
 
     /**
-     * Retrieves doctors by ID.
+     * Retrieves {@code Doctor} by its unique identifier (id) from the medical database by a SQL query.
+     * //TODO: cual es la diferencia entre este y el anterior metodo
+     *
+     * @param id     the desired doctor's we want to retrieve id
+     * @return       the desired doctor we want to retrieve
      */
     public Doctor getDoctor(int id) {
         String sql = "SELECT * FROM doctor WHERE id = ?";
@@ -120,7 +140,9 @@ public class DoctorJDBC {
     }
 
     /**
-     * Retrieves all doctors
+     * Retrieves all {@code Doctor} instances stored in the medical database by a SQL query.
+     *
+     * @return  A list of all the doctors inside the medical database
      */
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
@@ -143,7 +165,13 @@ public class DoctorJDBC {
     }
 
     /**
-     * Updates de active status of the doctor
+     * Updates the active status of the {@code Doctor} instance with the corresponding email.
+     *
+     * @param email     the patient who is updated email.
+     * @param active    the patient's logical flag
+     * @return          boolean value of the performed update. May be:
+     *                  <code> true </code> if the patient was successfully updated into the database
+     *                  <code> false </code> otherwise
      */
     public boolean updateDoctorActiveStatus(String email, boolean active) {
         String sql = "UPDATE doctor SET active = ? WHERE email = ?";
@@ -168,7 +196,11 @@ public class DoctorJDBC {
     }
 
     /**
-     * Helper method. Creates a Doctor object from the current ResultSet row.
+     * Helper method that creates a {@code Doctor} instance from the current ResultSet row.
+     *
+     * @param rs        the ResultSet which contains the information to create a Doctor as a SQL query
+     * @return          the created Doctor instance
+     * @throws SQLException     if the SQL query is invalid
      */
     private Doctor extractDoctorFromResultSet(ResultSet rs) throws SQLException {
         return new Doctor(
@@ -183,6 +215,12 @@ public class DoctorJDBC {
         );
     }
 
+    /**
+     * Retrieves a {@code Doctor} instance associated to the desired patient.
+     *
+     * @param patient_id    the patient's unique identifier associated to the desired doctor
+     * @return      the created Doctor instance
+     */
     public Doctor getDoctorFromPatient(Integer patient_id){
         String sql = "SELECT d.* FROM Doctor d JOIN Patient p ON p.doctor_id = d.id WHERE p.id = ?";
         Doctor doctor = null;
