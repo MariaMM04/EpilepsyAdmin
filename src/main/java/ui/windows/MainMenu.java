@@ -1,5 +1,6 @@
 package ui.windows;
 
+import Exceptions.*;
 import network.Server;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
@@ -135,7 +136,6 @@ public class MainMenu extends MenuTemplate {
                         panel.showErrorMessage("Close all the connections before stopping the server");
                     }else{
                         try {
-                            //int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
                             //TODO: ask for correct password
                             String password = JOptionPane.showInputDialog(parentFrame, "Enter the password:");
                             if(password.equals("1234")){
@@ -144,7 +144,8 @@ public class MainMenu extends MenuTemplate {
                             }else{
                                 panel.showErrorMessage("Incorrect password");
                             }
-                        } catch (Server.ClientsStillConnectedException ex) {
+                        } catch (ClientError ex) {
+                            panel.showErrorMessage(ex.getMessage());
                             System.out.println(ex.getMessage());
                         }
                     }

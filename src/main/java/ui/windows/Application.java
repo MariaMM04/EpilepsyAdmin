@@ -1,5 +1,6 @@
 package ui.windows;
 
+import Exceptions.*;
 import net.miginfocom.swing.MigLayout;
 import network.Server;
 import org.example.JDBC.medicaldb.DoctorJDBC;
@@ -100,10 +101,24 @@ public class Application extends JFrame {
                         server.stop();
                         // Exit if you want:
                         System.exit(0);
-                    } catch (Server.ClientsStillConnectedException ex) {
-                        //TODO: el admin tiene que poder parar los clientes
-                        System.out.println("Clients still connected");
-                        showMessageDialog(null, "There are still clients connected. Close all connections before stopping the server");
+                    } catch (ClientError ex) {
+                        int option = JOptionPane.showConfirmDialog(
+                                null,
+                                "There are clients still connected\nDo you want to interrupt the connection?",
+                                "Error",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                        if(option == JOptionPane.YES_OPTION){
+                            try {
+                                server.closeAllClients();
+                                System.exit(0);
+                            } catch (ClientError exc) {
+                                showMessageDialog(null, exc.getMessage());
+                            }
+                        }
+                        //System.out.println("Clients still connected");
+                        //showMessageDialog(null, "There are still clients connected. Close all connections before stopping the server");
                     }
                 }else{
                     System.out.println("Server is already stopped");

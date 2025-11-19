@@ -7,23 +7,30 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-//DUDAS:
-// se crea un thread para cada cliente conectado verdad? no para el servidor
-// dónde ejecutar el main? Puedo añadir en Application una instancia de Server para poder llamar a sus métodos?
-//      o al revés? pero los eventos los lanza la interfaz...
-//      pero para ejecutar el main en Application, el server no debería ser runnable? para poder estar esperando
-//      tod el rato a nuevos clientes en paralelo a la ejecución de la app.
+import Exceptions.*;
+
+
 public class Server {
     private int port;
     private ServerSocket serverSocket;
-    private List<ClientHandler> clients;
-    private boolean running = false;
-    Application appMain; //To access the centralized medicalManager and securityManager
+    //implementación de List para concurrencia segura sin bloqueos. Ideal para apps multihilos con muchas consultas y pocas modificaciones
+    private final CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
+    //private List<ClientHandler> clients;
+    private volatile Boolean running = false; //Para que otros hilos vean directamente si hay cambios en ella
+    private final Application appMain; //To access the centralized medicalManager and securityManager
 
     public Server(int port,  Application appMain) {
         this.port = port;
-        clients = new ArrayList<>();
+        //clients = new ArrayList<>();
+        this.appMain = appMain;
+    }
+
+    // TEST constructor
+    public Server(ServerSocket serverSocket, Application appMain){
+        this.serverSocket = serverSocket;
+        this.port = -1; // unused
         this.appMain = appMain;
     }
 
@@ -34,8 +41,8 @@ public class Server {
         //create its own thread to listen for new clients
         Thread serverThread = new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(port);
-                System.out.println("Server started in port " + port);
+                if(serverSocket == null) serverSocket= new ServerSocket(port);
+                System.out.println("Server started on port " + port);
 
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
@@ -48,9 +55,13 @@ public class Server {
 
             } catch (IOException e) {
                 if (running) e.printStackTrace(); // ignorar si fue detenido
+            }finally {
+                //cleanup server
+                try{
+                    if(serverSocket!=null && serverSocket.isClosed()){serverSocket.close();}
+                }catch (IOException e){}
             }
         });
-
         serverThread.start();
     }
 
@@ -58,19 +69,41 @@ public class Server {
         return running;
     }
 
-    public void stop() throws ClientsStillConnectedException{
+    /**
+     * Force-stop all clients (server-initiated shutdown).
+     * This method attempts to close client sockets, then waits briefly for handlers to finish.
+     * @throws ClientError
+     */
+    public void closeAllClients() throws ClientError {
+        System.out.println("Requesting shutdown of all clients ("+clients.size()+")");
+        for (ClientHandler client : clients) {
+            client.forceShutdown(); //closes sockets and sets runnin=false on the handlers
+        }
+        System.out.println("After closeAllClients, remaining handlers: " + clients.size());
+        if(clients.size()!=0){
+            throw new ClientError(clients.size()+" clients still connected");
+        }
+    }
+
+    /**
+     * Stop server: attemt to stop clients first, then stop accepting new connections.
+     * @throws ClientError
+     */
+    public void stop() throws ClientError {
         if (!running) return;
+        running = false;
         try {
-            if(!clients.isEmpty()){
-                throw new ClientsStillConnectedException("There are still"+clients.size()+" clients connected");
-            }
+            //Stop accepting new clients
             if (serverSocket != null) {
                 serverSocket.close();
-                running = false;
             }
-        } catch (IOException e) {}
-        clients.clear();
-        System.out.println("Server stopped");
+
+            closeAllClients();
+            clients.clear();
+            System.out.println("Server stopped");
+
+        } catch (IOException e) {
+        }
     }
 
     public ArrayList<String> getConnectedClients() {
@@ -83,13 +116,11 @@ public class Server {
 
     public void removeClient(ClientHandler handler) {
         clients.remove(handler);
-        System.out.println("Client disconnected. Total: " + clients.size());
+        System.out.println("Client removed from list. Total: " + clients.size());
     }
 
-    public static class ClientsStillConnectedException extends Exception {
-        public ClientsStillConnectedException(String message) {
-            super(message);
-        }
+    public Application getAppMain() {
+        return appMain;
     }
 
 }
