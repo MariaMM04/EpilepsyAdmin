@@ -109,7 +109,8 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(ex);
                 }
             }else{
-                System.out.println("Error reading from client"+e.getMessage());
+                System.out.println("Client: "+socket.getInetAddress()+":"+running.get());
+                //System.out.println("Error reading from client"+e.getMessage());
             }
         }
     }
@@ -136,6 +137,7 @@ public class ClientHandler implements Runnable {
 
     void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
         server.removeClient(this);
+        running.set(false);
         try {if (bufferedReader!=null) bufferedReader.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
         try {if(bufferedWriter!=null)bufferedWriter.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
         try {if(clientSocket!=null && !clientSocket.isClosed())clientSocket.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
