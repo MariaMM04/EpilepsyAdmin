@@ -10,6 +10,13 @@ import org.example.JDBC.securitydb.SecurityConnection;
  * Utility class providing access to both database connections.
  * Replaces the old JpaUtil in a pure JDBC context.
  */
+
+/**
+ * This {@code JdbcUtil} class is a utility class that provides access to both database connections.
+ * It defines a getter to provide a MedicalConnection, and a getter to provide a SecurityConnection.
+ *
+ * @author MariaMM04
+ */
 public class JdbcUtil {
 
     public static Connection getMedicalConnection() throws SQLException {

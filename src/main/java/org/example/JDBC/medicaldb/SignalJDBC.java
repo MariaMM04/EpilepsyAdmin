@@ -13,9 +13,14 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Handles JDBC operations for the Signal table.
- * Used within the MedicalManager.
+ * The {@code SignalJDBC} class handles JDBC operations for the simplified {@code Signal} entity.
+ * This class is typically created and managed by {@link MedicalManager} which provides a shared
+ * {@link Connection} to the medical database.
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
+
 public class SignalJDBC {
 
     private final Connection connection;
@@ -25,7 +30,14 @@ public class SignalJDBC {
     }
 
     /**
-     * Turns the information of the path into a byte[]
+     * Turns the information of the path into bytes
+     */
+    /**
+     * The information inside the path input is turned into a byte[]
+     *
+     * @param path  The path where the signal information is stored
+     * @return      The information transformed into a byte[] format
+     * @throws IOException  if the information from the file cannot be read.
      */
     private static byte[] compressFile(String path) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -41,9 +53,12 @@ public class SignalJDBC {
         return bos.toByteArray();
     }
 
-
     /**
-     * Turns the information of the byte[] to a path
+     * Turns the information stored in a bytes into a String as a path to a file containing the same information.
+     *
+     * @param compressedData    The information stored in bytes
+     * @param outputPath        The output path created with the same information stored
+     * @throws IOException      if the information inside the bytes cannot be read
      */
     public static void decompressToFile(byte[] compressedData, String outputPath) throws IOException {
         // Creates the path if it doesn't exist
@@ -69,7 +84,13 @@ public class SignalJDBC {
 
 
     /**
-     * Inserts a new signal record into the database.
+     * Inserts an existing {@code Signal} into the medical database {@code medicaldb} by a SQL query specified
+     * inside the method
+     *
+     * @param signal    An existing report
+     * @return          boolean value of the performed insertion. May be:
+     *                  <code> true </code> if the signal was successfully inserted into the database
+     *                  <code> false </code> otherwise
      */
     public void insertSignal(Signal signal) {
         //TODO = falta la sampling_frequency
@@ -89,8 +110,10 @@ public class SignalJDBC {
     }
 
     /**
-     * Finds a signal by its ID.
-     * Returns a Signal object if found, or null if no match exists.
+     * Retrieves {@code Signal} by its unique identifier (id) from the medical database by a SQL query.
+     *
+     * @param id     the desired signal's we want to retrieve id
+     * @return       the desired signal we want to retrieve
      */
     public Signal findSignalById(int id) {
         String sql = "SELECT * FROM signal WHERE id = ?";
@@ -116,8 +139,9 @@ public class SignalJDBC {
     }
 
     /**
-     * Retrieves all signals stored in the database.
-     * Returns a list of Signal objects.
+     * Retrieves all {@code Signal} instances stored in the medical database by a SQL query.
+     *
+     * @return  A list of all the signal inside the medical database
      */
     public List<Signal> getAllSignals() {
         List<Signal> signals = new ArrayList<>();
@@ -139,7 +163,12 @@ public class SignalJDBC {
     }
 
     /**
-     * Deletes a signal permanently from the database by its ID.
+     * Permanently deletes the {@code Signal} instance specifying its unique identifier
+     *
+     * @param id    the signal's id that will be deleted
+     * @return      boolean value of the performed deletion. May be:
+     *              <code> true </code> if the signal was successfully deleted from the database
+     *              <code> false </code> otherwise
      */
     public void deleteSignal(int id) {
         String sql = "DELETE FROM signal WHERE id = ?";
@@ -159,8 +188,10 @@ public class SignalJDBC {
     }
 
     /**
-     * Retrieves all signals belonging to a specific patient.
-     * Returns a list of Signal objects.
+     * Retrieves all {@code Signal} instances associated to the desired patient.
+     *
+     * @param patientId    the patient's unique identifier associated to the desired report
+     * @return             a list of all Signal instances
      */
     public List<Signal> getSignalsByPatientId(int patientId) {
         List<Signal> signals = new ArrayList<>();
@@ -184,7 +215,11 @@ public class SignalJDBC {
     }
 
     /**
-     * Utility method that converts a ResultSet row into a Signal object.
+     * Utility method that creates a {@code Signal} instance from the current ResultSet row.
+     *
+     * @param rs        the ResultSet which contains the information to create a Signal instance as a SQL query
+     * @return          the created Signal instance
+     * @throws SQLException     if the SQL query is invalid
      */
     private Signal extractSignalFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
@@ -212,7 +247,15 @@ public class SignalJDBC {
 
         return new Signal(id, path, date, comments, patientId, sampleFrequency);
     }
-
+    /**
+     * Updates the comments of the {@code Signal} instance by its corresponding signalId
+     *
+     * @param signalId      the signal's id that will be changes
+     * @param newComments   the new comments inside the signal
+     * @return              boolean value of the performed update. May be:
+     *                      <code> true </code> if the signal was successfully updated in the database
+     *                      <code> false </code> otherwise
+     */
     public boolean updateSignalComments(int signalId, String newComments) {
         String sql = "UPDATE Signal SET comments = ? WHERE id = ?";
 

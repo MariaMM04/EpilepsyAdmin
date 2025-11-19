@@ -13,8 +13,25 @@ import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User;
 
 /**
- * Gestiona todas las operaciones JDBC relacionadas con la base de datos "medicaldb".
- * Equivale a un ConnectionManager pero solo para el contexto médico.
+ * The {@code MedicalManager} class manages all operations related to the {@code medicaldb} database.
+ * This class acts like a ConnectionManager but for the medical context. This class opens one database
+ * connection and creates one instance of each Data Access Object using this connection.
+ * It encapsulates:
+ * <ul>
+ *     <li> An active JDBC connection to the {@code medicaldb} database</li>
+ *     <li> Initialization of Data Access Object classes:
+ *          {@link PatientJDBC} responsible for JDBC operations on the {@code Patient} table
+ *          {@link DoctorJDBC} responsible for JDBC operation on the {@code Doctor} table
+ *          {@link ReportJDBC} responsible for JDBC operations on the {@code Report} table
+ *          {@link SignalJDBC} responsible for JDBC operations on the {@code Signal} table</li>
+ * </ul>
+ *
+ * <p>
+ *     In the current fields, it retrieves all patients using {@link PatientJDBC#getAllPatients()} and prints them.
+ * </p>
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class MedicalManager {
 
@@ -46,8 +63,6 @@ public class MedicalManager {
     }
 
     private Connection connection;
-
-    // DAOs (Data Access Objects)
     private PatientJDBC patientJDBC;
     private DoctorJDBC doctorJDBC;
     private ReportJDBC reportJDBC;
@@ -88,6 +103,9 @@ public class MedicalManager {
         return signalJDBC;
     }
 
+    /**
+     * Closes the connection to the {@code medicaldb} database if it is still open.
+     */
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {

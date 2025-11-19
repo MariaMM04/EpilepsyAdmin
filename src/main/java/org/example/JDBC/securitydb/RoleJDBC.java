@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles JDBC operations for the Roles table.
- * Used within the SecurityManager.
+ * The {@code RoleJDBC} class is a Data Access Object class responsible for all JDBC operations related to the
+ * {@code Role} table. This class is typically used by {@link SecurityManager} to perform operations
+ * over the security database and to provide the active Connection which is shared by all methods in this DAO
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class RoleJDBC {
 
@@ -19,8 +23,10 @@ public class RoleJDBC {
     }
 
     /**
-     * Inserts a new role into the database.
-     * The role must include the role name and, optionally, the associated user ID.
+     * Inserts a new role into the {@code securitydb} database (Admin, doctor or patient). The role must include
+     * the role name.
+     *
+     * @param role
      */
     public void insertRole(Role role) {
         String sql = "INSERT INTO roles (rolename) VALUES (?)";
@@ -35,8 +41,10 @@ public class RoleJDBC {
     }
 
     /**
-     * Finds a role by its name.
-     * Returns a Role object if found, or null if not found.
+     * Retrieves {@code Role} by its name from the security database by a SQL query.
+     *
+     * @param rolename      the rolename of the desired role
+     * @return              the desired role we want to retrieve
      */
     public Role findRoleByName(String rolename) {
         String sql = "SELECT * FROM roles WHERE rolename = ?";
@@ -62,8 +70,10 @@ public class RoleJDBC {
     }
 
     /**
-     * Finds a role by its name.
-     * Returns a Role object if found, or null if not found.
+     * Retrieves {@code Role} by its unique identifier (id) from the security database by a SQL query.
+     *
+     * @param id     the unique id of the role we want to retrieve
+     * @return       the desired role we want to retrieve
      */
     public Role findRoleByID(int id) {
         String sql = "SELECT * FROM roles WHERE id = ?";
@@ -89,8 +99,9 @@ public class RoleJDBC {
     }
 
     /**
-     * Retrieves all roles stored in the database.
-     * Returns a list of Role objects.
+     * Retrieves all {@code Role} instances stored in the security database by a SQL query.
+     *
+     * @return  A list of all the roles inside the medical database
      */
     public List<Role> getAllRoles() {
         List<Role> roles = new ArrayList<>();
@@ -112,8 +123,11 @@ public class RoleJDBC {
     }
 
     /**
-     * Deletes a role permanently from the database by its name.
+     * Permanently deletes the {@code Role} instance specifying its rolename
+     *
+     * @param rolename    the rolename of the role we want to delete
      */
+
     public void deleteRole(String rolename) {
         String sql = "DELETE FROM roles WHERE rolename = ?";
 
@@ -132,7 +146,11 @@ public class RoleJDBC {
     }
 
     /**
-     * Utility method that converts a ResultSet row into a Role object.
+     * Utility method that creates a {@code Role} instance from the current ResultSet row.
+     *
+     * @param rs        the ResultSet which contains the information to create a Role instance as a SQL query
+     * @return          the created Role instance
+     * @throws SQLException     if the SQL query is invalid
      */
     private Role extractRoleFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");

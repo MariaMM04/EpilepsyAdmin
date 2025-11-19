@@ -4,18 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the medical entities">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Exceptions/ClientError.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Exceptions/ClientsStillConnectedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/network/ClientHandlerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/network/FakeClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/network/ServerTest.java" afterDir="false" />
+    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the security entities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/JdbcUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/JdbcUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/ReportJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/ReportJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/RoleJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/RoleJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/SecurityManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,8 +26,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Exception" />
-        <option value="JUnit5 Test Class" />
         <option value="Class" />
       </list>
     </option>
@@ -40,12 +39,12 @@
     &quot;assignee&quot;: &quot;MamenCortes&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/MariaMM04/EpilepsyAdmin.git",
-    "accountId": "e387a1ed-66c0-4b42-9a08-e4d4d83c049c"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
+    &quot;accountId&quot;: &quot;12626fc0-ed3c-4c85-9540-1d4369efb5a4&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -57,63 +56,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Application.executor": "Run",
-    "Application.MedicalManager.executor": "Run",
-    "Application.SecurityManager.executor": "Run",
-    "Application.Server.executor": "Run",
-    "Application.ServerThreads.executor": "Run",
-    "JUnit.ClientHandlerTest.testForceShutdownClosesSocket.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleLoginCorrectPatientRequest.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleLoginDoctorRequest.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleLoginInUserNotFound.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleLoginIncorrectDoctorRequest.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleLoginIncorrectPatientRequest.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestDoctorByEmail.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestDoctorByID.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestDoctorByID2.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestDoctorById.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestPatientByEmail.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleSaveCommentsSignal.executor": "Run",
-    "JUnit.ClientHandlerTest.testHandleStopClient.executor": "Run",
-    "JUnit.ClientHandlerTest.testReleaseResources.executor": "Run",
-    "JUnit.ServerTest.testCloseAllClientsClosesConnections.executor": "Run",
-    "JUnit.ServerTest.testGetConnectedClients.executor": "Run",
-    "JUnit.ServerTest.testServerAcceptsClient.executor": "Run",
-    "JUnit.ServerTest.testServerCloseAllClients.executor": "Run",
-    "JUnit.ServerTest.testServerStartsAndAcceptsMultipleClients.executor": "Run",
-    "JUnit.ServerTest.testServerStartsAndAcceptsOneClient.executor": "Run",
-    "JUnit.ServerTest.testServerStopsCorrectly.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mamen/Documents/Java/EpilepsyAdmin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Application.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MedicalManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SecurityManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ServerThreads.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mamen/Documents/Java/EpilepsyAdmin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Maria\IdeaProjects\EpilepsyAdmin\src\main\java\org\example\DataBases" />
-    </key>
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="network" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Application">
@@ -130,39 +99,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testForceShutdownClosesSocket" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MedicalManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.medicaldb.MedicalManager" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="network.*" />
+          <option name="PATTERN" value="org.example.JDBC.medicaldb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testForceShutdownClosesSocket" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testHandleRequestPatientsFromDoctor" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SecurityManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.securitydb.SecurityManager" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="network.*" />
+          <option name="PATTERN" value="org.example.JDBC.securitydb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testHandleRequestPatientsFromDoctor" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testHandleSaveCommentsSignal" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ServerThreads" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="network.ServerThreads" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
@@ -170,26 +134,19 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testHandleSaveCommentsSignal" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testReleaseResources" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SignalJDBC" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.medicaldb.SignalJDBC" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="network.*" />
+          <option name="PATTERN" value="org.example.JDBC.medicaldb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testReleaseResources" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -197,24 +154,24 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
-        <item itemvalue="JUnit.ClientHandlerTest.testReleaseResources" />
-        <item itemvalue="JUnit.ClientHandlerTest.testForceShutdownClosesSocket" />
-        <item itemvalue="JUnit.ClientHandlerTest.testHandleSaveCommentsSignal" />
-        <item itemvalue="JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor" />
+        <item itemvalue="Application.SignalJDBC" />
+        <item itemvalue="Application.SecurityManager" />
+        <item itemvalue="Application.MedicalManager" />
+        <item itemvalue="Application.ServerThreads" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
+        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-IU-252.26199.169" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the medical entities" />
+      <changelist id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="" />
       <created>1761303191682</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -230,7 +187,6 @@
       <workItem from="1762509645150" duration="2407000" />
       <workItem from="1762532587696" duration="1609000" />
       <workItem from="1762683514280" duration="18971000" />
-      <workItem from="1763399319434" duration="32509000" />
     </task>
     <task id="LOCAL-00001" summary="changes in data base">
       <option name="closed" value="true" />
@@ -255,7 +211,14 @@
       <option name="project" value="LOCAL" />
       <updated>1763322245498</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="javadoc in the security entities">
+      <created>1763325505632</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763325505632</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,7 +239,8 @@
     <MESSAGE value="Changes in user and userjdbc" />
     <MESSAGE value="changes in data base" />
     <MESSAGE value="javadoc in the medical entities" />
-    <option name="LAST_COMMIT_MESSAGE" value="javadoc in the medical entities" />
+    <MESSAGE value="javadoc in the security entities" />
+    <option name="LAST_COMMIT_MESSAGE" value="javadoc in the security entities" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

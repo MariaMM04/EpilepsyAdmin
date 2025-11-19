@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles JDBC operations for the Patient table.
+ * The {@code PatientJDBC} class handles JDBC operations for the Patient table. This Data Access Object encapsulates
+ * This class is typically created and managed by {@link MedicalManager} which provides a shared
+ * {@link Connection} to the medical database.
+ *
+ * @author MariaMM04
+ * @author MamenCortes
  */
 public class PatientJDBC {
 
@@ -21,7 +26,13 @@ public class PatientJDBC {
     }
 
     /**
-     * Inserts a new patient into the database.
+     * Inserts an existing {@code Patient} into the medical database {@code medicaldb} by a SQL query specified
+     * inside the method
+     *
+     * @param patient    An existing patient
+     * @return          boolean value of the performed insertion. May be:
+     *                  <code> true </code> if the patient was successfully inserted into the database
+     *                  <code> false </code> otherwise
      */
     public boolean insertPatient(Patient patient) {
         String sql = "INSERT INTO patient (name, surname, email, contact, date_of_birth, gender, active, doctor_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -45,7 +56,10 @@ public class PatientJDBC {
     }
 
     /**
-     * Retrieves patient by email.
+     * Retrieves {@code Patient} by its email address from the medical database by a SQL query.
+     *
+     * @param email     the desired patient's we want to retrieve email address
+     * @return          the desired patient we want to retrieve
      */
     public Patient findPatientByEmail(String email) {
         String sql = "SELECT * FROM patient WHERE email = ?";
@@ -71,7 +85,10 @@ public class PatientJDBC {
     }
 
     /**
-     * Retrieves patient by ID.
+     * Retrieves {@code Patient} by its unique identifier (id) from the medical database by a SQL query.
+     *
+     * @param id     the desired patient's we want to retrieve id
+     * @return       the desired patient we want to retrieve
      */
     public Patient findPatientByID(Integer id) {
         String sql = "SELECT * FROM patient WHERE id = ?";
@@ -97,7 +114,9 @@ public class PatientJDBC {
     }
 
     /**
-     * Retrieves all patients
+     * Retrieves all {@code Patient} instances stored in the medical database by a SQL query.
+     *
+     * @return  A list of all the patients inside the medical database
      */
     public List<Patient> getAllPatients() {
         List<Patient> patients = new ArrayList<>();
@@ -120,7 +139,10 @@ public class PatientJDBC {
     }
 
     /**
-     * Retrieves all patients
+     * Retrieves all {@code Patient} instances associated to the desired patient.
+     *
+     * @param doctorId    the doctors's unique identifier associated to the desired patient
+     * @return            a list of all Patient instances
      */
     public List<Patient> getPatientsOfDoctor(int doctorId) {
         List<Patient> patients = new ArrayList<>();
@@ -142,9 +164,14 @@ public class PatientJDBC {
 
         return patients;
     }
-
     /**
-     * Updates de active status of the patient
+     * Updates the active status of the {@code Patient} instance with the corresponding email.
+     *
+     * @param email     the email of the desired updated patient.
+     * @param active    the patient's logical flag
+     * @return          boolean value of the performed update. May be:
+     *                  <code> true </code> if the patient was successfully updated into the database
+     *                  <code> false </code> otherwise
      */
     public boolean updatePatientActiveStatus(String email, boolean active) {
         String sql = "UPDATE patient SET active = ? WHERE email = ?";
@@ -169,7 +196,11 @@ public class PatientJDBC {
     }
 
     /**
-     * Helper method. Creates a Patient object from the current ResultSet row.
+     * Helper method that creates a {@code Patient} instance from the current ResultSet row.
+     *
+     * @param rs        the ResultSet which contains the information to create a Patient as a SQL query
+     * @return          the created Patient instance
+     * @throws SQLException     if the SQL query is invalid
      */
     private Patient extractPatientFromResultSet(ResultSet rs) throws SQLException {
         //Timestamp ts = rs.getTimestamp("date_of_birth");
