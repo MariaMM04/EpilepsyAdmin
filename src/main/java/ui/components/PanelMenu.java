@@ -6,6 +6,10 @@ import ui.windows.Application;
 import javax.swing.*;
 import java.util.ArrayList;
 
+/**
+ * Dynamic grid-based menu panel that arranges buttons into rows and columns
+ * depending on the number of buttons provided.
+ */
 public class PanelMenu extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -16,7 +20,11 @@ public class PanelMenu extends JPanel {
     private String stringColumns = "[][][]";
     private Integer numColumns = 3;
 
-
+    /**
+     * Creates a menu panel that arranges the given buttons into a responsive grid layout.
+     *
+     * @param buttons list of buttons to display in the menu
+     */
     public PanelMenu(ArrayList<JButton> buttons) {
         //this.buttons = buttons;
         this.numButtons = buttons.size();
@@ -29,15 +37,28 @@ public class PanelMenu extends JPanel {
         initComponents();
 
     }
+    /**
+     * Default constructor creating an empty menu panel.
+     * Buttons can be added later using {@link #setButtons(ArrayList)}.
+     */
     public PanelMenu() {
         this.buttons = new ArrayList<JButton>();
         this.numButtons = buttons.size();
 
     }
-
+    /**
+     * Returns the list of menu buttons.
+     *
+     * @return list of buttons
+     */
     public ArrayList<JButton> getButtons() {
         return buttons;
     }
+    /**
+     * Replaces the menu buttons and reconstructs the layout dynamically.
+     *
+     * @param buttons list of new buttons
+     */
     public void setButtons(ArrayList<JButton> buttons) {
         this.buttons = buttons;
         setLayout();

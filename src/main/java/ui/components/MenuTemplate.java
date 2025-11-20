@@ -8,7 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+/**
+ * Abstract template panel that provides a common UI structure
+ * for menus across the application.
+ * <p>
+ * It includes a gradient cover panel with a logo and title, and a customizable menu section containing buttons.
+ * The distribution of the buttons is adjusted based on the number of buttons.
+ */
 public class MenuTemplate extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
@@ -17,12 +23,22 @@ public class MenuTemplate extends JPanel implements ActionListener {
     protected ArrayList<JButton> buttons;
     private final Color backgroundColor2 = Color.WHITE;
 
-
+    /**
+     * Creates an empty menu template. Subclasses must call {@link #init(ImageIcon, String)}
+     * to initialize the graphical content.
+     */
     public MenuTemplate() {
         this.setLayout(new MigLayout("fill, inset 0, gap 0", "[][][][][]", "[30%][20%][20%][20%][20%]"));
         buttons = new ArrayList<JButton>();
     }
 
+    /**
+     * Initializes the menu layout by creating the cover panel with a logo and title,
+     * and building the button-based menu section.
+     *
+     * @param logo         the logo image shown in the header
+     * @param company_name the company or panel title text
+     */
     protected void init(ImageIcon logo, String company_name) {
         coverPanel = new JPanel() {
             @Override

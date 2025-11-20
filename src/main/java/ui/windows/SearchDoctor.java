@@ -42,13 +42,6 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     public SearchDoctor(Application appMain) {
         this.appMain = appMain;
         initMainPanel();
-        List<Doctor> doctors = new ArrayList<>();
-        for(int i = 0; i < 10; i++) {
-            doctors.add(RandomData.generateRandomDoctor());
-        }
-        //showDoctors(doctors);
-        System.out.println("Search Doctors Panel Successfully created");
-        //showPatients(null);
     }
 
     private void initMainPanel() {
@@ -139,7 +132,6 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     }
 
     private void resetPanel(){
-        //TODO: reset panel when going back to menu
         hideErrorMessage();
         searchByTextField.setText("");
         doctorsDefListModel.clear();
@@ -151,7 +143,6 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         updateDoctorDefModel(allDoctors);
         if(allDoctors.isEmpty()) {
             showErrorMessage("No Doctors found");
-            //openFormButton.setVisible(false);
         }
     }
 
@@ -178,9 +169,6 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
             updateDoctorDefModel(allDoctors);
             if(allDoctors.isEmpty()) {
                 showErrorMessage("No Doctor found");
-                //openFormButton.setVisible(false);
-            }else {
-                //openFormButton.setVisible(true);
             }
         } else if (e.getSource() == switchStatus) {
             Doctor selectedDoctor = doctorsList.getSelectedValue();

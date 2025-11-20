@@ -13,7 +13,13 @@ import ui.windows.Application;
 
 import java.awt.*;
 
-//ListCellRenderer Patient
+/**
+ * Custom Swing ListCellRenderer used for displaying doctor information
+ * in a formatted multi-line layout inside a JList.
+ * <p>
+ * It shows the doctor's name, speciality, department, contact information
+ * and active status.
+ */
 public class DoctorCell implements ListCellRenderer<Doctor> {
 
     private final Color titleColor = Application.turquoise;

@@ -11,9 +11,22 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
+/**
+ * Panel that displays the list of currently connected clients to the server.
+ * <p>
+ * The panel provides a scrollable list, a "Stop Server" button,
+ * and a "Go Back" button. It also supports showing error messages.
+ */
 public class CheckConnectedClients extends JPanel implements MouseListener {
     private JLabel errorMessage;
 
+    /**
+     * Creates a new CheckConnectedClients panel.
+     *
+     * @param connectedClients list of connected client descriptions
+     * @param goBackButton     button that returns to the previous menu
+     * @param stopServerButton button to stop the server
+     */
     public CheckConnectedClients(ArrayList<String> connectedClients, MyButton goBackButton, MyButton stopServerButton) {
         this.setLayout(new MigLayout("wrap, fill", "push[center]push", "push[]25[]10[]10[]push"));
         JLabel label = new JLabel("Connected Clients: "+connectedClients.size());
@@ -66,15 +79,14 @@ public class CheckConnectedClients extends JPanel implements MouseListener {
 
 
     }
-
+    /**
+     * Displays an error message to the user.
+     *
+     * @param text the message to display
+     */
     public void showErrorMessage(String text) {
         errorMessage.setVisible(true);
         errorMessage.setText(text);
-    }
-
-    public void initList(ArrayList<String> connectedClients) {
-        //JPanel gridPanel = new JPanel(new GridLayout(patients.size(), 0));
-
     }
 
     @Override

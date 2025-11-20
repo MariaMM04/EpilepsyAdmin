@@ -129,7 +129,7 @@ public class ClientHandler implements Runnable {
     }
 
     public boolean isStopped(){
-        return running.get();
+        return !running.get();
     }
 
     void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {

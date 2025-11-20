@@ -6,10 +6,24 @@ import ui.windows.Application;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A Swing panel that provides a user interface for changing a password.
+ * <p>
+ * It displays two password fields, an error label, and two action buttons
+ * ("Save" and "Cancel"). Error messages can be shown dynamically.
+ */
 public class ChangePassword extends JPanel {
 
     private JLabel errorMessage;
-
+    /**
+     * Creates a new ChangePassword panel with the required password fields
+     * and action buttons.
+     *
+     * @param password1     first password text field (new password)
+     * @param password2     second password text field (confirmation)
+     * @param okbutton      button used to confirm the action
+     * @param cancelbutton  button used to cancel the action
+     */
     public ChangePassword(MyTextField password1, MyTextField password2, MyButton okbutton, MyButton cancelbutton) {
         this.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]25[]push"));
         JLabel label = new JLabel("Change Password");
@@ -49,6 +63,11 @@ public class ChangePassword extends JPanel {
 
     }
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param text the message to display
+     */
     public void showErrorMessage(String text) {
         errorMessage.setVisible(true);
         errorMessage.setText(text);

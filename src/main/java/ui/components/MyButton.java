@@ -9,7 +9,10 @@ import javax.swing.plaf.basic.BasicButtonUI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
+/**
+ * Custom JButton with rounded corners, theme colors, optional icon,
+ * and a styled UI designed for the platform.
+ */
 public class MyButton extends JButton {
 
     private static final long serialVersionUID = 5848952178038888829L;
@@ -20,7 +23,12 @@ public class MyButton extends JButton {
 
     private ImageIcon image;
     private final Font font = new Font("sansserif", 1, 15);
-
+    /**
+     * Creates a button with text and an icon loaded from the given resource path.
+     *
+     * @param text         button label
+     * @param imageSource  path to the icon resource
+     */
     public MyButton(String text, String imageSource){
         try {
             Image img = ImageIO.read(getClass().getResource(imageSource));
@@ -36,7 +44,11 @@ public class MyButton extends JButton {
         this.setFont(font);
         this.setUI(new StyledButtonUI());
     }
-
+    /**
+     * Creates a button with text using the default platform theme.
+     *
+     * @param text button label
+     */
     public MyButton(String text) {
         this.setBackground(backgroundColor);
         //this.setForeground(foregroundColor.darker());
@@ -45,7 +57,13 @@ public class MyButton extends JButton {
         this.setFont(font);
         this.setUI(new StyledButtonUI());
     }
-
+    /**
+     * Creates a button with text and custom background/foreground colors.
+     *
+     * @param text            button label
+     * @param backgroundColor background color
+     * @param foregroundColor text color
+     */
     public MyButton(String text, Color backgroundColor, Color foregroundColor) {
         this.setBackground(backgroundColor);
         this.setForeground(foregroundColor);
@@ -53,7 +71,9 @@ public class MyButton extends JButton {
         this.setFont(font);
         this.setUI(new StyledButtonUI());
     }
-
+    /**
+     * Creates an empty button using default platform styling.
+     */
     public MyButton() {
         this.setBackground(backgroundColor);
         this.setForeground(foregroundColor.darker());

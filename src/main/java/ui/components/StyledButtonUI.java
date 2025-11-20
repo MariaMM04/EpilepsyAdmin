@@ -4,7 +4,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
-
+/**
+ * Custom UI delegate for buttons providing rounded background painting
+ * and custom padding.
+ */
 public class StyledButtonUI extends BasicButtonUI {
 
     @Override

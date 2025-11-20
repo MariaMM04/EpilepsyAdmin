@@ -5,9 +5,19 @@ import ui.windows.Application;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * A dialog panel displaying a question and two action buttons.
+ * It arranges the components using MigLayout and applies custom colors.
+ */
 public class QuestionDialog extends JPanel {
-
+    /**
+     * Creates a new QuestionDialog containing the provided question text
+     * along with OK and Cancel buttons.
+     *
+     * @param questionText the text of the question to display
+     * @param okbutton the confirmation button
+     * @param cancelbutton the cancellation button
+     */
     public QuestionDialog(String questionText, MyButton okbutton, MyButton cancelbutton) {
         this.setLayout(new MigLayout("wrap 2, fill, inset 10, gap 5", "[50%][50%]", "push[][][][][]push"));
         this.setBackground(Color.white);

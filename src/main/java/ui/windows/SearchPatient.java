@@ -40,13 +40,6 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
     public SearchPatient(Application appMain) {
         this.appMain = appMain;
         initMainPanel();
-        /*List<Patient> patients = new ArrayList<>();
-        for(int i = 0; i < 10; i++) {
-            patients.add(RandomData.generateRandomPatient());
-        }
-        //showPatients(patients);
-        System.out.println("Search Patient Panel Successfully created");*/
-        //showPatients(null);
     }
 
     private void initMainPanel() {
@@ -114,12 +107,10 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
     protected void updatePatientDefModel(List<Patient> patients) {
         if(patients == null || patients.isEmpty()) {
             showErrorMessage("No patients found!");
-            //openFormButton.setVisible(false);
         }else{
             if(allPatients == null) {
                 allPatients = patients;
             }
-            //openFormButton.setVisible(true);
         }
 
         patientsDefListModel.removeAllElements();
@@ -152,9 +143,6 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
         updatePatientDefModel(allPatients);
         if(allPatients.isEmpty()) {
             showErrorMessage("No patient found");
-            //openFormButton.setVisible(false);
-        }else {
-            //openFormButton.setVisible(true);
         }
     }
 
@@ -175,17 +163,11 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
             updatePatientDefModel(filteredPatients);
             if (filteredPatients.isEmpty()) {
                 showErrorMessage("No patient found");
-                //openFormButton.setVisible(false);
-            } else {
-                //openFormButton.setVisible(true);
             }
         }else if(e.getSource() == resetListButton) {
             updatePatientDefModel(allPatients);
             if (allPatients.isEmpty()) {
                 showErrorMessage("No patient found");
-                //openFormButton.setVisible(false);
-            } else {
-                //openFormButton.setVisible(true);
             }
         }else if (e.getSource() == switchStatus) {
             Patient selectedPatient = patientsList.getSelectedValue();

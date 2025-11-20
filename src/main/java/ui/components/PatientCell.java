@@ -13,7 +13,11 @@ import ui.windows.Application;
 
 import java.awt.*;
 
-//ListCellRenderer Patient
+/**
+ * List cell renderer for displaying patient's information in a custom layout.
+ * It formats multiple fields such as name, birthday, contact information,
+ * doctor assigned, and status.
+ */
 public class PatientCell implements ListCellRenderer<Patient> {
 
     private final Color titleColor = Application.turquoise;
@@ -22,7 +26,16 @@ public class PatientCell implements ListCellRenderer<Patient> {
     private final Color contentColor = new Color(122, 140, 141);
     //private Color backgroundColor = new Color(230, 245, 241);
 
-
+    /**
+     * Returns a custom component used to render a single patient entry in the list.
+     *
+     * @param list the list containing the cell
+     * @param value the patient object to render
+     * @param index the index of the cell in the list
+     * @param isSelected whether the cell is selected
+     * @param cellHasFocus whether the cell has focus
+     * @return the component used for rendering
+     */
     @Override
     public Component getListCellRendererComponent(JList<? extends Patient> list, Patient value, int index,
                                                   boolean isSelected, boolean cellHasFocus) {

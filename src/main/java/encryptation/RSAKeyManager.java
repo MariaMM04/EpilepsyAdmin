@@ -73,11 +73,11 @@ public class RSAKeyManager {
         }catch(IOException e){
             throw new RuntimeException("Error retrieving public key: "+e.getMessage(), e);
         }
-
+        return null;
     }
 
     public static PrivateKey retrievePrivateKey (String filename){
-
+        return null;
     }
 
 
