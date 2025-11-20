@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ui.windows.Application;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -462,8 +461,8 @@ public class ClientHandlerTest {
         doctor.setId(1);
         Doctor doctor2 = new Doctor("A", "B", "612345678", "doc2@mail.com", "Neurology", "Neuroscience");
         doctor2.setId(2);
-        when(app.doctorJDBC.findDoctorById(1)).thenReturn(doctor);
-        when(app.doctorJDBC.findDoctorById(2)).thenReturn(doctor2);
+        when(app.doctorJDBC.getDoctor(1)).thenReturn(doctor);
+        when(app.doctorJDBC.getDoctor(2)).thenReturn(doctor2);
         when(app.securityManager.getRoleJDBC().findRoleByID(1)).thenReturn(new Role(1,"Doctor"));
         when(app.securityManager.getRoleJDBC().findRoleByID(2)).thenReturn(new Role(2,"Patient"));
 
