@@ -86,6 +86,12 @@ public class PatientCell implements ListCellRenderer<Patient> {
         JLabel doctorText = new JLabel("None");
         doctorText.setForeground(contentColor);
         doctorText.setFont(contentFont);
+        JLabel statusHeading = new JLabel("Status:");
+        statusHeading.setForeground(titleColor);
+        statusHeading.setFont(titleFont);
+        JLabel statusTxt = new JLabel(String.valueOf(value.isActive()));
+        statusTxt.setForeground(contentColor);
+        statusTxt.setFont(contentFont);
 
         if(value.getDoctor() != null){
             Doctor doctor = value.getDoctor();
@@ -94,6 +100,8 @@ public class PatientCell implements ListCellRenderer<Patient> {
 
         listCell.add(doctorHeading, "grow, left");
         listCell.add(doctorText, "grow, left");
+        listCell.add(statusHeading, "grow, left");
+        listCell.add(statusTxt, "grow, left");
 
         if(isSelected)
         {

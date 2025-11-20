@@ -101,6 +101,64 @@ public class AdminLinkService {
         return result;
     }
 
+    public Boolean changeDoctorStatus(String email, Boolean status) throws SQLException {
+        Boolean result = false;
+        try {
+            securityManager.getConnection().setAutoCommit(false);
+            medicalManager.getConnection().setAutoCommit(false);
+
+            // Inserta en securitydb
+            securityManager.getUserJDBC().updateUserActiveStatus(email, status);
+
+            // Inserta en medicaldb
+            medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, status);
+
+            // Si todo va bien:
+            securityManager.getConnection().commit();
+            medicalManager.getConnection().commit();
+            System.out.println("Doctor and corresponding User deactivated (" + email + ")");
+            result = true;
+
+        } catch (SQLException e) {
+            System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
+            if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
+            if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
+        } finally {
+            if (securityManager.getConnection() != null) securityManager.getConnection().setAutoCommit(true);
+            if (medicalManager.getConnection() != null) medicalManager.getConnection().setAutoCommit(true);
+        }
+        return result;
+    }
+
+    public Boolean changePatientStatus(String email, Boolean status) throws SQLException {
+        Boolean result = false;
+        try {
+            securityManager.getConnection().setAutoCommit(false);
+            medicalManager.getConnection().setAutoCommit(false);
+
+            // Inserta en securitydb
+            securityManager.getUserJDBC().updateUserActiveStatus(email, status);
+
+            // Inserta en medicaldb
+            medicalManager.getPatientJDBC().updatePatientActiveStatus(email, status);
+
+            // Si todo va bien:
+            securityManager.getConnection().commit();
+            medicalManager.getConnection().commit();
+            System.out.println("Patient and corresponding User deactivated (" + email + ")");
+            result = true;
+
+        } catch (SQLException e) {
+            System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
+            if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
+            if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
+        } finally {
+            if (securityManager.getConnection() != null) securityManager.getConnection().setAutoCommit(true);
+            if (medicalManager.getConnection() != null) medicalManager.getConnection().setAutoCommit(true);
+        }
+        return result;
+    }
+
     /**
      * Deactivates a doctor and their corresponding user by email.
      * Performs logical deletion by setting active = false.

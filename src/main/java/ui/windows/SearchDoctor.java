@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,10 +32,9 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     protected MyTextField searchByTextField;
     protected MyButton searchButton;
     protected MyButton resetListButton;
-    //protected MyButton openFormButton;
+    private MyButton switchStatus; //set active or inactive
     protected JLabel errorMessage;
     protected MyButton goBackButton;
-    //protected Application appMain;
     protected JList<Doctor> doctorsList;
     protected DefaultListModel<Doctor> doctorsDefListModel;
     private List<Doctor> allDoctors;
@@ -74,10 +74,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         searchByTextField.setHint("ex. Doe");
         add(searchByTextField, "cell 0 2 2 1, alignx center, grow");
 
-        //cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
         resetListButton = new MyButton("RESET");
-        //cancelButton.setBackground(new Color(7, 164, 121));
-        //cancelButton.setForeground(new Color(250, 250, 250));
         resetListButton.addActionListener(this);
         add(resetListButton, "cell 0 3, left, gapy 5, grow");
 
@@ -85,10 +82,9 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        /*openFormButton = new MyButton("OPEN FILE");
-        openFormButton.addActionListener(this);
-        add(openFormButton, "cell 0 4, center, gapy 5, span 2, grow");
-        openFormButton.setVisible(true);*/
+        switchStatus = new MyButton("SWITCH STATUS");
+        switchStatus.addActionListener(this);
+        add(switchStatus, "cell 0 4, center, gapy 5, span 2, grow");
 
         goBackButton = new MyButton("BACK TO MENU", Application.turquoise, Color.white);
         goBackButton.addActionListener(this);
@@ -114,19 +110,15 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         scrollPane1.setViewportView(doctorsList);
         scrollPane1.setPreferredSize(this.getPreferredSize());
         add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
-        //showPatients(appMain.patientMan.searchPatientsBySurname("Blanco"));
-        //showDoctors(createRandomDoctors());
     }
 
     protected void updateDoctorDefModel(List<Doctor> doctors) {
         if(doctors == null || doctors.isEmpty()) {
             showErrorMessage("No Doctors found!");
-            //openFormButton.setVisible(false);
         }else{
             if(allDoctors == null) {
                 allDoctors = doctors;
             }
-            //openFormButton.setVisible(true);
         }
 
         doctorsDefListModel.removeAllElements();
@@ -139,6 +131,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     private void showErrorMessage(String message) {
         errorMessage.setText(message);
         errorMessage.setVisible(true);
+        errorMessage.setForeground(Color.red);
     }
 
     private void hideErrorMessage() {
@@ -179,9 +172,6 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
             updateDoctorDefModel(filteredDocs);
             if(filteredDocs.isEmpty()) {
                 showErrorMessage("No Doctor found");
-                //openFormButton.setVisible(false);
-            }else {
-                //openFormButton.setVisible(true);
             }
 
         }else if(e.getSource() == resetListButton){
@@ -192,31 +182,29 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
             }else {
                 //openFormButton.setVisible(true);
             }
-        }
-        /*if(e.getSource() == searchButton) {
-            errorMessage.setVisible(false);
-            String input = searchByTextField.getText();
-            System.out.println(input);
-            List<Patient> patients = appMain.conMan.getPatientMan().searchPatientsBySurname(input);
-            updatePatientDefModel(patients);
-            if(patients.isEmpty()) {
-                showErrorMessage("No patient found");
+        } else if (e.getSource() == switchStatus) {
+            Doctor selectedDoctor = doctorsList.getSelectedValue();
+            if(selectedDoctor == null) {
+                showErrorMessage("No Doctor selected");
             }else {
-                openFormButton.setVisible(true);
-            }
+                //IF true change to false
+                //IF false change to true
+                Boolean result = false;
+                try{
+                    result = appMain.adminLinkService.changeDoctorStatus(selectedDoctor.getEmail(), !selectedDoctor.isActive());
+                } catch (SQLException ex) {
+                }
+                if(result) {
+                    selectedDoctor.setActive(!selectedDoctor.isActive());
+                    updateDoctorDefModel(allDoctors);
+                    showErrorMessage("Status changed to "+selectedDoctor.isActive());
+                    errorMessage.setForeground(Color.green);
+                }else {
+                    showErrorMessage("Error changing status");
+                }
 
-        }else if(e.getSource() == openFormButton){
-            Patient patient = patientList.getSelectedValue();
-            if(patient == null) {
-                showErrorMessage("No patient Selected");
-            }else {
-                resetPanel();
-                appMain.changeToAdmitPatient(patient);
             }
-        }else if(e.getSource() == cancelButton){
-            resetPanel();
-            appMain.changeToRecepcionistMenu();
-        }*/
+        }
 
     }
 

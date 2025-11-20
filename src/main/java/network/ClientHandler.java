@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//TODO: comprobar que te saque el mensaje de "seguro que quieres cerrar la conexion? si hay clientes conectados"
 public class ClientHandler implements Runnable {
     final Socket socket;
     private final Server server;
@@ -183,12 +182,18 @@ public class ClientHandler implements Runnable {
             if (user != null) {
                 Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
                 if(role != null && role.getRolename().equals(accessPermits)) {
-                    response.addProperty("status", "SUCCESS");
-                    JsonObject userObj = new JsonObject();
-                    userObj.addProperty("id", user.getId());
-                    userObj.addProperty("email", user.getEmail());
-                    userObj.addProperty("role", role.getRolename());
-                    response.add("data", userObj);
+                    if(user.isActive()){
+                        response.addProperty("status", "SUCCESS");
+                        JsonObject userObj = new JsonObject();
+                        userObj.addProperty("id", user.getId());
+                        userObj.addProperty("email", user.getEmail());
+                        userObj.addProperty("role", role.getRolename());
+                        response.add("data", userObj);
+                    }else {
+                        response.addProperty("status", "ERROR");
+                        response.addProperty("message", "The user is no longer active.");
+                    }
+
                 }else{
                     response.addProperty("status", "ERROR");
                     response.addProperty("message", "Authorization denied");

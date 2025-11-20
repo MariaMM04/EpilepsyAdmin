@@ -70,6 +70,12 @@ public class DoctorCell implements ListCellRenderer<Doctor> {
         JLabel emailText = new JLabel(value.getEmail());
         emailText.setForeground(contentColor);
         emailText.setFont(contentFont);
+        JLabel statusHeading = new JLabel("Status:");
+        statusHeading.setForeground(titleColor);
+        statusHeading.setFont(titleFont);
+        JLabel statusTxt = new JLabel(String.valueOf(value.isActive()));
+        statusTxt.setForeground(contentColor);
+        statusTxt.setFont(contentFont);
 
         listCell.add(ageHeading, "grow, left");
         listCell.add(ageText, "grow, left");
@@ -79,6 +85,8 @@ public class DoctorCell implements ListCellRenderer<Doctor> {
         listCell.add(phoneText, "grow, left");
         listCell.add(emailHeading, "grow, left");
         listCell.add(emailText, "grow, left");
+        listCell.add(statusHeading, "grow, left");
+        listCell.add(statusTxt, "grow, left");
 
         if(isSelected)
         {
