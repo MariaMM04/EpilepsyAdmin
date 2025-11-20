@@ -26,7 +26,7 @@ public class RoleJDBC {
      * Inserts a new role into the {@code securitydb} database (Admin, doctor or patient). The role must include
      * the role name.
      *
-     * @param role
+     * @param role  the role that will be inserted
      */
     public void insertRole(Role role) {
         String sql = "INSERT INTO roles (rolename) VALUES (?)";

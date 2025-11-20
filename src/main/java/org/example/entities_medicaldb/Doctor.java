@@ -83,7 +83,7 @@ public class Doctor {
 
     /**
      * Creates a {@code Doctor} instance with all field values specified including the unique database identifier
-     * and the active flag. //TODO: para que queremos este constructor?
+     * and the active flag.
      *
      * @param id        the unique database identifier for this doctor
      * @param name      the doctor's name
@@ -94,7 +94,7 @@ public class Doctor {
      * @param speciality    the medical speciality of the doctor
      * @param active    the doctor's active flag. May be
      *                  <code> true </code> if the doctor is active
-     *                  <code> false </code> otherwise //TODO: esto esta bien?
+     *                  <code> false </code> otherwise
      */
     public Doctor(int id, String name, String surname, String contact, String email,
                   String department, String speciality, boolean active) {

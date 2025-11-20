@@ -283,7 +283,7 @@ public class ClientHandler implements Runnable {
             }
         }
 
-        Doctor doctor = server.getAppMain().doctorJDBC.findDoctorById(doctor_id);
+        Doctor doctor = server.getAppMain().doctorJDBC.getDoctor(doctor_id);
         if(doctor != null) {
             if(role.getRolename().equals("Doctor")&& !doctor.getEmail().equals(user.getEmail())) {
                 //If the doctor requesting for info is a different doctor

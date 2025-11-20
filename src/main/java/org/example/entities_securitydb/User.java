@@ -122,7 +122,6 @@ public class User {
 
     /**
      * Converts this {@code User} into a {@link JsonObject}. The JSON object specifies this user's id, email and role
-     * //TODO: por que no lo especifica?
      *<p>
      *     Te resulting JSON object deliberately omits the password field to avoid exposing personal information
      *</p>
