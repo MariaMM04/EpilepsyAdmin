@@ -40,6 +40,9 @@ public class ClientHandler implements Runnable {
     @Override
     public void run(){
         try {
+            //before doing anything, the client receives the public key right after connecting
+            sendPublicKey();
+
             String line;
             label:
             while (running.get() && (line = in.readLine()) != null) {
@@ -110,6 +113,10 @@ public class ClientHandler implements Runnable {
                 //System.out.println("Error reading from client"+e.getMessage());
             }
         }
+    }
+
+    public void sendPublicKey() {
+
     }
 
     /**
