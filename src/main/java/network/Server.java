@@ -80,7 +80,7 @@ public class Server {
             client.forceShutdown(); //closes sockets and sets runnin=false on the handlers
         }
         System.out.println("After closeAllClients, remaining handlers: " + clients.size());
-        if(clients.size()!=0){
+        if(!clients.isEmpty()){
             throw new ClientError(clients.size()+" clients still connected");
         }
     }
@@ -103,6 +103,7 @@ public class Server {
             System.out.println("Server stopped");
 
         } catch (IOException e) {
+            throw new ClientError("Error closing server socket");
         }
     }
 

@@ -91,17 +91,21 @@ public class Application extends JFrame {
         setIconImage(new ImageIcon(getClass().getResource("/icons/night_guardian_mini_500.png")).getImage());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
+
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 System.out.println("Window is closing...");
 
                 if (server.isRunning()) {
-                    try {
-                        server.stop();
-                        // Exit if you want:
-                        System.exit(0);
-                    } catch (ClientError ex) {
+                    if(server.getConnectedClients().isEmpty()){
+                        try {
+                            server.stop();
+                            System.exit(0);
+                        } catch (ClientError ex) {
+                            showMessageDialog(null, ex.getMessage());
+                        }
+                    }else{
                         int option = JOptionPane.showConfirmDialog(
                                 null,
                                 "There are clients still connected\nDo you want to interrupt the connection?",
@@ -111,21 +115,38 @@ public class Application extends JFrame {
                         );
                         if(option == JOptionPane.YES_OPTION){
                             try {
-                                server.closeAllClients();
+                                server.stop();
                                 System.exit(0);
                             } catch (ClientError exc) {
                                 showMessageDialog(null, exc.getMessage());
                             }
                         }
-                        //System.out.println("Clients still connected");
-                        //showMessageDialog(null, "There are still clients connected. Close all connections before stopping the server");
                     }
                 }else{
                     System.out.println("Server is already stopped");
+                    System.exit(0);
                 }
             }
         });
 
+    }
+
+    private void askConfirmationCloseConnectedClients(){
+        int option = JOptionPane.showConfirmDialog(
+                null,
+                "There are clients still connected\nDo you want to interrupt the connection?",
+                "Error",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.ERROR_MESSAGE
+        );
+        if(option == JOptionPane.YES_OPTION){
+            try {
+                server.stop();
+                System.exit(0);
+            } catch (ClientError exc) {
+                showMessageDialog(null, exc.getMessage());
+            }
+        }
     }
 
     public void changeToUserLogIn() {
