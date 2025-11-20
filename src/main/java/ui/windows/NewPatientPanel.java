@@ -70,16 +70,16 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         this.titleText = "Patient information";
 
         //Initialize values
-        name = new MyTextField();
+        name = new MyTextField("Jane");
         //name.setText("Jane");
         name.setEnabled(true); //Doesnt allow editing
-        surname = new MyTextField();
+        surname = new MyTextField("Doe");
         //surname.setText("Doe");
         surname.setEnabled(true);
-        email = new MyTextField();
+        email = new MyTextField("jane.doe@nightguardian.com");
         //email.setText("jane.doe@gmail.com");
         email.setEnabled(true);
-        phoneNumber = new MyTextField();
+        phoneNumber = new MyTextField("612345678");
         //phoneNumber.setText("123456789");
         phoneNumber.setEnabled(true);
         //sex = new MyTextField();
@@ -92,7 +92,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         birthDate.setHint("YYYY-MM-DD");
         //birthDate.setText("1999-11-11");
         birthDate.setEnabled(true);
-        password = new MyTextField();
+        password = new MyTextField("password");
         formContainer = new JPanel();
         doctors = new MyComboBox<>();
         docs = appMain.doctorJDBC.getAllDoctors();
@@ -194,7 +194,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         errorMessage.setText("Error message test");
         //this.add(errorMessage, "cell 0 8, span, left");
         this.add(errorMessage, "cell 0 8, span, center");
-        errorMessage.setVisible(true);
+        errorMessage.setVisible(false);
 
         //Add buttons
         cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
@@ -229,8 +229,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                     p.setDateOfBirth(fecha);
                 }
             } catch (DateTimeParseException exFecha) {
-                errorMessage.setText("Invalid date (use YYYY-MM-DD)");
-                errorMessage.setForeground(Color.RED);
+                showErrorMessage("Invalid date (use YYYY-MM-DD)");
                 return;
             }
 
@@ -240,13 +239,11 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                     phonenumber = Integer.parseInt(phoneNumber.getText());
                     p.setContact(phonenumber.toString());
                 }else {
-                    errorMessage.setText("Please, set a phone number of 9 digits");
-                    errorMessage.setForeground(Color.RED);
+                    showErrorMessage("Please, set a phone number of 9 digits");
                     return;
                 }
             } catch (NumberFormatException exFecha) {
-                errorMessage.setText("The phone must be a numeric value");
-                errorMessage.setForeground(Color.RED);
+                showErrorMessage("The phone must be a numeric value");
                 return;
             }
 

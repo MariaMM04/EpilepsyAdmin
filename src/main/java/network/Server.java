@@ -41,7 +41,7 @@ public class Server {
         //create its own thread to listen for new clients
         Thread serverThread = new Thread(() -> {
             try {
-                if(serverSocket == null) serverSocket= new ServerSocket(port);
+                serverSocket= createServerSocket(port);
                 System.out.println("Server started on port " + port);
 
                 while (running) {
@@ -63,6 +63,10 @@ public class Server {
             }
         });
         serverThread.start();
+    }
+
+    ServerSocket createServerSocket(int port) throws IOException {
+        return new ServerSocket(port);
     }
 
     public boolean isRunning(){

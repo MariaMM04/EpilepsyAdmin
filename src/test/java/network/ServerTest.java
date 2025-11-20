@@ -33,7 +33,8 @@ class ServerTest {
     void setUp() throws IOException {
         app = mock(Application.class);
         serverSocket = mock(ServerSocket.class);
-        server = new Server(serverSocket, app);
+        server = spy(new Server(serverSocket, app));
+        doReturn(serverSocket).when(server).createServerSocket(anyInt());
         in = mock(InputStream.class);
         out = mock(OutputStream.class);
     }
@@ -45,7 +46,7 @@ class ServerTest {
     @Test
     void testServerStartsAndAcceptsMultipleClient() throws Exception {
         // Arrange
-
+        //Server server = new Server(serverSocket, app);
         Socket socket1 = mock(Socket.class);
         Socket socket2 = mock(Socket.class);
         when(serverSocket.accept())
