@@ -99,7 +99,7 @@ public class UserLogIn extends JPanel implements ActionListener {
 
         panelLogIn.setBackground(Color.white);
         panelLogIn.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[][]15[]push"));
-        JLabel label = new JLabel("Sign In");
+        JLabel label = new JLabel("Log In");
         label.setFont(new Font("sansserif", 1, 30));
         label.setForeground(Application.dark_purple);
         panelLogIn.add(label);

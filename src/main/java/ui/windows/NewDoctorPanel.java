@@ -168,7 +168,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
         add(cancelButton, "cell 1 9, grow, center");
 
-        saveChangesBt = new MyButton("SAVE", Application.turquoise, Color.white);
+        saveChangesBt = new MyButton("SAVE AND GO BACK", Application.turquoise, Color.white);
         saveChangesBt.addActionListener(this);
         add(saveChangesBt, "cell 2 9, grow, center");
 
@@ -178,7 +178,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         errorMessage.setText("Error message test");
         //this.add(errorMessage, "cell 0 8, span, left");
         this.add(errorMessage, "cell 0 8, span, center");
-        errorMessage.setVisible(true);
+        errorMessage.setVisible(false);
 
     }
 
@@ -200,13 +200,11 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
                     phonenumber = Integer.parseInt(phoneNumber.getText());
                     d.setContact(phonenumber.toString());
                 }else {
-                    errorMessage.setText("Please, set a phone number of 9 digits");
-                    errorMessage.setForeground(Color.RED);
+                    showErrorMessage("Please, set a phone number of 9 digits");
                     return;
                 }
             } catch (NumberFormatException exFecha) {
-                errorMessage.setText("The phone must be a numeric value");
-                errorMessage.setForeground(Color.RED);
+                showErrorMessage("The phone number must be a number");
                 return;
             }
 
@@ -265,7 +263,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         MyButton cancelButton = new MyButton("CONTINUE EDITING");
 
         QuestionDialog panel = new QuestionDialog(question, okButton, cancelButton);
-        JDialog dialog = new JDialog(parentFrame, "Change Password", true);
+        JDialog dialog = new JDialog(parentFrame, "Are you sure?", true);
         dialog.getContentPane().add(panel);
         dialog.getContentPane().setBackground(Color.white);
         dialog.pack();
