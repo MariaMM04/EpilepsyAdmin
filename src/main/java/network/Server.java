@@ -11,7 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import Exceptions.*;
 
-
+/**
+ *
+ */
 public class Server {
     private int port;
     private ServerSocket serverSocket;

@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the security entities">
+    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="revision of javadoc + methods">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/encryptation/RSAKeyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryptation/RSAKeyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/encryptation/RSAUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryptation/RSAUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,7 +236,8 @@
     <MESSAGE value="changes in data base" />
     <MESSAGE value="javadoc in the medical entities" />
     <MESSAGE value="javadoc in the security entities" />
-    <option name="LAST_COMMIT_MESSAGE" value="javadoc in the security entities" />
+    <MESSAGE value="revision of javadoc + methods" />
+    <option name="LAST_COMMIT_MESSAGE" value="revision of javadoc + methods" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

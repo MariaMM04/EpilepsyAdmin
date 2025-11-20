@@ -259,7 +259,7 @@ public class UserLogIn extends JPanel implements ActionListener {
     private Boolean validatePassword(String password) {
         boolean passwordVacia = (Objects.isNull(password)) || password.isEmpty();
         boolean goodPassword=false;
-        System.out.println("password vacía "+passwordVacia);
+        System.out.println("empty password "+passwordVacia);
         if(!passwordVacia && password.length() >= 8) {
             for(int i=0; i<password.length(); i++) {
 
@@ -273,7 +273,7 @@ public class UserLogIn extends JPanel implements ActionListener {
                 return false;
             }
         }else {
-            showErrorMessage("Password's minimum lenght is of 8 characters");
+            showErrorMessage("Password's minimum length is of 8 characters");
             return false;
         }
         return true;

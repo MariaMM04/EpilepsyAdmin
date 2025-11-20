@@ -1,9 +1,13 @@
 package org.example.JDBC.securitydb;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import encryptation.RSAKeyManager;
+import encryptation.RSAUtil;
 import org.example.entities_securitydb.User; // Import User class
 
 
@@ -196,12 +200,16 @@ public class UserJDBC {
             return false;
         } else try {
             {
-                insertUser(new User(email, password,true));
+                // Retrieve public key to encrypt the password introduced by the user
+                PublicKey publicKey = RSAKeyManager.retrievePublicKey("admin"); //Assume that the file containing the PB is "admin_public_key"
+                String encryptedPassword = RSAUtil.encrypt(password, publicKey);
+                User newUser = new User (email, encryptedPassword,true);
+                return insertUser(newUser);
             }
         } catch (Exception e) {
+            System.out.println("Register failed: "+e.getMessage());
             return false;
         }
-        return true;
     }
 
 
@@ -214,7 +222,6 @@ public class UserJDBC {
      * @return          This {@code User} instance logged in
      */
 
-    // DEVOLVER USER ENTERO
     //TODO: comprobar que la contraseña proporcionada coincide con la de la base de datos
     public User login(String email, String password) {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
@@ -223,9 +230,19 @@ public class UserJDBC {
         String sql = ("SELECT * FROM users WHERE email = ?"); // By only fetching the email we can check if it is unique or not
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
-            // Encriptar contraseña passwordEncrypted = bla bla
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                String encryptedPassword = rs.getString("password");
+                //Decrypt the password
+                PrivateKey privateKey = RSAKeyManager.retrievePrivateKey("admin"); //Assuming that the file containing the PK: "admin_private_key"
+                String decryptedPassword = RSAUtil.decrypt(encryptedPassword, privateKey);
+
+                //Verify if the password exists in the database
+                if (!password.equals(decryptedPassword)){
+                    System.out.println("Password does not match.");
+                    return null;
+                }
+
                 User u = new User(
                         rs.getInt("id"),
                         rs.getString("email"),
@@ -236,7 +253,8 @@ public class UserJDBC {
                 u.setRole_id(rs.getInt("role_id"));
                 return u;
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            System.out.println("Log in failed: "+ex.getMessage());
             throw new RuntimeException(ex);
         }
         return null;
