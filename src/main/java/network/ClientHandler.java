@@ -20,9 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//TODO: cómo gestionar los permisos de cada cliente? No hace falta
-// Cómo identificar quién es un paciente y quién es un doctor?
-//TODO: hacer unit tests de todos los sequence diagrams. Para hacer el del server hay que mockear el cliente para probarlo desde aquí. Y al contrario en el cliente.
+//TODO: comprobar que te saque el mensaje de "seguro que quieres cerrar la conexion? si hay clientes conectados"
 public class ClientHandler implements Runnable {
     final Socket socket;
     private final Server server;

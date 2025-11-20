@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53284b9c-8660-4fdb-96bc-89db1830b15f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/encryptation/RSAKeyManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/encryptation/RSAUtil.java" afterDir="false" />
+    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the security entities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/JdbcUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/JdbcUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/SignalJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/RoleJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/RoleJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Doctor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Signal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_securitydb/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_securitydb/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,12 +34,9 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
-    &quot;accountId&quot;: &quot;12626fc0-ed3c-4c85-9540-1d4369efb5a4&quot;
+    &quot;accountId&quot;: &quot;e387a1ed-66c0-4b42-9a08-e4d4d83c049c&quot;
   }
 }</component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -168,14 +156,14 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
-        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-IU-252.26199.169" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="68add847-98f7-4af0-8f05-9be2e61b70f0" name="Changes" comment="" />
+      <changelist id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="javadoc in the security entities" />
       <created>1761303191682</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -191,6 +179,8 @@
       <workItem from="1762509645150" duration="2407000" />
       <workItem from="1762532587696" duration="1609000" />
       <workItem from="1762683514280" duration="18971000" />
+      <workItem from="1763578304054" duration="73000" />
+      <workItem from="1763580258394" duration="4910000" />
     </task>
     <task id="LOCAL-00001" summary="changes in data base">
       <option name="closed" value="true" />
