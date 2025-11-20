@@ -93,7 +93,6 @@ public class SignalJDBC {
      *                  <code> false </code> otherwise
      */
     public void insertSignal(Signal signal) {
-        //TODO = falta la sampling_frequency
         String sql = "INSERT INTO signal (path, date, comments, patient_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {

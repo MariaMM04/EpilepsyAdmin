@@ -81,37 +81,6 @@ public class DoctorJDBC {
 
     /**
      * Retrieves {@code Doctor} by its unique identifier (id) from the medical database by a SQL query.
-     * //TODO: cual es la diferencia entre este y el siguiente metodo
-     *
-     * @param id     the desired doctor's we want to retrieve id
-     * @return       the desired doctor we want to retrieve
-     */
-    public Doctor findDoctorById(Integer id) {
-        String sql = "SELECT * FROM doctor WHERE id = ?";
-        Doctor doctor = null;
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                doctor = extractDoctorFromResultSet(rs);
-                System.out.println("Doctor found: " + id);
-            } else {
-                System.out.println("No doctor found with email: " + id);
-            }
-
-            rs.close();
-        } catch (SQLException e) {
-            System.err.println("Error finding doctor: " + e.getMessage());
-        }
-
-        return doctor;
-    }
-
-    /**
-     * Retrieves {@code Doctor} by its unique identifier (id) from the medical database by a SQL query.
-     * //TODO: cual es la diferencia entre este y el anterior metodo
      *
      * @param id     the desired doctor's we want to retrieve id
      * @return       the desired doctor we want to retrieve

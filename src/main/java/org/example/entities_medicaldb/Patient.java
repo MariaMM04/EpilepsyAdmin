@@ -14,7 +14,7 @@ import java.time.LocalDate;
  *     <li> The patient's unique email address</li>
  *     <li> The patient's contact information</li>
  *     <li> The patient's date of birth</li>
- *     <li> The patient's biological sex</li>
+ *     <li> The patient's gender</li>
  *     <li> Logical deletion flag to determine if the patient is active</li>
  *     <li> Foreign key referencing the assigned {@link Doctor} (doctorId)</li>
  *     <li> Foreign key referencing the assigned {@link Doctor} instance</li>
@@ -86,10 +86,10 @@ public class Patient {
      * @param email     the patient's email address
      * @param contact   the patient's contact information
      * @param dateOfBirth   the patient's date of birth
-     * @param gender    the patient's biological sex
+     * @param gender    the patient's gender
      * @param active    the the patient's active flag. May be
-     *      *                  <code> true </code> if the doctor is active
-     *      *                  <code> false </code> otherwise //TODO: esto esta bien?
+     *                  <code> true </code> if the doctor is active
+     *                  <code> false </code> otherwise
      * @param doctorId  the foreign key referencing the {@code Doctor} (doctorId)
      */
     public Patient(int id, String name, String surname, String email, String contact,
@@ -158,8 +158,7 @@ public class Patient {
     }
 
     /**
-     * Converts this {@code Patient} into a {@link JsonObject}. The JSON object specifies all public fields
-     * except the {@code active} field //TODO: por que no lo especifica?
+     * Converts this {@code Patient} into a {@link JsonObject}.
      *
      * @return  a JSON representation of this patient
      *
@@ -184,7 +183,7 @@ public class Patient {
      * not included and will default to its initial value.
      *
      * @param jason  the JSON object containing this {@code Patient} data
-     * @return  a {@code Doctor} instance from the {@link JsonObject}
+     * @return  a {@code Patient} instance from the {@link JsonObject}
      *
      * @see JsonObject
      */
