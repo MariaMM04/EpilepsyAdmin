@@ -44,7 +44,7 @@ public class ReportJDBC {
      *                  <code> false </code> otherwise
      */
     public boolean insertReport(Report report) {
-        String sql = "INSERT INTO report (date, symptoms, notes, patient_id, doctor_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO report (date, symptoms, patient_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDate(1, report.getDate() != null ? Date.valueOf(report.getDate()) : null);
@@ -55,9 +55,7 @@ public class ReportJDBC {
                     : null;
             ps.setString(2, symptomsStr);
 
-            ps.setString(3, report.getNotes());
             ps.setInt(4, report.getPatientId());
-            ps.setInt(5, report.getDoctorId());
 
             ps.executeUpdate();
             System.out.println("Report inserted successfully for patient ID: " + report.getPatientId());
@@ -197,10 +195,9 @@ public class ReportJDBC {
                 ? Arrays.stream(symptomsStr.split(",")).map(Symptom::valueOf).collect(Collectors.toList())
                 : new ArrayList<>();
 
-        String notes = rs.getString("notes");
         int patientId = rs.getInt("patient_id");
-        int doctorId = rs.getInt("doctor_id");
 
-        return new Report(id, date, symptoms, notes, patientId, doctorId, true);
+
+        return new Report(id, date, symptoms, patientId);
     }
 }

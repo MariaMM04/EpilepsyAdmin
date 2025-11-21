@@ -282,7 +282,7 @@ public class SignalJDBC {
         MedicalManager medicalManager = new MedicalManager();
         //carlos32@gmail.com = id 5 = signal num = 0
 
-        Signal signal = new Signal();
+        Signal signal = new Signal(dto.signalId, dto.date, dto.comments, dto.patientId, dto.samplingFrequency);
         signal.setPatientId(5);
         signal.setPath("path");
         signal.setDate(LocalDate.now());
