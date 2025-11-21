@@ -3,7 +3,7 @@ package network;
 import com.google.gson.Gson;
 import org.example.entities_medicaldb.Signal;
 import ui.SignalMetadataDTO;
-import ui.SignalRecordingDAO;
+import network.SignalRecordingDAO;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -32,7 +32,7 @@ public class ServerMetadata {
                 SignalMetadataDTO dto = new SignalMetadataDTO();
 
                 // Construcción del registro
-                Signal record = new Signal(dto.signalId, dto.zipFileName, dto.date,dto.comments,dto.patientId, dto.samplingFrequency);
+                Signal record = new Signal(dto.signalId, dto.date,dto.comments,dto.patientId, dto.samplingFrequency);
                 new SignalRecordingDAO().saveSignal(record);
 
                 System.out.println("Metadata saved for signalId = " + dto.signalId);
