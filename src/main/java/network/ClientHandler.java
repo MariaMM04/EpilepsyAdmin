@@ -1,9 +1,7 @@
 package network;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
+import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 import Exceptions.*;
@@ -13,9 +11,10 @@ import ui.windows.Application;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,6 +95,22 @@ public class ClientHandler implements Runnable {
                         handleSaveCommentsSignal(request.getAsJsonObject("data"));
                         break;
                     }
+                    case "UPLOAD_SIGNAL" : {
+                        System.out.println("UPLOAD_SIGNAL");
+                        handleRequestSignalPatient(request);
+                        break;
+                    }
+                    case "REQUEST_SIGNAL" : {
+                        System.out.println("REQUEST_SIGNAL");
+                        handleRequestSignal(request.getAsJsonObject("data"));
+                        break;
+                    }
+                    case "REQUEST_PATIENT_SIGNALS" : {
+                        System.out.println("REQUEST_PATIENT_SIGNALS");
+                        handleRequestPatientSignals(request.getAsJsonObject("data"));
+                        break;
+                    }
+
                 }
 
             }
@@ -114,6 +129,142 @@ public class ClientHandler implements Runnable {
             }
         }
     }
+
+    private void handleRequestPatientSignals(JsonObject data) {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_PATIENT_SIGNALS_RESPONSE");
+
+        int patientId = data.get("patient_id").getAsInt();
+        int userId   = data.get("user_id").getAsInt();
+        User user = server.getAppMain().userJDBC.findUserByID(userId);
+        if (user == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "User not found");
+            sendRawJson(response);
+            return;
+        }
+        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        if (role == null || !role.getRolename().equals("Doctor")) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patientId);
+
+        JsonArray signalsArray = new JsonArray();
+        for (Signal signal : signals) {
+            JsonObject signalObj = new JsonObject();
+            signalObj.addProperty("signal_id", signal.getId());
+            signalObj.addProperty("date", signal.getDate().toString());
+            signalObj.addProperty("sampling_rate", signal.getSampleFrequency());
+            signalObj.addProperty("comments", signal.getComments());
+            signalsArray.add(signalObj);
+        }
+
+        response.addProperty("status", "SUCCESS");
+        response.add("signals", signalsArray);
+        sendRawJson(response);
+    }
+
+    private void handleRequestSignal(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "REQUEST_SIGNAL_RESPONSE");
+
+        int signalId = data.get("signal_id").getAsInt();
+        int userId   = data.get("user_id").getAsInt();
+        User user = server.getAppMain().userJDBC.findUserByID(userId);
+        if (user == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "User not found");
+            sendRawJson(response);
+            return;
+        }
+        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        if (role == null || !role.getRolename().equals("Doctor")) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        Signal signal = server.getAppMain().medicalManager.getSignalJDBC().findSignalById(signalId);
+
+        if (signal == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Signal not found");
+            sendRawJson(response);
+
+        }else {
+            byte[] zipBytes = Files.readAllBytes(signal.getPath().toPath());
+            String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
+            JsonObject metadata = new JsonObject();
+            metadata.addProperty("type", "REQUEST_SIGNAL_METADATA");
+            metadata.addProperty("signal_id", signal.getId());
+            metadata.addProperty("patient_id", signal.getPatientId());
+            metadata.addProperty("sampling_rate", signal.getSampleFrequency());
+            metadata.addProperty("comments", signal.getComments());
+            metadata.addProperty("date", signal.getDate().toString());
+            response.addProperty("status", "SUCCESS");
+            response.addProperty("compression", "zip-base64");
+            response.addProperty("filename", "signal_" + signal.getId() + ".zip");
+            response.addProperty("data", base64Zip);
+            response.add("metadata", metadata);
+            sendRawJson(response);
+        }
+    }
+
+    private void handleRequestSignalPatient(JsonObject dataIn) throws IOException {
+
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "UPLOAD_SIGNAL_RESPONSE");
+
+            JsonObject metadata = dataIn.getAsJsonObject("metadata");
+
+            int patientId = metadata.get("patient_id").getAsInt();
+            int samplingRate = metadata.get("sampling_rate").getAsInt();
+            int duration = metadata.get("duration_seconds").getAsInt();
+            String timestamp = metadata.get("timestamp").getAsString();
+            LocalDateTime dateTime = LocalDateTime.parse(timestamp);
+
+            String filename = dataIn.get("filename").getAsString();
+            String base64Data = dataIn.get("datafile").getAsString();
+
+            Patient patient = server.getAppMain().medicalManager.getPatientJDBC().findPatientByID(patientId);
+
+            if (patient == null) {
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Patient not found");
+                sendRawJson(response);
+                return;
+            }
+            // Decode base64 data
+            byte[] zipBytes = Base64.getDecoder().decode(base64Data);
+
+            File tempZip = File.createTempFile("signal_", ".zip");
+            try (FileOutputStream fos = new FileOutputStream(tempZip)) {
+                fos.write(zipBytes);
+            }
+
+            Signal record = new Signal(
+                    tempZip,
+                    dateTime.toLocalDate(),
+                    "",              // comments initially empty
+                    patientId,
+                    samplingRate
+            );
+
+            server.getAppMain().medicalManager.getSignalJDBC().insertSignal(record);
+
+            response.addProperty("status", "SUCCESS");
+            response.addProperty("message", "Signal uploaded correctly");
+            sendRawJson(response);
+
+
+
+    }
+
 
     public void sendPublicKey() {
 
@@ -155,6 +306,7 @@ public class ClientHandler implements Runnable {
         try {
             out.write(gson.toJson(json));
             out.newLine();
+
             out.flush();
         } catch (IOException e) {}
     }

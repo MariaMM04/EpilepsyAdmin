@@ -1,5 +1,7 @@
 package network;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.example.JDBC.medicaldb.DoctorJDBC;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.medicaldb.PatientJDBC;
@@ -19,7 +21,9 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -661,7 +665,185 @@ public class ClientHandlerTest {
         assertTrue(handler.isStopped());
         assertEquals(0, server.getConnectedClients().size());
     }
+    @Test
+    void testHandleRequestSignalPatient() throws Exception {
+        Socket socket = mock(Socket.class);
+        when(socket.getInputStream()).thenReturn(in);
+        when(socket.getOutputStream()).thenReturn(out);
+        when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
+        ClientHandler handler = new ClientHandler(socket, server);
+        //Mocks
+        SecurityManager mockSecurityManager = mock(SecurityManager.class);
+        MedicalManager mockMedicalManager = mock(MedicalManager.class);
+        UserJDBC mockUserJDBC = mock(UserJDBC.class);
+        DoctorJDBC mockDoctorJDBC = mock(DoctorJDBC.class);
+        PatientJDBC mockPatientJDBC = mock(PatientJDBC.class);
+        RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
+        SignalJDBC mockSignalJDBC = mock(SignalJDBC.class);
+
+        //Inject mocks
+        BufferedReader mockReader = mock(BufferedReader.class);
+        BufferedWriter mockWriter = mock(BufferedWriter.class);
+
+        setField(handler, "in", mockReader);
+        setField(handler, "out", mockWriter);
+        setField(app, "securityManager", mockSecurityManager);
+        setField(app, "medicalManager", mockMedicalManager);
+        setField(app, "userJDBC", mockUserJDBC);
+        setField(app, "doctorJDBC", mockDoctorJDBC);
+
+        when(mockMedicalManager.getPatientJDBC()).thenReturn(mockPatientJDBC);
+        when(mockMedicalManager.getSignalJDBC()).thenReturn(mockSignalJDBC);
+        Patient fakePatient = new Patient("Test", "Patient", "email@x.com", "12", LocalDate.now(), "F", 12);
+        when(mockPatientJDBC.findPatientByID(12)).thenReturn(fakePatient);
 
 
+        File tempZip = File.createTempFile("signal_test_", ".zip");
+        Files.writeString(tempZip.toPath(), "SIGNAL_TEST_DATA");
 
+        String base64Zip = Base64.getEncoder().encodeToString(Files.readAllBytes(tempZip.toPath()));
+
+        String jsonRequest = """
+                {
+                  "type": "UPLOAD_SIGNAL",
+                  "metadata": {
+                    "patient_id": 12,
+                    "sampling_rate": 500,
+                    "duration_seconds": 42,
+                    "channels": ["ECG", "ACC"],
+                    "timestamp": "2025-02-12T18:32:11"
+                  },
+                  "compression": "zip-base64",
+                  "filename": "signal_test.zip",
+                  "datafile": "%s"
+                }
+                """.formatted(base64Zip);
+        when(mockReader.readLine())
+                .thenReturn(jsonRequest)
+                .thenReturn(null);
+
+        doNothing().when(mockSignalJDBC).insertSignal(any());
+        handler.run();
+        verify(mockWriter).write(contains("SUCCESS"));
+    }
+    @Test
+    void handleRequestSignal() throws Exception {
+        Socket socket = mock(Socket.class);
+        when(socket.getInputStream()).thenReturn(in);
+        when(socket.getOutputStream()).thenReturn(out);
+        when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
+        ClientHandler handler = new ClientHandler(socket, server);
+        //Mocks
+        SecurityManager mockSecurityManager = mock(SecurityManager.class);
+        MedicalManager mockMedicalManager = mock(MedicalManager.class);
+        UserJDBC mockUserJDBC = mock(UserJDBC.class);
+        DoctorJDBC mockDoctorJDBC = mock(DoctorJDBC.class);
+        PatientJDBC mockPatientJDBC = mock(PatientJDBC.class);
+        RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
+        SignalJDBC mockSignalJDBC = mock(SignalJDBC.class);
+        //Inject mocks
+        BufferedReader mockReader = mock(BufferedReader.class);
+        BufferedWriter mockWriter = mock(BufferedWriter.class);
+
+        setField(handler, "in", mockReader);
+        setField(handler, "out", mockWriter);
+        setField(app, "securityManager", mockSecurityManager);
+        setField(app, "medicalManager", mockMedicalManager);
+        setField(app, "userJDBC", mockUserJDBC);
+        setField(app, "doctorJDBC", mockDoctorJDBC);
+        when(mockSecurityManager.getRoleJDBC()).thenReturn(mockRoleJDBC);
+        when(mockMedicalManager.getPatientJDBC()).thenReturn(mockPatientJDBC);
+        when(mockMedicalManager.getSignalJDBC()).thenReturn(mockSignalJDBC);
+        User doctorUser = new User(1, "doc@mail.com","123",true,1);
+        when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
+        when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
+
+        File zip = File.createTempFile("signal88_", ".zip");
+        Files.writeString(zip.toPath(), "FAKE_ZIP_CONTENT");
+
+        Signal fakeSignal = new Signal(zip, LocalDate.now(), "Hello world", 15, 1000);
+        fakeSignal.setId(88);
+
+        when(mockSignalJDBC.findSignalById(88)).thenReturn(fakeSignal);
+        when(mockUserJDBC.findUserByID(doctorUser.getId())).thenReturn(doctorUser);
+        String jsonRequest = """
+    {
+       "type": "REQUEST_SIGNAL",
+       "data": {
+         "signal_id": 88,
+         "user_id": 1
+       }
+    }
+    """;
+        when(mockReader.readLine()).thenReturn(jsonRequest).thenReturn(null);
+        handler.run();
+        verify(mockWriter).write(contains("SUCCESS"));
+        verify(mockWriter).write(contains("zip-base64"));
+        verify(mockWriter).write(contains("signal_88"));
+    }
+    @Test
+    void handleRequestPatientSignals() throws IOException {
+        Socket socket = mock(Socket.class);
+        when(socket.getInputStream()).thenReturn(in);
+        when(socket.getOutputStream()).thenReturn(out);
+        when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
+        ClientHandler handler = new ClientHandler(socket, server);
+        //Mocks
+        SecurityManager mockSecurityManager = mock(SecurityManager.class);
+        MedicalManager mockMedicalManager = mock(MedicalManager.class);
+        UserJDBC mockUserJDBC = mock(UserJDBC.class);
+        DoctorJDBC mockDoctorJDBC = mock(DoctorJDBC.class);
+        PatientJDBC mockPatientJDBC = mock(PatientJDBC.class);
+        RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
+        SignalJDBC mockSignalJDBC = mock(SignalJDBC.class);
+        //Inject mocks
+        BufferedReader mockReader = mock(BufferedReader.class);
+        BufferedWriter mockWriter = mock(BufferedWriter.class);
+
+        setField(handler, "in", mockReader);
+        setField(handler, "out", mockWriter);
+        setField(app, "securityManager", mockSecurityManager);
+        setField(app, "medicalManager", mockMedicalManager);
+        setField(app, "userJDBC", mockUserJDBC);
+        setField(app, "doctorJDBC", mockDoctorJDBC);
+
+        when(mockSecurityManager.getRoleJDBC()).thenReturn(mockRoleJDBC);
+        when(mockMedicalManager.getPatientJDBC()).thenReturn(mockPatientJDBC);
+        when(mockMedicalManager.getSignalJDBC()).thenReturn(mockSignalJDBC);
+        User doctorUser = new User(1, "doc@mail.com","123",true,1);
+        when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
+        when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
+        when(mockUserJDBC.findUserByID(doctorUser.getId())).thenReturn(doctorUser);
+        when(mockSignalJDBC.getSignalsByPatientId(88)).thenReturn(List.of(
+                new Signal(1, LocalDate.now(), "Sig 1", 10, 500),
+                new Signal(2, LocalDate.now(), "Sig 2", 15, 1000),
+                new Signal(3, LocalDate.now(), "Sig 3", 20, 2000)
+        ));
+        String jsonRequest = """
+    {
+        "type": "REQUEST_PATIENT_SIGNALS",
+        "data": {
+            "patient_id": 88,
+            "user_id": 1
+        }
+    }
+    """;
+        when(mockReader.readLine())
+                .thenReturn(jsonRequest)
+                .thenReturn(null);
+        handler.run();
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(mockWriter, atLeastOnce()).write(captor.capture());
+
+        String response = String.join("", captor.getAllValues());
+        System.out.println("SERVER RESPONSE = " + response);
+
+        // ---- ASSERTIONS ----
+        assertTrue(response.contains("SUCCESS"));
+        assertTrue(response.contains("signals"));
+        assertTrue(response.contains("\"signal_id\":1"));
+        assertTrue(response.contains("\"signal_id\":2"));
+        assertTrue(response.contains("\"signal_id\":3"));
+        assertTrue(response.contains("REQUEST_PATIENT_SIGNALS_RESPONSE"));
+    }
 }
