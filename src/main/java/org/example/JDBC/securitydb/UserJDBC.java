@@ -6,9 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import encryptation.PasswordHash;
 import encryptation.RSAKeyManager;
 import encryptation.RSAUtil;
 import org.example.entities_securitydb.User; // Import User class
+import org.example.service.UserPatient_DoctorLinker;
+import ui.windows.UserLogIn;
 
 
 /**
@@ -193,17 +196,20 @@ public class UserJDBC {
      *                  <code> false </code> otherwise
      */
     public boolean register(String email, String password, boolean active) {
-
+        //Verification of email and password
         if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
             return false;
         } else if (isUser(email)) {
             return false;
-        } else try {
+        } else if (!UserLogIn.validatePassword(password)){
+            return false;
+        } else if (!UserLogIn.validateEmail(email)){
+            return false;
+        }else try {
             {
-                // Retrieve public key to encrypt the password introduced by the user
-                PublicKey publicKey = RSAKeyManager.retrievePublicKey("admin"); //Assume that the file containing the PB is "admin_public_key"
-                String encryptedPassword = RSAUtil.encrypt(password, publicKey);
-                User newUser = new User (email, encryptedPassword,true);
+                //Hash the password for security in the database
+                String hashedPassword = PasswordHash.generatePasswordHash(password);
+                User newUser = new User (email, hashedPassword,true);
                 return insertUser(newUser);
             }
         } catch (Exception e) {
@@ -222,7 +228,7 @@ public class UserJDBC {
      * @return          This {@code User} instance logged in
      */
 
-    //TODO: comprobar que la contraseña proporcionada coincide con la de la base de datos
+    //TODO: CHECK ACTIVE FLAG
     public User login(String email, String password) {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
             return null; // invalid input
@@ -232,13 +238,10 @@ public class UserJDBC {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                String encryptedPassword = rs.getString("password");
-                //Decrypt the password
-                PrivateKey privateKey = RSAKeyManager.retrievePrivateKey("admin"); //Assuming that the file containing the PK: "admin_private_key"
-                String decryptedPassword = RSAUtil.decrypt(encryptedPassword, privateKey);
 
-                //Verify if the password exists in the database
-                if (!password.equals(decryptedPassword)){
+                //Verification if the password is the same as the hashedPassword in the DB
+                String hashedPasswordDB = rs.getString("password");
+                if (!PasswordHash.verifyPassword(password,hashedPasswordDB)){
                     System.out.println("Password does not match.");
                     return null;
                 }
@@ -259,10 +262,6 @@ public class UserJDBC {
         }
         return null;
     }
-
-    /**
-     * Checks if a user exists by a given email
-     */
 
     /**
      * Checks if a user exists by a given email inside the {@code securitydb} database

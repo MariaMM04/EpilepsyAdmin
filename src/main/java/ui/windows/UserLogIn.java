@@ -256,7 +256,7 @@ public class UserLogIn extends JPanel implements ActionListener {
         }
     }
 
-    private Boolean validatePassword(String password) {
+    public static Boolean validatePassword(String password) {
         boolean passwordVacia = (Objects.isNull(password)) || password.isEmpty();
         boolean goodPassword=false;
         System.out.println("empty password "+passwordVacia);
@@ -269,11 +269,11 @@ public class UserLogIn extends JPanel implements ActionListener {
                 }
             }
             if(!goodPassword) {
-                showErrorMessage("The password must contain at least one number.");
+                System.out.println("The password must contain at least one number.");
                 return false;
             }
         }else {
-            showErrorMessage("Password's minimum length is of 8 characters");
+            System.out.println("Password's minimum length is of 8 characters");
             return false;
         }
         return true;
@@ -288,7 +288,7 @@ public class UserLogIn extends JPanel implements ActionListener {
         hideErrorMessage();
     }
 
-    public Boolean validateEmail(String email) {
+    public static Boolean validateEmail(String email) {
         if(!email.isBlank() && email.contains("@")) {
             String[] emailSplit = email.split("@");
             if(emailSplit.length >1 && emailSplit[1].equals("hospital.com")){
@@ -296,7 +296,7 @@ public class UserLogIn extends JPanel implements ActionListener {
             }
         }
         //System.out.println("Valid email? "+validEmail);
-        showErrorMessage("Invalid Email");
+        System.out.println("Invalid Email");
         return false;
     }
 
