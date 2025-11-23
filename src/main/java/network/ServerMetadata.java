@@ -1,9 +1,7 @@
 package network;
 
 import com.google.gson.Gson;
-import org.example.entities_medicaldb.Signal;
 import ui.SignalMetadataDTO;
-import network.SignalRecordingDAO;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,6 +11,7 @@ import java.net.Socket;
 public class ServerMetadata {
 
     private final int port=9100;
+    private SignalMetadataDTO record;
 
     public void startForever() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -30,11 +29,8 @@ public class ServerMetadata {
 
                 String json = reader.readLine();
                 SignalMetadataDTO dto = new SignalMetadataDTO();
-
                 // Construcción del registro
-                Signal record = new Signal(dto.signalId, dto.date,dto.comments,dto.patientId, dto.samplingFrequency);
-                new SignalRecordingDAO().saveSignal(record);
-
+                 record = new SignalMetadataDTO(dto.signalId, dto.date,dto.comments,dto.patientId, dto.samplingFrequency,dto.timestamp, dto.zipFileName);
                 System.out.println("Metadata saved for signalId = " + dto.signalId);
 
                 socket.close();
@@ -45,7 +41,5 @@ public class ServerMetadata {
         }
     }
 
-    public static void main(String[] args) {
-        new ServerMetadata().startForever();
-    }
+
 }

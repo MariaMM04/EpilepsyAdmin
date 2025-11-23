@@ -1,5 +1,7 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonElement;
+
 import java.io.File;
 import java.time.LocalDate;
 
@@ -109,7 +111,11 @@ public class Signal {
 
     public double getSampleFrequency() { return sampleFrequency; }
     public void setSampleFrequency(double sampleFrequency) { this.sampleFrequency = sampleFrequency; }
-
+    // --- Utility ---
+    public byte[] decompessSignalFile() {
+        // Placeholder for decompression logic
+        return new byte[0];
+    }
 
     @Override
     public String toString() {
@@ -122,4 +128,5 @@ public class Signal {
                 ", sampleFrequency=" + sampleFrequency +
                 '}';
     }
+
 }

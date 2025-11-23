@@ -23,7 +23,7 @@ import java.util.zip.GZIPInputStream;
 
 public class SignalJDBC {
 
-    private final Connection connection;
+    private static Connection connection;
 
     public SignalJDBC(Connection connection) {
         this.connection = connection;
@@ -60,7 +60,7 @@ public class SignalJDBC {
      * @param outputPath        The output path created with the same information stored
      * @throws IOException      if the information inside the bytes cannot be read
      */
-    public static void decompressToFile(byte[] compressedData, String outputPath) throws IOException {
+    public File  decompressToFile(byte[] compressedData, String outputPath) throws IOException {
         // Creates the path if it doesn't exist
         File outputFile = new File(outputPath);
         File parentDir = outputFile.getParentFile();
@@ -80,8 +80,12 @@ public class SignalJDBC {
         }
 
         System.out.println("File decompressed successfully to: " + outputPath);
+        return outputFile;
     }
 
+    private static byte[] fileToBytes(File file) throws IOException {
+        return java.nio.file.Files.readAllBytes(file.toPath());
+    }
 
     /**
      * Inserts an existing {@code Signal} into the medical database {@code medicaldb} by a SQL query specified
@@ -93,16 +97,24 @@ public class SignalJDBC {
      *                  <code> false </code> otherwise
      */
     public void insertSignal(Signal signal) {
-        String sql = "INSERT INTO signal (path, date, comments, patient_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO signal (zip_blob, date, comments, patient_id, sampling_frequency) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setBytes(1, compressFile(signal.getPath()));
+
+            byte[] zipBytes = signal.getPath() != null
+                    ? java.nio.file.Files.readAllBytes(signal.getPath().toPath())
+                    : null;
+
+            ps.setBytes(1, zipBytes);
             ps.setDate(2, signal.getDate() != null ? Date.valueOf(signal.getDate()) : null);
             ps.setString(3, signal.getComments());
             ps.setInt(4, signal.getPatientId());
-            ps.setDouble(5,signal.getSampleFrequency());
+            ps.setDouble(5, signal.getSampleFrequency());
+
             ps.executeUpdate();
+
             System.out.println("Signal inserted successfully: " + signal.getPath());
+
         } catch (SQLException | IOException e) {
             System.err.println("Error inserting signal: " + e.getMessage());
         }
@@ -222,29 +234,47 @@ public class SignalJDBC {
      */
     private Signal extractSignalFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
-        byte[] compressed = rs.getBytes("path");
+        byte[] zipBytes = rs.getBytes("path");
+        File file= null;
 
-        // Descompress to a temporal file
-        String path = "output/signal_" + id + ".xlsx";
-        try {
-            decompressToFile(compressed, path);
-        } catch (IOException e) {
-            System.err.println("Error decompressing signal: " + e.getMessage());
+        if (zipBytes != null) {
+            try {
+                // Archivo temporal
+                file = File.createTempFile("signal_" + id + "_", ".zip");
+                file.deleteOnExit();
+
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(zipBytes);
+                }
+
+            } catch (IOException e) {
+                System.err.println("❌ Error writing ZIP from DB: " + e.getMessage());
+            }
         }
+
         //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         LocalDate date = null;
-        long millis = rs.getLong("date");
-        if (!rs.wasNull()) {
-            date = Instant.ofEpochMilli(millis)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+        try {
+            // Si la BD almacena Date como epoch millis (BIGINT)
+            long millis = rs.getLong("date");
+            if (!rs.wasNull()) {
+                date = Instant.ofEpochMilli(millis)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+            }
+        } catch (Exception ex) {
+            // Si en la BD está como DATE normal
+            Date sqlDate = rs.getDate("date");
+            if (sqlDate != null) {
+                date = sqlDate.toLocalDate();
+            }
         }
         //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         String comments = rs.getString("comments");
         int patientId = rs.getInt("patient_id");
         double sampleFrequency = rs.getDouble(("sample_frequency"));
 
-        return new Signal(id, path, date, comments, patientId, sampleFrequency);
+        return new Signal(id, file, date, comments, patientId, sampleFrequency);
     }
     /**
      * Updates the comments of the {@code Signal} instance by its corresponding signalId
@@ -277,7 +307,7 @@ public class SignalJDBC {
         }
     }
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
 
         MedicalManager medicalManager = new MedicalManager();
         //carlos32@gmail.com = id 5 = signal num = 0
@@ -296,6 +326,6 @@ public class SignalJDBC {
             System.out.println(s);
         }
 
-    }
+    }*/
 
 }
