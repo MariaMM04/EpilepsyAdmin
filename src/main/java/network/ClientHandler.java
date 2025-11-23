@@ -488,7 +488,7 @@ public class ClientHandler implements Runnable {
                 symptomsArray.add(s.toJson());
             }
             pJson.add("signals", signalArray);
-            pJson.add("symptoms", symptomsArray);
+            pJson.add("reports", symptomsArray);
             response.add("patient", pJson);
             System.out.println(pJson.toString());
         }else{
@@ -526,7 +526,7 @@ public class ClientHandler implements Runnable {
                     symptomsArray.add(s.toJson());
                 }
                 pJson.add("signals", signalArray);
-                pJson.add("symptoms", symptomsArray);
+                pJson.add("reports", symptomsArray);
 
                 patientArray.add(pJson);
             }
