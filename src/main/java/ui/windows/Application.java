@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.KeyPair;
 import java.util.ArrayList;
 
 public class Application extends JFrame {
@@ -39,6 +40,7 @@ public class Application extends JFrame {
     private int serverPort = 9009;
     public Server server;
     public User user;
+    private KeyPair keyPair;
 
     //Managers
     public PatientJDBC patientJDBC;
@@ -48,15 +50,22 @@ public class Application extends JFrame {
     public org.example.JDBC.securitydb.SecurityManager securityManager;
     public UserJDBC userJDBC;
 
+    // TODO: try catch
     public static void main(String[] args){
         //La aplicación se ejecuta en su propio hilo especial EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
-            Application app = new Application(); // inicializa tu GUI
+            Application app = null; // inicializa tu GUI
+            try {
+                app = new Application();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             app.setVisible(true);
         });
     }
 
-    public Application() {
+    // TODO: Preguntar Mamen throws Exception
+    public Application() throws Exception {
         initComponents();
         //setBounds(100, 100, 602, 436);
         setBounds(100, 100, 650, 500);
@@ -70,7 +79,7 @@ public class Application extends JFrame {
         adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
-        server = new Server(serverPort, this);
+        server = new Server(serverPort, this, keyPair);
         server.startServer();
 
         //Panels

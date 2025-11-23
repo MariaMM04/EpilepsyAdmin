@@ -1,12 +1,13 @@
 package network;
 
+import encryption.RSAKeyManager;
 import ui.windows.Application;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import Exceptions.*;
@@ -17,23 +18,30 @@ import Exceptions.*;
 public class Server {
     private int port;
     private ServerSocket serverSocket;
-    //implementación de List para concurrencia segura sin bloqueos. Ideal para apps multihilos con muchas consultas y pocas modificaciones
+    //Implementación de List para concurrencia segura sin bloqueos. Ideal para apps multihilos con muchas consultas y pocas modificaciones
     private final CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
     //private List<ClientHandler> clients;
     private volatile Boolean running = false; //Para que otros hilos vean directamente si hay cambios en ella
     private final Application appMain; //To access the centralized medicalManager and securityManager
+    private final KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
 
-    public Server(int port,  Application appMain) {
+    public Server(int port,  Application appMain, KeyPair keyPair) throws Exception {
         this.port = port;
         //clients = new ArrayList<>();
         this.appMain = appMain;
+        this.keyPair = RSAKeyManager.generateKeyPair();
     }
 
     // TEST constructor
-    public Server(ServerSocket serverSocket, Application appMain){
+    public Server(ServerSocket serverSocket, Application appMain, KeyPair keyPair){
         this.serverSocket = serverSocket;
         this.port = -1; // unused
         this.appMain = appMain;
+        try{
+            this.keyPair = RSAKeyManager.generateKeyPair();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void startServer(){
@@ -49,7 +57,7 @@ public class Server {
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client connected from IP: "+clientSocket.getInetAddress().getHostAddress());
-                    ClientHandler handler = new ClientHandler(clientSocket, this);
+                    ClientHandler handler = new ClientHandler(clientSocket, this, keyPair.getPublic());
                     clients.add(handler);
                     new Thread(handler).start(); //Start client thread
                     System.out.println("New client connected. Total: " + clients.size());
