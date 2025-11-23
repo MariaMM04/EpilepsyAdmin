@@ -25,23 +25,20 @@ public class Server {
     private final Application appMain; //To access the centralized medicalManager and securityManager
     private final KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
 
-    public Server(int port,  Application appMain, KeyPair keyPair) throws Exception {
+    public Server(int port,  Application appMain) throws Exception {
         this.port = port;
         //clients = new ArrayList<>();
         this.appMain = appMain;
+        // Creates the key pair for public encryption
         this.keyPair = RSAKeyManager.generateKeyPair();
     }
 
     // TEST constructor
-    public Server(ServerSocket serverSocket, Application appMain, KeyPair keyPair){
+    public Server(ServerSocket serverSocket, Application appMain) throws Exception{
         this.serverSocket = serverSocket;
         this.port = -1; // unused
         this.appMain = appMain;
-        try{
-            this.keyPair = RSAKeyManager.generateKeyPair();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.keyPair = RSAKeyManager.generateKeyPair();
     }
 
     public void startServer(){
@@ -57,6 +54,7 @@ public class Server {
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client connected from IP: "+clientSocket.getInetAddress().getHostAddress());
+                    //New client with the server's public key
                     ClientHandler handler = new ClientHandler(clientSocket, this, keyPair.getPublic());
                     clients.add(handler);
                     new Thread(handler).start(); //Start client thread

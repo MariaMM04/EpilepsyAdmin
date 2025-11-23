@@ -29,13 +29,13 @@ public class ClientHandler implements Runnable {
     private final Gson gson = new Gson();;
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
-    private PublicKey serverPB; //This is going to be the server's public key
+    private PublicKey serverPK; //This is going to be the server's public key
     private SecretKey AESkey;
 
-    public ClientHandler(Socket socket, Server server, PublicKey serverPB) throws IOException {
+    public ClientHandler(Socket socket, Server server, PublicKey serverPK) throws IOException {
         this.socket = socket;
         this.server = server;
-        this.serverPB = serverPB;
+        this.serverPK = serverPK;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         running = new AtomicBoolean(true);

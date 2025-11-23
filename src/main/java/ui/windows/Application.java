@@ -79,7 +79,7 @@ public class Application extends JFrame {
         adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
-        server = new Server(serverPort, this, keyPair);
+        server = new Server(serverPort, this);
         server.startServer();
 
         //Panels
