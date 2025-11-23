@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="encryption">
-      <change afterPath="$PROJECT_DIR$/src/main/java/encryptation/PasswordHash.java" afterDir="false" />
+    <list default="true" id="7acc1e52-8722-48e0-a9b8-65997aeddd3e" name="Changes" comment="encryption of passwords in db">
+      <change afterPath="$PROJECT_DIR$/src/main/java/encryption/AESUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/encryptation/PasswordHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryption/PasswordHash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/encryptation/RSAKeyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryption/RSAKeyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/encryptation/RSAUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryption/RSAUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/UserLogIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +231,14 @@
       <option name="project" value="LOCAL" />
       <updated>1763325505632</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="encryption of passwords in db">
+      <created>1763739123512</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763739123512</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -249,7 +261,8 @@
     <MESSAGE value="javadoc in the medical entities" />
     <MESSAGE value="javadoc in the security entities" />
     <MESSAGE value="encryption" />
-    <option name="LAST_COMMIT_MESSAGE" value="encryption" />
+    <MESSAGE value="encryption of passwords in db" />
+    <option name="LAST_COMMIT_MESSAGE" value="encryption of passwords in db" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

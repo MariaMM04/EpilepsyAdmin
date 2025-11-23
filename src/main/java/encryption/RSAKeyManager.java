@@ -1,4 +1,4 @@
-package encryptation;
+package encryption;
 
 import java.io.*;
 import java.security.*;

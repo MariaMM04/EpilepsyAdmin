@@ -1,16 +1,11 @@
 package org.example.JDBC.securitydb;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import encryptation.PasswordHash;
-import encryptation.RSAKeyManager;
-import encryptation.RSAUtil;
+import encryption.PasswordHash;
 import org.example.entities_securitydb.User; // Import User class
-import org.example.service.UserPatient_DoctorLinker;
 import ui.windows.UserLogIn;
 
 

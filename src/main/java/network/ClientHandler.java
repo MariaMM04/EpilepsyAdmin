@@ -6,19 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
-import Exceptions.*;
-import ui.RandomData;
-import ui.windows.Application;
 
+import javax.crypto.SecretKey;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
+import java.security.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientHandler implements Runnable {
     final Socket socket;
@@ -28,10 +23,13 @@ public class ClientHandler implements Runnable {
     private final Gson gson = new Gson();;
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
+    private PublicKey serverPB; //This is going to be the server's public key
+    private SecretKey AESkey;
 
-    public ClientHandler(Socket socket, Server server) throws IOException {
+    public ClientHandler(Socket socket, Server server, PublicKey serverPB) throws IOException {
         this.socket = socket;
         this.server = server;
+        this.serverPB = serverPB;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         running = new AtomicBoolean(true);
