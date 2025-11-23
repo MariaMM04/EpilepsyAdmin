@@ -55,7 +55,7 @@ public class ReportJDBC {
                     : null;
             ps.setString(2, symptomsStr);
 
-            ps.setInt(4, report.getPatientId());
+            ps.setInt(3, report.getPatientId());
 
             ps.executeUpdate();
             System.out.println("Report inserted successfully for patient ID: " + report.getPatientId());
@@ -177,6 +177,7 @@ public class ReportJDBC {
             return false;
         }
     }
+
 
     /**
      * Helper method that creates a {@code Report} instance from the current ResultSet row.
