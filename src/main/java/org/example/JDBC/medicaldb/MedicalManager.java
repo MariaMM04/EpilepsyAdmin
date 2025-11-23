@@ -44,7 +44,7 @@ public class MedicalManager {
         MedicalManager medicalManager = new MedicalManager();
         SecurityManager securityManager = new SecurityManager();
 
-        Signal signal1 = new Signal(0, LocalDate.now(), "Random comments", 5, 100);
+        /*Signal signal1 = new Signal(0, LocalDate.now(), "Random comments", 5, 100);
         Report report1 = new Report(0, LocalDate.now(), new ArrayList<Report.Symptom>(), 5);
         report1.addSymptom(Report.Symptom.DIZZINESS);
         report1.addSymptom(Report.Symptom.HEADACHE);
@@ -57,7 +57,7 @@ public class MedicalManager {
         medicalManager.signalJDBC.insertSignal(signal1);
         medicalManager.reportJDBC.insertReport(report1);
         medicalManager.signalJDBC.insertSignal(signal2);
-        medicalManager.reportJDBC.insertReport(report2);
+        medicalManager.reportJDBC.insertReport(report2);*/
 
         List<Patient> patients =  medicalManager.getPatientJDBC().getAllPatients();
         for (Patient patient : patients) {

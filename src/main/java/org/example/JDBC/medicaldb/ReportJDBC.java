@@ -4,7 +4,9 @@ import org.example.entities_medicaldb.Report;
 import org.example.entities_medicaldb.Report.Symptom;
 
 import java.sql.*;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -188,8 +190,14 @@ public class ReportJDBC {
      */
     private Report extractReportFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
-        LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
-
+        //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
+        LocalDate date = null;
+        long millis = rs.getLong("date");
+        if (!rs.wasNull()) {
+            date = Instant.ofEpochMilli(millis)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
         // Convert comma-separated String to List<Symptom>
         String symptomsStr = rs.getString("symptoms");
         List<Symptom> symptoms = (symptomsStr != null && !symptomsStr.isEmpty())
