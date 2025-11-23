@@ -3,12 +3,17 @@ package org.example.JDBC.medicaldb;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.example.JDBC.medicaldb.*;
 import org.example.JDBC.securitydb.SecurityManager;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
+import org.example.entities_medicaldb.Report;
+import org.example.entities_medicaldb.Signal;
 import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User;
 
@@ -38,9 +43,39 @@ public class MedicalManager {
     public static void main(String[] args) {
         MedicalManager medicalManager = new MedicalManager();
         SecurityManager securityManager = new SecurityManager();
+
+        Signal signal1 = new Signal(0, LocalDate.now(), "Random comments", 5, 100);
+        Report report1 = new Report(0, LocalDate.now(), new ArrayList<Report.Symptom>(), 5);
+        report1.addSymptom(Report.Symptom.DIZZINESS);
+        report1.addSymptom(Report.Symptom.HEADACHE);
+
+        Signal signal2 = new Signal(0, LocalDate.of(2025, 11, 22), "Random comments", 5, 100);
+        Report report2 = new Report(0, LocalDate.of(2025, 11, 22), new ArrayList<Report.Symptom>(), 5);
+        report2.addSymptom(Report.Symptom.DIZZINESS);
+        report2.addSymptom(Report.Symptom.NAUSEA);
+
+        medicalManager.signalJDBC.insertSignal(signal1);
+        medicalManager.reportJDBC.insertReport(report1);
+        medicalManager.signalJDBC.insertSignal(signal2);
+        medicalManager.reportJDBC.insertReport(report2);
+
         List<Patient> patients =  medicalManager.getPatientJDBC().getAllPatients();
         for (Patient patient : patients) {
-            System.out.println(patient.toString());
+            System.out.println(patient.toJason().toString());
+            List<Signal> signals = medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());
+            List<Report> symptoms = medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());
+            JsonObject pJson = patient.toJason();
+            JsonArray signalArray = new JsonArray();
+            for (Signal s : signals) {
+                signalArray.add(s.toJson());
+            }
+            JsonArray symptomsArray = new JsonArray();
+            for (Report s : symptoms) {
+                symptomsArray.add(s.toJson());
+            }
+            pJson.add("signals", signalArray);
+            pJson.add("symptoms", symptomsArray);
+            System.out.println(pJson.toString());
         }
 
         /*Patient patient = new Patient("Jane", "Doe", "jane.doe@example.com", "123456789", LocalDate.of(2004, 05, 11), "Female", 3);

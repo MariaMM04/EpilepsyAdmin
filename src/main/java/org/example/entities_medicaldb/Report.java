@@ -1,5 +1,7 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonObject;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -104,11 +106,10 @@ public class Report {
 
     public List<Symptom> getSymptoms() { return symptoms; }
     public void setSymptoms(List<Symptom> symptoms) { this.symptoms = symptoms; }
+    public void addSymptom(Symptom symptom) {this.symptoms.add(symptom);}
 
     public int getPatientId() { return patientId; }
     public void setPatientId(int patientId) { this.patientId = patientId; }
-
-
 
     // --- Utility ---
     @Override
@@ -120,5 +121,15 @@ public class Report {
                 ", patientId=" + patientId +
                 '}';
     }
+
+    public JsonObject toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
+        jsonObject.addProperty("date", date.toString());
+        jsonObject.addProperty("symptoms", symptoms.toString());
+        jsonObject.addProperty("patientId", patientId);
+        return jsonObject;
+    }
 }
+
 
