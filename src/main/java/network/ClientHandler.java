@@ -105,6 +105,7 @@ public class ClientHandler implements Runnable {
                         handleRequestSignal(request.getAsJsonObject("data"));
                         break;
                     }
+
                     case "REQUEST_PATIENT_SIGNALS" : {
                         System.out.println("REQUEST_PATIENT_SIGNALS");
                         handleRequestPatientSignals(request.getAsJsonObject("data"));

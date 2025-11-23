@@ -709,9 +709,7 @@ public class ClientHandlerTest {
                   "metadata": {
                     "patient_id": 12,
                     "sampling_rate": 500,
-                    "duration_seconds": 42,
-                    "channels": ["ECG", "ACC"],
-                    "timestamp": "2025-02-12T18:32:11"
+                    "timestamp": "2025-02-12T18:32:11" //todo cambiar clases signals para que si cojan el tiempo
                   },
                   "compression": "zip-base64",
                   "filename": "signal_test.zip",
