@@ -5,9 +5,6 @@ import encryption.RSAUtil;
 import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
-import Exceptions.*;
-import ui.RandomData;
-import ui.windows.Application;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,12 +13,9 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientHandler implements Runnable {
     final Socket socket;
@@ -121,6 +115,12 @@ public class ClientHandler implements Runnable {
                         handleRequestPatientSignals(request.getAsJsonObject("data"));
                         break;
                     }
+                    case "SAVE_REPORT":{
+                        System.out.println("SAVE_REPORT");
+                        handleSaveReportRequest(request.getAsJsonObject("data"));
+                        break;
+                    }
+
                     case "CLIENT_AES_KEY" : {
                         System.out.println("CLIENT_AES_KEY");
                         String encryptedAESkey = request.get("data").getAsString();
@@ -225,7 +225,7 @@ public class ClientHandler implements Runnable {
             sendRawJson(response);
 
         }else {
-            byte[] zipBytes = Files.readAllBytes(signal.getPath().toPath());
+            byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
             JsonObject metadata = new JsonObject();
             metadata.addProperty("type", "REQUEST_SIGNAL_METADATA");
@@ -519,7 +519,21 @@ public class ClientHandler implements Runnable {
         Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(email);
         if(patient != null) {
             response.addProperty("status", "SUCCESS");
-            response.add("patient", patient.toJason());
+            List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());
+            List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());
+            JsonObject pJson = patient.toJason();
+            JsonArray signalArray = new JsonArray();
+            for (Signal s : signals) {
+                signalArray.add(s.toJson());
+            }
+            JsonArray symptomsArray = new JsonArray();
+            for (Report s : symptoms) {
+                symptomsArray.add(s.toJson());
+            }
+            pJson.add("signals", signalArray);
+            pJson.add("reports", symptomsArray);
+            response.add("patient", pJson);
+            System.out.println(pJson.toString());
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
@@ -543,7 +557,21 @@ public class ClientHandler implements Runnable {
 
             JsonArray patientArray = new JsonArray();
             for (Patient p : patients) {
-                patientArray.add(p.toJason());
+                List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(p.getId());
+                List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(p.getId());
+                JsonObject pJson = p.toJason();
+                JsonArray signalArray = new JsonArray();
+                for (Signal s : signals) {
+                    signalArray.add(s.toJson());
+                }
+                JsonArray symptomsArray = new JsonArray();
+                for (Report s : symptoms) {
+                    symptomsArray.add(s.toJson());
+                }
+                pJson.add("signals", signalArray);
+                pJson.add("reports", symptomsArray);
+
+                patientArray.add(pJson);
             }
 
             response.add("patients", patientArray);
@@ -581,6 +609,52 @@ public class ClientHandler implements Runnable {
 
         if(doctor!= null && doctor1 != null && doctor1.getId() == doctor.getId()) {
             if(server.getAppMain().medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {
+                response.addProperty("status", "SUCCESS");
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Error saving comments");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+
+        sendRawJson(response);
+    }
+
+    private void handleSaveReportRequest(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SAVE_REPORT_RESPONSE");
+
+        Integer user_id = data.get("user_id").getAsInt();
+        Integer patient_id = data.get("patient_id").getAsInt();
+        Report report = Report.fromJson(data.get("report").getAsJsonObject());
+        if(report == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Error parsing report");
+            sendRawJson(response);
+            return;
+        }
+
+        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        if(user == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
+        if(patient == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        if(patient.getEmail().equals(user.getEmail())) {
+            report.setPatientId(patient_id);
+            if(server.getAppMain().medicalManager.getReportJDBC().insertReport(report)) {
                 response.addProperty("status", "SUCCESS");
             }else{
                 response.addProperty("status", "ERROR");

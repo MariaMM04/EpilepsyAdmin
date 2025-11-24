@@ -1,13 +1,20 @@
 package org.example;
 
 import org.example.JDBC.medicaldb.MedicalManager;
+import org.example.JDBC.medicaldb.ReportJDBC;
 import org.example.JDBC.securitydb.SecurityManager;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
+import org.example.entities_medicaldb.Report;
 import org.example.entities_securitydb.User;
 import org.example.service.AdminLinkService;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.example.entities_medicaldb.Report.Symptom.*;
+
 
 /**
  * Demonstration class for managing doctors, patients and users.
@@ -58,6 +65,10 @@ public class MainAdmin {
         patientUser.setActive(true);
 
         adminService.createPatientAndUser(patient, patientUser);
+
+        List<Report.Symptom> symptoms = Arrays.asList(Nausea, Fatigue);
+        Report report= new Report(LocalDate.of(2025, 11, 23),symptoms,3 );
+        medicalManager.getReportJDBC().insertReport(report);
 
         // -----------------------------------------------------
         // DEACTIVATE BOTH

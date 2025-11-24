@@ -1,5 +1,6 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.time.LocalDate;
