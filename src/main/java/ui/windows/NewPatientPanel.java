@@ -308,6 +308,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
 
     public void updateView(){
         docs.clear();
+        doctors.removeAllItems();
         docs = appMain.medicalManager.getDoctorJDBC().getAllDoctors();
         for (Doctor doc : docs) {
             doctors.addItem(doc.getName()+" "+doc.getSurname()+"; "+doc.getSpeciality()+" specialist");
