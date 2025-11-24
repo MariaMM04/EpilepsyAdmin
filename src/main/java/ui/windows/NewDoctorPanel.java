@@ -58,7 +58,8 @@ import java.util.Objects;
  *     <li>Persist via {@link AdminLinkService#createUserAndDoctor(User, Doctor)}</li>
  * </ol>
  *
- *  @author MamenCortes
+ * @author MamenCortes
+ * @author paulablancog
  */
 public class NewDoctorPanel extends JPanel implements ActionListener {
     private Application appMain;

@@ -56,6 +56,9 @@ import java.util.ArrayList;
  *     <li>If the admin closes the window while clients are still connected, confirmation is required.</li>
  *     <li>Server shutdown is performed using {@link Server#stop()}, wrapped with error handling.</li>
  * </ul>
+ *
+ * @author MamenCortes
+ * @author paulablancog
  */
 public class Application extends JFrame {
     public static Color darker_purple = new Color(114, 82, 153); //#725299

@@ -29,7 +29,8 @@ import java.util.Objects;
  *         to clear all fields and messages.</li>
  * </ul>
  *
- *  @author MamenCortes
+ * @author MamenCortes
+ * @author paulablancog
  */
 public class UserLogIn extends JPanel implements ActionListener {
 

@@ -58,7 +58,8 @@ import java.util.Objects;
  *     <li><b>Password:</b> minimum 8 characters, at least one digit</li>
  * </ul>
  *
- *  @author MamenCortes
+ * @author MamenCortes
+ * @author paulablancog
  */
 public class NewPatientPanel extends JPanel implements ActionListener {
     private Application appMain;
