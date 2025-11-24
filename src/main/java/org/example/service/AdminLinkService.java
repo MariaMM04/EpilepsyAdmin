@@ -1,5 +1,6 @@
 package org.example.service;
 
+import Exceptions.RegisterError;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.securitydb.SecurityManager;
 import org.example.entities_medicaldb.Doctor;
@@ -43,7 +44,7 @@ public class AdminLinkService {
             medicalManager.getConnection().setAutoCommit(false);
 
             // Inserta en securitydb
-            securityManager.getUserJDBC().insertUser(user);
+            securityManager.getUserJDBC().register(user);
 
             // Inserta en medicaldb
             medicalManager.getDoctorJDBC().insertDoctor(doctor);
@@ -53,7 +54,7 @@ public class AdminLinkService {
             medicalManager.getConnection().commit();
             result = true;
 
-        } catch (SQLException e) {
+        } catch (SQLException | RegisterError e) {
             System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
             if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
             if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
@@ -80,7 +81,7 @@ public class AdminLinkService {
             medicalManager.getConnection().setAutoCommit(false);
 
             // Inserta en securitydb
-            securityManager.getUserJDBC().insertUser(user);
+            securityManager.getUserJDBC().register(user);
 
             // Inserta en medicaldb
             medicalManager.getPatientJDBC().insertPatient(patient);
@@ -90,8 +91,8 @@ public class AdminLinkService {
             medicalManager.getConnection().commit();
             result = true;
 
-        } catch (SQLException e) {
-            System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
+        } catch (SQLException | RegisterError e) {
+            System.out.println("Error detected, rolling back both transactions: " + e.getMessage());
             if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
             if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
         } finally {

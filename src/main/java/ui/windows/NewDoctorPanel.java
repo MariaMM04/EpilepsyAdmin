@@ -217,6 +217,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty() || password.getText() == "") {
                 showErrorMessage("Please fill all the fields");
             }else {
+                //TODO: Cambiar para register
                 if(!appMain.adminLinkService.createUserAndDoctor(u, d)){
                     showErrorMessage("Error creating user and doctor");
                     saved = false;

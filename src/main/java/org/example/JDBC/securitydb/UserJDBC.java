@@ -1,9 +1,12 @@
 package org.example.JDBC.securitydb;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import Exceptions.RegisterError;
 import encryption.PasswordHash;
 import org.example.entities_securitydb.User; // Import User class
 import ui.windows.NewPatientPanel;
@@ -180,40 +183,29 @@ public class UserJDBC {
     }
 
     /**
-     * Registers a new user in the database after performing password validation.
      *
-     * @param email     the new user's email
-     * @param password  the new user's password
-     * @param active    the new users active flag. May be:
-     *                  <code> true </code> if the user was successfully updated into the database
-     *                  <code> false </code> otherwise
-     * @return          boolean value of the performed registration. May be:
-     *                  <code> true </code> if the user was successfully registered into the database
-     *                  <code> false </code> otherwise
+     *
+     * @param user
+     * @return
      */
-    public User register(String email, String password, boolean active, int roleId) {
+    public boolean register(User user) throws RegisterError {
         //Verification of email and password
-        if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
-            System.out.println("Please fill all field values");
-            return null;
-        } else if (isUser(email)) {
-            System.out.println("You are already registered with this email");
-            return null;
-        } else if (!UserLogIn.validatePassword(password)){
-            return null;
-        } else if (!NewPatientPanel.validateEmail(email)){
-            return null;
+        if (!UserLogIn.validatePassword(user.getPassword())){
+            return false;
+        } else if (!NewPatientPanel.validateEmail(user.getEmail())){
+            return false;
         }else try {
             {
                 //Hash the password for security in the database
-                String hashedPassword = PasswordHash.generatePasswordHash(password);
-                User newUser = new User (email, hashedPassword,true);
-                newUser.setRole_id(roleId);
-                return newUser;
+                String hashedPassword = PasswordHash.generatePasswordHash(user.getPassword());
+                User newUser = new User (user.getEmail(), hashedPassword,true);
+                newUser.setRole_id(user.getRole_id());
+                System.out.println("The user is: "+newUser.getEmail());
+                System.out.println("The user's password is: "+newUser.getPassword());
+                return insertUser(newUser);
             }
-        } catch (Exception e) {
-            System.out.println("Register failed: "+e.getMessage());
-            return null;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
+            throw new RegisterError("User is not registered");
         }
     }
 
@@ -227,7 +219,6 @@ public class UserJDBC {
      * @return          This {@code User} instance logged in
      */
 
-    //TODO: CHECK ACTIVE FLAG
     public User login(String email, String password) {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
             return null; // invalid input
