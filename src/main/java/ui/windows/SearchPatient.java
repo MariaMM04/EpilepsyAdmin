@@ -12,11 +12,58 @@ import java.util.stream.Collectors;
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
+import org.example.service.AdminLinkService;
 import ui.components.MyButton;
 import ui.components.MyTextField;
 import ui.components.PatientCell;
 import javax.swing.*;
-
+/**
+ * Panel that allows administrators to search, filter and manage the list
+ * of patients stored in the Night Guardian system.
+ * <p>
+ * It offers dynamic filtering by surname, resetting the full list, toggling
+ * activation status, and navigating back to the main menu. Patients are
+ * displayed in a scrollable list using a custom {@link PatientCell} renderer.
+ * </p>
+ *
+ * <h2>Responsibilities</h2>
+ * <ul>
+ *     <li>Display all patients retrieved externally</li>
+ *     <li>Filter patients by surname (case-insensitive)</li>
+ *     <li>Toggle activation status of a selected patient</li>
+ *     <li>Allow navigation back to the {@link MainMenu}</li>
+ *     <li>Show error messages when applicable</li>
+ * </ul>
+ *
+ * <h2>Lifecycle</h2>
+ * <ol>
+ *     <li>Constructor receives the main {@link Application} controller.</li>
+ *     <li>{@link #initMainPanel()} builds all UI elements:
+ *         <ul>
+ *             <li>Title + search bar</li>
+ *             <li>Search and reset buttons</li>
+ *             <li>Status toggle button</li>
+ *             <li>Scrollable list of patients</li>
+ *             <li>Back to menu button</li>
+ *         </ul>
+ *     </li>
+ *     <li>The external caller invokes {@link #updatePatientDefModel(List)} to populate the list.</li>
+ *     <li>User interacts with search/reset/status buttons.</li>
+ *     <li>Returning to main menu triggers a full panel reset.</li>
+ * </ol>
+ *
+ * <h2>Status Management</h2>
+ * <p>
+ * The user can toggle a patient's {@code active} flag using the button
+ * <b>SWITCH STATUS</b>, which internally calls:
+ * {@link AdminLinkService#changePatientStatus(String, Boolean)}.
+ * </p>
+ * <p>
+ * After successful status change, the list updates and a green message is displayed.
+ * </p>
+ *
+ * @author MamenCortes
+ */
 public class SearchPatient extends JPanel implements ActionListener, MouseListener {
 
     protected Application appMain;
@@ -37,11 +84,29 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
     protected DefaultListModel<Patient> patientsDefListModel;
     protected List<Patient> allPatients;
 
+    /**
+     * Constructs the SearchPatient panel and initializes the UI.
+     *
+     * @param appMain main application controller for navigation and admin actions
+     */
     public SearchPatient(Application appMain) {
         this.appMain = appMain;
         initMainPanel();
     }
 
+    /**
+     * Builds the complete UI of the panel using MigLayout.
+     * <p>
+     * The layout includes:
+     * <ul>
+     *     <li>Title label and icon</li>
+     *     <li>Search panel with text field + search/reset buttons</li>
+     *     <li>Status toggle button to activate/deactivate selected patient</li>
+     *     <li>Scrollable list with custom {@link PatientCell} renderer</li>
+     *     <li>Back to menu button</li>
+     *     <li>Error message label</li>
+     * </ul>
+     */
     private void initMainPanel() {
         this.setLayout(new MigLayout("fill, inset 20, gap 0, wrap 3", "[grow 5]5[grow 5]5[grow 40][grow 40]", "[][][][][][][][][][]"));
         this.setBackground(Color.white);
@@ -103,7 +168,18 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
 
         add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
     }
-
+    /**
+     * Updates the list model with the provided patients.
+     * <p>
+     * The first time it is called, the list is cached into {@link #allPatients}.
+     * Afterwards, it:
+     * <ul>
+     *     <li>Clears and reloads the visible list</li>
+     *     <li>Shows an error if the list is empty</li>
+     * </ul>
+     *
+     * @param patients the patients to display
+     */
     protected void updatePatientDefModel(List<Patient> patients) {
         if(patients == null || patients.isEmpty()) {
             showErrorMessage("No patients found!");
@@ -119,25 +195,40 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
 
         }
     }
-
+    /**
+     * Shows an error message in red under the search panel.
+     *
+     * @param message message to show
+     */
     private void showErrorMessage(String message) {
         errorMessage.setText(message);
         errorMessage.setVisible(true);
         errorMessage.setForeground(Color.red);
     }
-
+    /**
+     * Hides the error message.
+     */
     private void hideErrorMessage() {
         errorMessage.setVisible(false);
     }
-
+    /**
+     * Resets all components when leaving this panel:
+     * <ul>
+     *     <li>Clears the search field</li>
+     *     <li>Clears list contents</li>
+     *     <li>Clears cached patient list</li>
+     *     <li>Hides error messages</li>
+     * </ul>
+     */
     private void resetPanel(){
-        //TODO: reset panel when going back to menu
         hideErrorMessage();
         searchByTextField.setText("");
         allPatients = null;
         patientsDefListModel.clear();
     }
-
+    /**
+     * Restores the list to its unfiltered state.
+     */
     private void clearView(){
         searchByTextField.setText("");
         updatePatientDefModel(allPatients);
@@ -145,7 +236,17 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
             showErrorMessage("No patient found");
         }
     }
-
+    /**
+     * Handles interaction with all panel buttons:
+     * <ul>
+     *     <li><b>BACK TO MENU:</b> resets panel and returns to main menu</li>
+     *     <li><b>SEARCH:</b> filters by surname</li>
+     *     <li><b>RESET:</b> shows full list</li>
+     *     <li><b>SWITCH STATUS:</b> toggles a patient's activation state</li>
+     * </ul>
+     *
+     * @param e the action event triggered by user interaction
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == goBackButton) {
             resetPanel();

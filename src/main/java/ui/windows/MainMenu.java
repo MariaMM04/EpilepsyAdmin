@@ -12,7 +12,48 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+/**
+ * Main administrative dashboard of the Night Guardian system.
+ * <p>
+ * This panel is displayed after a successful administrator login and serves
+ * as the central navigation hub for all administrative operations. It provides
+ * access to:
+ * </p>
+ *
+ * <ul>
+ *     <li>Patient management (create & list)</li>
+ *     <li>Doctor management (create & list)</li>
+ *     <li>Verification of active server connections</li>
+ *     <li>Restarting the internal server</li>
+ *     <li>Logging out the current user</li>
+ * </ul>
+ *
+ * <h2>Lifecycle</h2>
+ * <ol>
+ *     <li>The constructor receives the {@link Application} instance (controller).</li>
+ *     <li>All secondary panels (new patient, new doctor, search views) are created immediately.</li>
+ *     <li>The {@link #init(ImageIcon, String)} method from {@link MenuTemplate} builds the UI:
+ *         header, logo, company name, and button layout.</li>
+ *     <li>Button clicks trigger navigation using {@link Application#changeToPanel(JPanel)}.</li>
+ *     <li>This panel persists across the entire application lifetime; it is not recreated.</li>
+ * </ol>
+ *
+ * <h2>Navigation Diagram</h2>
+ * <pre>
+ * ┌──────────────────┐
+ * │     MainMenu     │
+ * └───▲──────┬──────┘
+ *     │      │
+ *     │      ├──► SearchPatient
+ *     │      ├──► SearchDoctor
+ *     │      ├──► NewPatientPanel
+ *     │      ├──► NewDoctorPanel
+ *     │      ├──► CheckConnectedClients (modal)
+ *     │      └──► Restart Server
+ * </pre>
+ *
+ * @author MamenCortes
+ */
 public class MainMenu extends MenuTemplate {
     private static final long serialVersionUID = 6050014345831062858L;
     private ImageIcon logoIcon;
@@ -31,9 +72,21 @@ public class MainMenu extends MenuTemplate {
     private NewDoctorPanel newDoctorPanel;
     private SearchPatient searchPatientPanel;
     private SearchDoctor searchDoctorPanel;
-
+    /**
+     * Creates the MainMenu and all its subviews.
+     * <p>
+     * Child panels include:
+     * <ul>
+     *     <li>{@link NewPatientPanel} – create a new patient</li>
+     *     <li>{@link NewDoctorPanel} – create a new doctor</li>
+     *     <li>{@link SearchPatient} – view/search patient list</li>
+     *     <li>{@link SearchDoctor} – view/search doctor list</li>
+     * </ul>
+     * </p>
+     *
+     * @param appMain reference to the global {@link Application} controller
+     */
     public MainMenu(Application appMain) {
-        //super();
         this.appMain = appMain;
         //Initialize panels
         newPatientPanel = new NewPatientPanel(appMain);
@@ -47,6 +100,11 @@ public class MainMenu extends MenuTemplate {
         this.init(logoIcon, company_name);
     }
 
+    /**
+     * Adds all the menu buttons to the button list inherited from {@link MenuTemplate}.
+     * <p>
+     * These buttons define the main admin actions and must be added before calling {@link #init}.</p>
+     */
     private void addButtons() {
         //Default color: light purple
         seePatientListBt = new MyButton("Patients List");
@@ -66,6 +124,22 @@ public class MainMenu extends MenuTemplate {
         buttons.add(logOutBt);
     }
 
+    /**
+     * Handles button actions defined in this menu.
+     *
+     * <h3>Actions</h3>
+     * <ul>
+     *     <li><b>Patients List:</b> Retrieves all patients (with assigned doctors) and opens the search panel.</li>
+     *     <li><b>Doctors List:</b> Retrieves all doctors and opens the doctor list panel.</li>
+     *     <li><b>Create Patient:</b> Opens the patient creation form.</li>
+     *     <li><b>Create Doctor:</b> Opens the doctor creation form.</li>
+     *     <li><b>Verify Connected Clients:</b> Opens a modal with the list of connected clients.</li>
+     *     <li><b>Restart Server:</b> Restarts the admin server if it is not currently running.</li>
+     *     <li><b>Log Out:</b> Returns to the login panel.</li>
+     * </ul>
+     *
+     * @param e action event triggered by user interaction
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()== seePatientListBt) {
@@ -98,12 +172,13 @@ public class MainMenu extends MenuTemplate {
         }
 
     }
-
+    /**
+     * Displays a modal dialog listing all currently connected clients.
+     * Provides controls to refresh or stop the server safely.
+     *
+     * @param parentFrame the application frame used to center the dialog
+     */
     private void showCheckConnectedClients(JFrame parentFrame) {
-        /*ArrayList<String> clients = new ArrayList<>();
-        clients.add("Client 1: socket1");
-        clients.add("Client 2: socket2");
-        clients.add("Client 3: socket3");*/
         ArrayList<String> clients;
         if(appMain.server.isRunning()){
             clients = appMain.server.getConnectedClients();
@@ -119,7 +194,6 @@ public class MainMenu extends MenuTemplate {
             dialog.getContentPane().setBackground(Color.white);
             dialog.pack();
             dialog.setLocationRelativeTo(parentFrame);
-            //dialog.setSize(400, 200);
 
             goBackBt.addActionListener(new ActionListener() {
                 @Override
@@ -155,8 +229,5 @@ public class MainMenu extends MenuTemplate {
             dialog.setVisible(true);
         }
     }
-
-
-
 
 }

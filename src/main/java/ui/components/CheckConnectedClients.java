@@ -16,6 +16,8 @@ import java.util.ArrayList;
  * <p>
  * The panel provides a scrollable list, a "Stop Server" button,
  * and a "Go Back" button. It also supports showing error messages.
+ *
+ *  @author MamenCortes
  */
 public class CheckConnectedClients extends JPanel implements MouseListener {
     private JLabel errorMessage;

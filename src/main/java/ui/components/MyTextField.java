@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 /**
  * Custom JTextField with rounded background, hint (placeholder) support,
  * optional icons, and themed styling.
+ *
+ *  @author MamenCortes
  */
 public class MyTextField extends JTextField{
 

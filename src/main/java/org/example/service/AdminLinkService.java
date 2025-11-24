@@ -28,15 +28,6 @@ public class AdminLinkService {
         this.securityManager = securityManager;
     }
 
-    /**
-     * Creates a new doctor and their corresponding user.
-     */
-    public void createDoctorAndUser(Doctor doctor, User user) {
-        securityManager.getUserJDBC().insertUser(user);
-        medicalManager.getDoctorJDBC().insertDoctor(doctor);
-        System.out.println("Doctor and User created successfully: " + user.getEmail());
-    }
-
     public Boolean createUserAndDoctor(User user, Doctor doctor) throws SQLException {
         Boolean result = false;
         try {
@@ -63,15 +54,6 @@ public class AdminLinkService {
             if (medicalManager.getConnection() != null) medicalManager.getConnection().setAutoCommit(true);
         }
         return result;
-    }
-
-    /**
-     * Creates a new patient and their corresponding user.
-     */
-    public void createPatientAndUser(Patient patient, User user) {
-        securityManager.getUserJDBC().insertUser(user);
-        medicalManager.getPatientJDBC().insertPatient(patient);
-        System.out.println("Patient and User created successfully: " + user.getEmail());
     }
 
     public Boolean createUserAndPatient(User user, Patient patient) throws SQLException {
