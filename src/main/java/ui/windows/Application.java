@@ -40,7 +40,6 @@ public class Application extends JFrame {
     private int serverPort = 9009;
     public Server server;
     public User user;
-    private KeyPair keyPair;
 
     //Managers
     public PatientJDBC patientJDBC;

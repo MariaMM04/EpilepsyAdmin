@@ -55,7 +55,7 @@ public class Server {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client connected from IP: "+clientSocket.getInetAddress().getHostAddress());
                     //New client with the server's public key
-                    ClientHandler handler = new ClientHandler(clientSocket, this, keyPair.getPublic());
+                    ClientHandler handler = new ClientHandler(clientSocket, this, keyPair);
                     clients.add(handler);
                     new Thread(handler).start(); //Start client thread
                     System.out.println("New client connected. Total: " + clients.size());

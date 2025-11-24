@@ -255,13 +255,13 @@ public class NewPatientPanel extends JPanel implements ActionListener {
 
             //Create user
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Patient");
-            User u = new User(p.getEmail(), password.getText(), role.getId());
-
+            //User u = new User(p.getEmail(), password.getText(), role.getId());
+            User u = appMain.userJDBC.register(p.getEmail(),password.getText(),false, 1);
             //Assign Doctor
             int index = doctors.getSelectedIndex();
             p.setDoctorId(docs.get(index).getId());
 
-            if (p.getName().isEmpty() || p.getSurname().isEmpty()|| p.getGender().isEmpty() || p.getEmail().isEmpty() || p.getContact().isEmpty() || password.getText() == "") {
+            if (p.getName().isEmpty() || p.getSurname().isEmpty()|| p.getGender().isEmpty() || p.getEmail().isEmpty() || p.getContact().isEmpty() || password.getText().isEmpty()) {
                 showErrorMessage("Please fill all the fields");
             }else {
                 if(!appMain.adminLinkService.createUserAndPatient(u, p)){
@@ -371,7 +371,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
     }
 
     /// checks if the email is valid and id it's an institutional email (@nightguardian.com)
-    public Boolean validateEmail(String email) {
+    public static Boolean validateEmail(String email) {
         if(!email.isBlank() && email.contains("@")) {
             String[] emailSplit = email.split("@");
             if(emailSplit.length >1 && emailSplit[1].equals("nightguardian.com")){
@@ -379,7 +379,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
             }
         }
         //System.out.println("Valid email? "+validEmail);
-        showErrorMessage("Invalid Email");
+        System.out.println("Invalid Email");
         return false;
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import encryption.PasswordHash;
 import org.example.entities_securitydb.User; // Import User class
+import ui.windows.NewPatientPanel;
 import ui.windows.UserLogIn;
 
 
@@ -190,26 +191,29 @@ public class UserJDBC {
      *                  <code> true </code> if the user was successfully registered into the database
      *                  <code> false </code> otherwise
      */
-    public boolean register(String email, String password, boolean active) {
+    public User register(String email, String password, boolean active, int roleId) {
         //Verification of email and password
         if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
-            return false;
+            System.out.println("Please fill all field values");
+            return null;
         } else if (isUser(email)) {
-            return false;
+            System.out.println("You are already registered with this email");
+            return null;
         } else if (!UserLogIn.validatePassword(password)){
-            return false;
-        } else if (!UserLogIn.validateEmail(email)){
-            return false;
+            return null;
+        } else if (!NewPatientPanel.validateEmail(email)){
+            return null;
         }else try {
             {
                 //Hash the password for security in the database
                 String hashedPassword = PasswordHash.generatePasswordHash(password);
                 User newUser = new User (email, hashedPassword,true);
-                return insertUser(newUser);
+                newUser.setRole_id(roleId);
+                return newUser;
             }
         } catch (Exception e) {
             System.out.println("Register failed: "+e.getMessage());
-            return false;
+            return null;
         }
     }
 
@@ -281,6 +285,7 @@ public class UserJDBC {
     }
 
 
+    //TODO: hashear contraseña
     /**
      * Changes the password of the given user of the database.
      *
