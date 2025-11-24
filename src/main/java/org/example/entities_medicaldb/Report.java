@@ -1,6 +1,11 @@
 package org.example.entities_medicaldb;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,13 +49,20 @@ public class Report {
      * </ul>
      */
     public enum Symptom {
-        HEADACHE,
-        DIZZINESS,
-        TREMORS,
-        NAUSEA,
-        LOSS_OF_CONSCIOUSNESS,
-        PALPITATIONS,
-        OTHER
+        Muscle_Stiffness,
+        Trouble_Breathing,
+        Sudden_Unconsciousness,
+        Auditory_Hallucinations,
+        Anxiety,
+        Deja_vu,
+        Short_term_confusion,
+        Dizziness,
+        Loss_off_balance,
+        Fear,
+        Nausea,
+        Muscle_spasms,
+        Fatigue,
+        None
     }
 
     private int id;                  // Primary key (auto-increment)
@@ -104,11 +116,10 @@ public class Report {
 
     public List<Symptom> getSymptoms() { return symptoms; }
     public void setSymptoms(List<Symptom> symptoms) { this.symptoms = symptoms; }
+    public void addSymptom(Symptom symptom) {this.symptoms.add(symptom);}
 
     public int getPatientId() { return patientId; }
     public void setPatientId(int patientId) { this.patientId = patientId; }
-
-
 
     // --- Utility ---
     @Override
@@ -120,5 +131,53 @@ public class Report {
                 ", patientId=" + patientId +
                 '}';
     }
+
+    /**
+     * Converts this {@code Report} into a {@link JsonObject}.
+     *
+     * @return  a JSON representation of this report
+     *
+     * @see JsonObject
+     */
+    public JsonObject toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
+        jsonObject.addProperty("date", date.toString());
+        jsonObject.addProperty("patientId", patientId);
+        JsonArray symptomsJsonArray = new JsonArray();
+        for(Symptom symptom : symptoms) {
+            symptomsJsonArray.add(symptom.name());
+        }
+        jsonObject.add("symptoms", symptomsJsonArray);
+        return jsonObject;
+    }
+
+    /**
+     * Creates a new {@code Report} instance from a {@link JsonObject}
+     *
+     * @param jsonObject  the JSON object containing this {@code Report} data
+     * @return  a {@code Report} instance from the {@link JsonObject}
+     *
+     * @see JsonObject
+     */
+    public static Report fromJson(JsonObject jsonObject) {
+        Report report = null;
+        try{
+            report = new Report();
+            report.setId(jsonObject.get("id").getAsInt());
+            report.setDate(LocalDate.parse(jsonObject.get("date").getAsString()));
+            JsonArray symptomsJsonArray = jsonObject.get("symptoms").getAsJsonArray();
+            List<Report.Symptom> symptoms = new ArrayList<>();
+            for(JsonElement elem : symptomsJsonArray) {
+                symptoms.add(Report.Symptom.valueOf(elem.getAsString()));
+            }
+            report.setSymptoms(symptoms);
+        }catch(Exception ex){
+            System.out.println("Error parsing report");
+        }
+
+        return report;
+    }
 }
+
 

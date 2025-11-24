@@ -30,7 +30,7 @@ class ServerTest {
     private OutputStream out;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws Exception {
         app = mock(Application.class);
         serverSocket = mock(ServerSocket.class);
         server = spy(new Server(serverSocket, app));

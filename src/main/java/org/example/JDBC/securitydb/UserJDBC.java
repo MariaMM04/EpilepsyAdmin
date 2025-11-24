@@ -253,7 +253,8 @@ public class UserJDBC {
             }
         } catch (Exception ex) {
             System.out.println("Log in failed: "+ex.getMessage());
-            throw new RuntimeException(ex);
+            //throw new RuntimeException(ex);
+            return null;
         }
         return null;
     }

@@ -66,7 +66,7 @@ public class MainAdmin {
 
         adminService.createPatientAndUser(patient, patientUser);
 
-        List<Report.Symptom> symptoms = Arrays.asList(NAUSEA, HEADACHE);
+        List<Report.Symptom> symptoms = Arrays.asList(Nausea, Fatigue);
         Report report= new Report(LocalDate.of(2025, 11, 23),symptoms,3 );
         medicalManager.getReportJDBC().insertReport(report);
 
