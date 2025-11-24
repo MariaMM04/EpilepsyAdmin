@@ -1,5 +1,6 @@
 package org.example.service;
 
+import Exceptions.RegisterError;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.securitydb.SecurityManager;
 import org.example.entities_medicaldb.Doctor;
@@ -27,15 +28,6 @@ public class AdminLinkService {
         this.securityManager = securityManager;
     }
 
-    /**
-     * Creates a new doctor and their corresponding user.
-     */
-    public void createDoctorAndUser(Doctor doctor, User user) {
-        securityManager.getUserJDBC().insertUser(user);
-        medicalManager.getDoctorJDBC().insertDoctor(doctor);
-        System.out.println("Doctor and User created successfully: " + user.getEmail());
-    }
-
     public Boolean createUserAndDoctor(User user, Doctor doctor) throws SQLException {
         Boolean result = false;
         try {
@@ -43,7 +35,7 @@ public class AdminLinkService {
             medicalManager.getConnection().setAutoCommit(false);
 
             // Inserta en securitydb
-            securityManager.getUserJDBC().insertUser(user);
+            securityManager.getUserJDBC().register(user);
 
             // Inserta en medicaldb
             medicalManager.getDoctorJDBC().insertDoctor(doctor);
@@ -53,7 +45,7 @@ public class AdminLinkService {
             medicalManager.getConnection().commit();
             result = true;
 
-        } catch (SQLException e) {
+        } catch (SQLException | RegisterError e) {
             System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
             if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
             if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
@@ -64,15 +56,6 @@ public class AdminLinkService {
         return result;
     }
 
-    /**
-     * Creates a new patient and their corresponding user.
-     */
-    public void createPatientAndUser(Patient patient, User user) {
-        securityManager.getUserJDBC().insertUser(user);
-        medicalManager.getPatientJDBC().insertPatient(patient);
-        System.out.println("Patient and User created successfully: " + user.getEmail());
-    }
-
     public Boolean createUserAndPatient(User user, Patient patient) throws SQLException {
         Boolean result = false;
         try {
@@ -80,7 +63,7 @@ public class AdminLinkService {
             medicalManager.getConnection().setAutoCommit(false);
 
             // Inserta en securitydb
-            securityManager.getUserJDBC().insertUser(user);
+            securityManager.getUserJDBC().register(user);
 
             // Inserta en medicaldb
             medicalManager.getPatientJDBC().insertPatient(patient);
@@ -90,8 +73,8 @@ public class AdminLinkService {
             medicalManager.getConnection().commit();
             result = true;
 
-        } catch (SQLException e) {
-            System.err.println("Error detected, rolling back both transactions: " + e.getMessage());
+        } catch (SQLException | RegisterError e) {
+            System.out.println("Error detected, rolling back both transactions: " + e.getMessage());
             if (securityManager.getConnection() != null) securityManager.getConnection().rollback();
             if (medicalManager.getConnection() != null) medicalManager.getConnection().rollback();
         } finally {

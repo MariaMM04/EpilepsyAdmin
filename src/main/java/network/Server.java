@@ -23,14 +23,18 @@ public class Server {
     //private List<ClientHandler> clients;
     private volatile Boolean running = false; //Para que otros hilos vean directamente si hay cambios en ella
     private final Application appMain; //To access the centralized medicalManager and securityManager
-    private final KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
+    private KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
 
-    public Server(int port,  Application appMain) throws Exception {
+    public Server(int port,  Application appMain){
         this.port = port;
         //clients = new ArrayList<>();
         this.appMain = appMain;
         // Creates the key pair for public encryption
-        this.keyPair = RSAKeyManager.generateKeyPair();
+        try {
+            this.keyPair = RSAKeyManager.generateKeyPair();
+        }catch (Exception e){
+            System.out.println("Error generating key pair: "+e.getMessage());
+        }
     }
 
     // TEST constructor

@@ -5,9 +5,8 @@ import org.example.entities_medicaldb.Patient;
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User;
+import org.example.service.AdminLinkService;
 import ui.components.*;
-
-import javax.print.Doc;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +15,52 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
-
-
-//TODO: insert section to assign doctor
-
+/**
+ * Panel used to create and register a new patient in the Night Guardian
+ * administrative system.
+ * <p>
+ * This form allows administrators to enter personal information, medical
+ * assignment (doctor), login credentials, and demographic data, validating
+ * the information before creating both a {@link Patient} and its associated
+ * {@link User} account in the system.
+ * </p>
+ *
+ * <h2>Responsibilities</h2>
+ * <ul>
+ *     <li>Display editable fields for entering patient data</li>
+ *     <li>Validate required fields, phone numbers, dates, email and password</li>
+ *     <li>Allow assigning a doctor to the new patient</li>
+ *     <li>Create the {@link User} and {@link Patient} in the database through
+ *         {@link AdminLinkService}</li>
+ *     <li>Display confirmation dialogs if leaving without saving</li>
+ *     <li>Return to {@link MainMenu} after saving or canceling</li>
+ * </ul>
+ *
+ * <h2>Lifecycle</h2>
+ * <ol>
+ *     <li>The constructor loads all available doctors from the database.</li>
+ *     <li>{@link #initPatientInfo()} defines initial values and hints.</li>
+ *     <li>{@link #initPatientForm()} constructs the UI layout.</li>
+ *     <li>Admin fills out the form and presses:
+ *         <ul>
+ *             <li><b>Save</b> → triggers {@link #createPatientAndUser()}</li>
+ *             <li><b>Cancel</b> → if unsaved, confirmation dialog is shown</li>
+ *         </ul>
+ *     </li>
+ *     <li>If saved successfully, resets panel and returns to {@link MainMenu}.</li>
+ * </ol>
+ *
+ * <h2>Validation Rules</h2>
+ * <ul>
+ *     <li><b>Date of Birth:</b> must follow YYYY-MM-DD</li>
+ *     <li><b>Phone number:</b> 9 digits, numeric</li>
+ *     <li><b>Email:</b> must be institutional: <code>@nightguardian.com</code></li>
+ *     <li><b>Password:</b> minimum 8 characters, at least one digit</li>
+ * </ul>
+ *
+ * @author MamenCortes
+ * @author paulablancog
+ */
 public class NewPatientPanel extends JPanel implements ActionListener {
     private Application appMain;
     private JLabel nameHeading;
@@ -58,40 +99,46 @@ public class NewPatientPanel extends JPanel implements ActionListener {
     private Boolean saved;
     List<Doctor> docs;
 
-    //private JDateChooser birthDate;
+    /**
+     * Constructs the NewPatientPanel and initializes the form.
+     *
+     * @param appMain application controller used for navigation and DB access
+     */
     public NewPatientPanel(Application appMain) {
         this.appMain = appMain;
         saved = false;
         initPatientInfo();
 
     }
-
+    /**
+     * Initializes the form fields, loads doctor list, defines hints, and enables editing.
+     * Then delegates UI construction to {@link #initPatientForm()}.
+     */
     public void initPatientInfo() {
         this.titleText = "Patient information";
 
         //Initialize values
         name = new MyTextField("Jane");
-        //name.setText("Jane");
         name.setEnabled(true); //Doesnt allow editing
+
         surname = new MyTextField("Doe");
-        //surname.setText("Doe");
         surname.setEnabled(true);
+
         email = new MyTextField("jane.doe@nightguardian.com");
-        //email.setText("jane.doe@gmail.com");
         email.setEnabled(true);
+
         phoneNumber = new MyTextField("612345678");
-        //phoneNumber.setText("123456789");
         phoneNumber.setEnabled(true);
-        //sex = new MyTextField();
+
         gender = new MyComboBox<String>();
         gender.addItem("Male");
         gender.addItem("Female");
         gender.addItem("Non-binary");
-        //sex.setText("Non Binary");
+
         birthDate = new MyTextField();
         birthDate.setHint("YYYY-MM-DD");
-        //birthDate.setText("1999-11-11");
         birthDate.setEnabled(true);
+
         password = new MyTextField("password");
         formContainer = new JPanel();
         doctors = new MyComboBox<>();
@@ -101,12 +148,22 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         }
         initPatientForm();
     }
-
+    /**
+     * Builds the patient creation form using MigLayout.
+     * <p>
+     * Includes:
+     * <ul>
+     *     <li>Personal fields (name, surname, gender, birth date)</li>
+     *     <li>Contact fields (phone, email)</li>
+     *     <li>Assigned doctor selection</li>
+     *     <li>Password for system login</li>
+     *     <li>Error message label</li>
+     *     <li>Cancel and Save buttons</li>
+     * </ul>
+     */
     private void initPatientForm() {
-        //this.setLayout(new MigLayout("fill, inset 15, gap 0, wrap 4, debug", "[][][][]", "[][][][][][][][][][]"));
         this.setLayout(new MigLayout("fill", "[][][][]", "[][][][][][][][][]push[]"));
         this.setBackground(Color.white);
-        //this.setBackground(Application.lighter_turquoise);
         formContainer.setBackground(Color.white);
         formContainer.setLayout(new MigLayout("fill, inset 15, gap 5, wrap 2", "[50%][50%]", "[][][][][][][][]push"));
 
@@ -118,12 +175,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         title.setAlignmentY(LEFT_ALIGNMENT);
         title.setIcon(new ImageIcon(getClass().getResource("/icons/patient-info64-2.png")));
         add(title, "cell 0 0 4 1, alignx left");
-
-        //add(formContainer,  "cell 0 1 4 8, grow, gap 10");
-        //place in column 0, row 1, expand to 4 columns and 8 rows. Gap 10px left and right
         add(formContainer,  "cell 0 1 4 7, grow, gap 10 10");
-
-        //add(title1, "cell 0 0, grow");
 
         //ROW 1
         //Name and surname
@@ -131,7 +183,6 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         nameHeading.setFont(contentFont);
         nameHeading.setForeground(contentColor);
         formContainer.add(nameHeading, "cell 0 0");
-        //add(nameText, "skip 1, grow");
 
         surnameHeading = new JLabel("Surname*");
         surnameHeading.setFont(contentFont);
@@ -158,7 +209,6 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         formContainer.add(birthDate,  "grow"); //TODO create birth date chooser
 
         //ROW 5
-
         phoneHeading = new JLabel("Phone Number*");
         phoneHeading.setFont(contentFont);
         phoneHeading.setForeground(contentColor);
@@ -169,11 +219,11 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         docsHeading.setForeground(contentColor);
         formContainer.add(docsHeading, "grow");
 
-        //ROW 5
+        //ROW 6
         formContainer.add(phoneNumber, "grow");
         formContainer.add(doctors, "grow");
 
-        //ROW 6
+        //ROW 7
         emailHeading = new JLabel("Email*");
         emailHeading.setFont(contentFont);
         emailHeading.setForeground(contentColor);
@@ -184,7 +234,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         passwordHeading.setForeground(contentColor);
         formContainer.add(passwordHeading, "grow");
 
-        //ROW 7
+        //ROW 8
         formContainer.add(email, "grow");
         formContainer.add(password, "grow");
 
@@ -192,25 +242,39 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         errorMessage.setFont(new Font("sansserif", Font.BOLD, 12));
         errorMessage.setForeground(Color.red);
         errorMessage.setText("Error message test");
-        //this.add(errorMessage, "cell 0 8, span, left");
         this.add(errorMessage, "cell 0 8, span, center");
         errorMessage.setVisible(false);
 
         //Add buttons
         cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
         cancelButton.addActionListener(this);
-        //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
         add(cancelButton, "cell 0 9, span, split 2, center");
-        //add(cancelButton, "cell 1 9, growx, center");
 
         saveChangesBt = new MyButton("SAVE AND GO BACK", Application.turquoise, Color.white);
         saveChangesBt.addActionListener(this);
         add(saveChangesBt, "center");
-
-
     }
 
     //TODO: Check validations
+    /**
+     * Creates both a {@link Patient} and a corresponding {@link User} based on the entered data.
+     * <p>
+     * Steps:
+     * <ol>
+     *     <li>Extract data from form fields</li>
+     *     <li>Validate date of birth format</li>
+     *     <li>Validate phone number (must be numeric 9-digit value)</li>
+     *     <li>Validate email domain and format</li>
+     *     <li>Validate password rules</li>
+     *     <li>Assign selected doctor to the patient</li>
+     *     <li>Create a {@link Role}="Patient"</li>
+     *     <li>Create a {@link User} with credentials</li>
+     *     <li>Persist patient + user using {@link AdminLinkService#createUserAndPatient(User, Patient)}</li>
+     *     <li>If successful, reset the panel and return to main menu</li>
+     * </ol>
+     *
+     * If any validation fails, an error message is shown and the user remains on this panel.
+     */
     private void createPatientAndUser() {
         Patient p = new Patient();
         try {
@@ -255,8 +319,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
 
             //Create user
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Patient");
-            //User u = new User(p.getEmail(), password.getText(), role.getId());
-            User u = appMain.userJDBC.register(p.getEmail(),password.getText(),false, role.getId());
+            User u = new User(p.getEmail(), password.getText(), role.getId());
             //Assign Doctor
             int index = doctors.getSelectedIndex();
             p.setDoctorId(docs.get(index).getId());
@@ -279,6 +342,15 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Handles Save and Cancel button actions.
+     * <ul>
+     *     <li><b>Cancel</b>: If unsaved, confirmation dialog is shown; otherwise the panel resets and navigates back.</li>
+     *     <li><b>Save</b>: Calls {@link #createPatientAndUser()}.</li>
+     * </ul>
+     *
+     * @param e triggered action event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == cancelButton) { //If they want to go back but didn't save the data, ask if they are sure they want to go back without saving
@@ -293,7 +365,16 @@ public class NewPatientPanel extends JPanel implements ActionListener {
             createPatientAndUser();
         }
     }
-
+    /**
+     * Resets the form to its initial state:
+     * <ul>
+     *     <li>Clears all text fields</li>
+     *     <li>Resets gender dropdown</li>
+     *     <li>Hides error messages</li>
+     *     <li>Marks panel as unsaved</li>
+     * </ul>
+     * Called after canceling or successfully saving.
+     */
     private void resetView(){
         name.setText("");
         surname.setText("");
@@ -305,7 +386,10 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         errorMessage.setVisible(false);
         saved = false;
     }
-
+    /**
+     * Refreshes doctor list when the NewPatientPanel is revisited.
+     * Useful when doctors have been added while the application is running.
+     */
     public void updateView(){
         docs.clear();
         doctors.removeAllItems();
@@ -315,6 +399,12 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Shows a confirmation dialog asking if the admin wants to leave without saving changes.
+     *
+     * @param parentFrame parent window reference for centering
+     * @param question    the question to show in the dialog
+     */
     private void showQuestionPanel(JFrame parentFrame, String question) {
         MyButton okButton = new MyButton("YES");
         MyButton cancelButton = new MyButton("CONTINUE EDITING");
@@ -325,7 +415,6 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         dialog.getContentPane().setBackground(Color.white);
         dialog.pack();
         dialog.setLocationRelativeTo(parentFrame);
-        //dialog.setSize(400, 200);
 
         okButton.addActionListener(new ActionListener() {
             @Override
@@ -346,7 +435,18 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         dialog.setVisible(true);
     }
 
-    /// Checks if the password has at least 8 characters, and contains at least 1 number
+    /**
+     * Validates password complexity.
+     * <p>
+     * Rules:
+     * <ul>
+     *     <li>Minimum 8 characters</li>
+     *     <li>Must contain at least one digit</li>
+     * </ul>
+     *
+     * @param password password to validate
+     * @return true if valid, false otherwise
+     */
     private Boolean validatePassword(String password) {
         boolean passwordVacia = (Objects.isNull(password)) || password.isEmpty();
         boolean goodPassword=false;
@@ -371,7 +471,14 @@ public class NewPatientPanel extends JPanel implements ActionListener {
 
     }
 
-    /// checks if the email is valid and id it's an institutional email (@nightguardian.com)
+    /**
+     * Validates email format and domain.
+     * The email must belong to the institutional domain:
+     * <code>@nightguardian.com</code>.
+     *
+     * @param email email to validate
+     * @return true if valid, false otherwise
+     */
     public static Boolean validateEmail(String email) {
         if(!email.isBlank() && email.contains("@")) {
             String[] emailSplit = email.split("@");
@@ -379,11 +486,15 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                 return true;
             }
         }
-        //System.out.println("Valid email? "+validEmail);
         System.out.println("Invalid Email");
         return false;
     }
 
+    /**
+     * Displays an error message at the bottom of the form.
+     *
+     * @param message text to display in red
+     */
     private void showErrorMessage(String message) {
         errorMessage.setText(message);
         errorMessage.setForeground(Color.RED);

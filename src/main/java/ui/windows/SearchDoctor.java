@@ -12,13 +12,56 @@ import java.util.stream.Collectors;
 
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
+import org.example.service.AdminLinkService;
 import ui.RandomData;
 import ui.components.DoctorCell;
 import ui.components.MyButton;
 import ui.components.MyTextField;
 
 import javax.swing.*;
-
+/**
+ * Panel that allows administrators to search, filter and manage the list of doctors
+ * in the Night Guardian administrative system.
+ * <p>
+ * It supports dynamic filtering by surname, resetting the list, toggling doctor
+ * activation status, and navigating back to the main menu.
+ * </p>
+ *
+ * <h2>Responsibilities</h2>
+ * <ul>
+ *     <li>Display the full list of doctors</li>
+ *     <li>Filter the list by surname dynamically</li>
+ *     <li>Update doctor activation state (active/inactive)</li>
+ *     <li>Handle navigation back to {@link MainMenu}</li>
+ *     <li>Show error messages for invalid input or actions</li>
+ * </ul>
+ *
+ * <h2>Lifecycle</h2>
+ * <ol>
+ *     <li>The constructor receives the main {@link Application} controller.</li>
+ *     <li>{@link #initMainPanel()} builds all UI elements:
+ *         <ul>
+ *             <li>Title, search bar, reset button</li>
+ *             <li>Doctor list inside a scroll pane</li>
+ *             <li>Action buttons (search, reset, switch status, back)</li>
+ *         </ul>
+ *     </li>
+ *     <li>{@link #updateDoctorDefModel(List)} is called externally to load actual doctor data.</li>
+ *     <li>User interacts with the search bar or action buttons.</li>
+ *     <li>Returning to main menu triggers a full panel reset.</li>
+ * </ol>
+ *
+ * <h2>Doctor Status Management</h2>
+ * <p>
+ * The button <b>SWITCH STATUS</b> toggles a doctor’s active/inactive state by calling:
+ * {@link AdminLinkService#changeDoctorStatus(String, Boolean)}.
+ * </p>
+ * <p>
+ * The UI immediately refreshes, and a green success message is shown.
+ * </p>
+ *
+ *  @author MamenCortes
+ */
 public class SearchDoctor extends JPanel implements ActionListener, MouseListener {
 
     private Application appMain;
@@ -39,11 +82,31 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
     protected DefaultListModel<Doctor> doctorsDefListModel;
     private List<Doctor> allDoctors;
 
+    /**
+     * Creates the SearchDoctor panel and generates the user interface.
+     *
+     * @param appMain the main application controller, used for navigation and accessing admin services
+     */
     public SearchDoctor(Application appMain) {
         this.appMain = appMain;
         initMainPanel();
     }
 
+    /**
+     * Builds the main UI of the panel using MigLayout:
+     * <ul>
+     *     <li>Title area</li>
+     *     <li>Search bar with hint text</li>
+     *     <li>Search and reset buttons</li>
+     *     <li>Status toggle button</li>
+     *     <li>Scrollable doctor list with custom cell renderer</li>
+     *     <li>Error message label</li>
+     *     <li>Back to menu button</li>
+     * </ul>
+     * <p>
+     * The list component uses {@link DoctorCell} to render doctor information.
+     * </p>
+     */
     private void initMainPanel() {
         this.setLayout(new MigLayout("fill, inset 20, gap 0, wrap 3", "[grow 5]5[grow 5]5[grow 40][grow 40]", "[][][][][][][][][][]"));
         this.setBackground(Color.white);
@@ -105,6 +168,19 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         add(scrollPane1,  "cell 2 1 2 6, grow, gap 10");
     }
 
+    /**
+     * Updates the list model with the provided doctors.
+     * <p>
+     * This method is typically invoked when navigating to this panel.
+     * It performs the following:
+     * <ul>
+     *     <li>Stores the full list in {@link #allDoctors} (first time only)</li>
+     *     <li>Clears and repopulates the visible list model</li>
+     *     <li>Shows an error message if the list is empty</li>
+     * </ul>
+     *
+     * @param doctors list of doctors to display
+     */
     protected void updateDoctorDefModel(List<Doctor> doctors) {
         if(doctors == null || doctors.isEmpty()) {
             showErrorMessage("No Doctors found!");
@@ -121,23 +197,42 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         }
     }
 
+    /**
+     * Displays an error message in red.
+     *
+     * @param message the message to display
+     */
     private void showErrorMessage(String message) {
         errorMessage.setText(message);
         errorMessage.setVisible(true);
         errorMessage.setForeground(Color.red);
     }
 
+    /**
+     * Hides the error message.
+     */
     private void hideErrorMessage() {
         errorMessage.setVisible(false);
     }
 
+    /**
+     * Resets the panel fully when navigating back to the main menu:
+     * <ul>
+     *     <li>Clears the search field</li>
+     *     <li>Removes all items from the list</li>
+     *     <li>Clears cached {@link #allDoctors}</li>
+     *     <li>Hides error messages</li>
+     * </ul>
+     */
     private void resetPanel(){
         hideErrorMessage();
         searchByTextField.setText("");
         doctorsDefListModel.clear();
         allDoctors = null;
     }
-
+    /**
+     * Restores the view to its original state (search cleared, full list shown).
+     */
     private void clearView(){
         searchByTextField.setText("");
         updateDoctorDefModel(allDoctors);
@@ -145,7 +240,17 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
             showErrorMessage("No Doctors found");
         }
     }
-
+    /**
+     * Handles all actionable button interactions:
+     * <ul>
+     *     <li><b>Back to menu:</b> resets panel and returns to {@link MainMenu}</li>
+     *     <li><b>Search:</b> filters doctors by surname (case-insensitive)</li>
+     *     <li><b>Reset:</b> restores full doctor list</li>
+     *     <li><b>Switch status:</b> toggles active/inactive state of selected doctor</li>
+     * </ul>
+     *
+     * @param e triggered action event
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == goBackButton) {
             resetPanel();

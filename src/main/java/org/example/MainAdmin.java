@@ -9,6 +9,7 @@ import org.example.entities_medicaldb.Report;
 import org.example.entities_securitydb.User;
 import org.example.service.AdminLinkService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +24,7 @@ import static org.example.entities_medicaldb.Report.Symptom.*;
  */
 public class MainAdmin {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         // --- Initialize database managers ---
         MedicalManager medicalManager = new MedicalManager();
@@ -46,7 +47,7 @@ public class MainAdmin {
         User doctorUser = new User("laura@gmail.com", "secure123", 1);
         doctorUser.setActive(true);
 
-        adminService.createDoctorAndUser(doctor, doctorUser);
+        adminService.createUserAndDoctor(doctorUser, doctor);
 
         // -----------------------------------------------------
         // CREATE PATIENT + USER
@@ -64,7 +65,7 @@ public class MainAdmin {
         User patientUser = new User("carlos@gmail.com", "patient123", 2);
         patientUser.setActive(true);
 
-        adminService.createPatientAndUser(patient, patientUser);
+        adminService.createUserAndPatient(patientUser, patient);
 
         List<Report.Symptom> symptoms = Arrays.asList(Nausea, Fatigue);
         Report report= new Report(LocalDate.of(2025, 11, 23),symptoms,3 );

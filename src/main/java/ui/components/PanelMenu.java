@@ -9,6 +9,8 @@ import java.util.ArrayList;
 /**
  * Dynamic grid-based menu panel that arranges buttons into rows and columns
  * depending on the number of buttons provided.
+ *
+ *  @author MamenCortes
  */
 public class PanelMenu extends JPanel {
 
