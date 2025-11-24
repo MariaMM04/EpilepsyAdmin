@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 /**
  * Custom JButton with rounded corners, theme colors, optional icon,
  * and a styled UI designed for the platform.
+ *
+ *  @author MamenCortes
  */
 public class MyButton extends JButton {
 

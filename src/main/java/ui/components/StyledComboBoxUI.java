@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 /**
  * Custom UI for a styled combo box component.
  * Applies custom colors, fonts, borders and hover effects to a {@link MyComboBox}.
+ *
+ *  @author MamenCortes
  */
 public class StyledComboBoxUI extends BasicComboBoxUI {
 

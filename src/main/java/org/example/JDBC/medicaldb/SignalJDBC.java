@@ -97,7 +97,7 @@ public class SignalJDBC {
      *                  <code> false </code> otherwise
      */
     public void insertSignal(Signal signal) {
-        String sql = "INSERT INTO signal (zip_blob, date, comments, patient_id, sampling_frequency) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO signal (path, date, comments,sampling_frequency, patient_id ) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -108,8 +108,9 @@ public class SignalJDBC {
             ps.setBytes(1, zipBytes);
             ps.setDate(2, signal.getDate() != null ? Date.valueOf(signal.getDate()) : null);
             ps.setString(3, signal.getComments());
-            ps.setInt(4, signal.getPatientId());
-            ps.setDouble(5, signal.getSampleFrequency());
+            ps.setDouble(4, signal.getSampleFrequency());
+            ps.setInt(5, signal.getPatientId());
+
 
             ps.executeUpdate();
 

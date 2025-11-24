@@ -1,7 +1,5 @@
 package network;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.example.JDBC.medicaldb.DoctorJDBC;
 import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.medicaldb.PatientJDBC;
@@ -22,7 +20,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.security.PublicKey;
+import java.security.KeyPair;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
@@ -37,7 +35,7 @@ public class ClientHandlerTest {
     private InputStream in;
     private OutputStream out;
     private ClientHandler handler;
-    private PublicKey publicKey;
+    private KeyPair keyPair;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -46,7 +44,7 @@ public class ClientHandlerTest {
         server = new Server(serverSocket, app);
         in = mock(InputStream.class);
         out = mock(OutputStream.class);
-        publicKey = mock(PublicKey.class);
+        keyPair = mock(KeyPair.class);
     }
 
     private static void setField(Object target, String fieldName, Object value) {
@@ -71,7 +69,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
 
         // replace real BufferedReader with a mock using reflection
         BufferedReader mockReader = mock(BufferedReader.class);
@@ -103,7 +101,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
         RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
@@ -145,7 +143,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server,  publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
         RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
@@ -191,7 +189,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
         RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
@@ -233,7 +231,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
         RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
@@ -279,7 +277,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
         RoleJDBC mockRoleJDBC = mock(RoleJDBC.class);
@@ -312,7 +310,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server,  publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager   mockMedicalManager = mock(MedicalManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
@@ -366,7 +364,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager   mockMedicalManager = mock(MedicalManager.class);
         UserJDBC  mockUserJDBC = mock(UserJDBC.class);
@@ -426,7 +424,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager mockMedicalManager = mock(MedicalManager.class);
         PatientJDBC mockPatientJDBC = mock(PatientJDBC.class);
@@ -501,7 +499,7 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
 
         //Mocks
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
@@ -574,7 +572,7 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
 
         //Mocks
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
@@ -631,7 +629,7 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         handler.run();
         handler.forceShutdown();
 
@@ -646,7 +644,7 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
 
         BufferedReader mockReader = mock(BufferedReader.class);
         BufferedWriter mockWriter = mock(BufferedWriter.class);
@@ -674,7 +672,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         //Mocks
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager mockMedicalManager = mock(MedicalManager.class);
@@ -733,7 +731,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         //Mocks
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager mockMedicalManager = mock(MedicalManager.class);
@@ -788,7 +786,7 @@ public class ClientHandlerTest {
         when(socket.getInputStream()).thenReturn(in);
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
-        ClientHandler handler = new ClientHandler(socket, server, publicKey);
+        ClientHandler handler = new ClientHandler(socket, server, keyPair);
         //Mocks
         SecurityManager mockSecurityManager = mock(SecurityManager.class);
         MedicalManager mockMedicalManager = mock(MedicalManager.class);
