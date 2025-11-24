@@ -109,6 +109,12 @@ public class ClientHandler implements Runnable {
                         handleRequestPatientSignals(request.getAsJsonObject("data"));
                         break;
                     }
+                    case "SAVE_REPORT":{
+                        System.out.println("SAVE_REPORT");
+                        handleSaveReportRequest(request.getAsJsonObject("data"));
+                        break;
+                    }
+
 
                 }
 
@@ -566,6 +572,52 @@ public class ClientHandler implements Runnable {
 
         if(doctor!= null && doctor1 != null && doctor1.getId() == doctor.getId()) {
             if(server.getAppMain().medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {
+                response.addProperty("status", "SUCCESS");
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Error saving comments");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+
+        sendRawJson(response);
+    }
+
+    private void handleSaveReportRequest(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SAVE_REPORT_RESPONSE");
+
+        Integer user_id = data.get("user_id").getAsInt();
+        Integer patient_id = data.get("patient_id").getAsInt();
+        Report report = Report.fromJson(data.get("report").getAsJsonObject());
+        if(report == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Error parsing report");
+            sendRawJson(response);
+            return;
+        }
+
+        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        if(user == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
+        if(patient == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        if(patient.getEmail().equals(user.getEmail())) {
+            report.setPatientId(patient_id);
+            if(server.getAppMain().medicalManager.getReportJDBC().insertReport(report)) {
                 response.addProperty("status", "SUCCESS");
             }else{
                 response.addProperty("status", "ERROR");

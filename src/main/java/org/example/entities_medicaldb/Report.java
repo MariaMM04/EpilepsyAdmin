@@ -161,15 +161,21 @@ public class Report {
      * @see JsonObject
      */
     public static Report fromJson(JsonObject jsonObject) {
-        Report report = new Report();
-        report.setId(jsonObject.get("id").getAsInt());
-        report.setDate(LocalDate.parse(jsonObject.get("date").getAsString()));
-        JsonArray symptomsJsonArray = jsonObject.get("symptoms").getAsJsonArray();
-        List<Report.Symptom> symptoms = new ArrayList<>();
-        for(JsonElement elem : symptomsJsonArray) {
-            symptoms.add(Report.Symptom.valueOf(elem.getAsString()));
+        Report report = null;
+        try{
+            report = new Report();
+            report.setId(jsonObject.get("id").getAsInt());
+            report.setDate(LocalDate.parse(jsonObject.get("date").getAsString()));
+            JsonArray symptomsJsonArray = jsonObject.get("symptoms").getAsJsonArray();
+            List<Report.Symptom> symptoms = new ArrayList<>();
+            for(JsonElement elem : symptomsJsonArray) {
+                symptoms.add(Report.Symptom.valueOf(elem.getAsString()));
+            }
+            report.setSymptoms(symptoms);
+        }catch(Exception ex){
+            System.out.println("Error parsing report");
         }
-        report.setSymptoms(symptoms);
+
         return report;
     }
 }

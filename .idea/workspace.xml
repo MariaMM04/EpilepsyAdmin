@@ -8,12 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Report.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/network/ClientHandlerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/network/ClientHandlerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/network/ServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/network/ServerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +43,7 @@
       <recent name="org.example.service" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MedicalManager">
+  <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
       <module name="EpilepsyAdmin" />
@@ -104,8 +101,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MedicalManager" />
         <item itemvalue="Application.Application" />
+        <item itemvalue="Application.MedicalManager" />
         <item itemvalue="Application.SecurityManager" />
         <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
       </list>

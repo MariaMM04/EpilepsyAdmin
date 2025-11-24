@@ -85,10 +85,10 @@ public class MedicalManager {
         medicalManager.patientJDBC.insertPatient(patient);
         securityManager.getUserJDBC().insertUser(user);*/
 
-        /*List<Doctor> doctors =  medicalManager.getDoctorJDBC().getAllDoctors();
+        List<Doctor> doctors =  medicalManager.getDoctorJDBC().getAllDoctors();
         for (Doctor doctor : doctors) {
             System.out.println(doctor.toString());
-        }*/
+        }
 
         //Doctor doctor = medicalManager.doctorJDBC.getDoctor(3);
         //System.out.println(doctor);
