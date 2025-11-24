@@ -209,6 +209,7 @@ public class UserJDBC {
                 String hashedPassword = PasswordHash.generatePasswordHash(password);
                 User newUser = new User (email, hashedPassword,true);
                 newUser.setRole_id(roleId);
+
                 return newUser;
             }
         } catch (Exception e) {

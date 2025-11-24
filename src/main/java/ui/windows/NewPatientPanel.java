@@ -256,7 +256,8 @@ public class NewPatientPanel extends JPanel implements ActionListener {
             //Create user
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Patient");
             //User u = new User(p.getEmail(), password.getText(), role.getId());
-            User u = appMain.userJDBC.register(p.getEmail(),password.getText(),false, 1);
+            User u = appMain.userJDBC.register(p.getEmail(),password.getText(),false, role.getId());
+            System.out.println(u);
             //Assign Doctor
             int index = doctors.getSelectedIndex();
             p.setDoctorId(docs.get(index).getId());
