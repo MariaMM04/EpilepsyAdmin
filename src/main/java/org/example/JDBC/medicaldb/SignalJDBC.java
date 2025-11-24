@@ -101,8 +101,8 @@ public class SignalJDBC {
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            byte[] zipBytes = signal.getPath() != null
-                    ? java.nio.file.Files.readAllBytes(signal.getPath().toPath())
+            byte[] zipBytes = signal.getFile() != null
+                    ? java.nio.file.Files.readAllBytes(signal.getFile().toPath())
                     : null;
 
             ps.setBytes(1, zipBytes);
@@ -113,7 +113,7 @@ public class SignalJDBC {
 
             ps.executeUpdate();
 
-            System.out.println("Signal inserted successfully: " + signal.getPath());
+            System.out.println("Signal inserted successfully: " + signal.getFile());
 
         } catch (SQLException | IOException e) {
             System.err.println("Error inserting signal: " + e.getMessage());

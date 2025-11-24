@@ -40,7 +40,6 @@ public class Application extends JFrame {
     private int serverPort = 9009;
     public Server server;
     public User user;
-    private KeyPair keyPair;
 
     //Managers
     public PatientJDBC patientJDBC;
@@ -79,7 +78,7 @@ public class Application extends JFrame {
         adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
-        server = new Server(serverPort, this, keyPair);
+        server = new Server(serverPort, this);
         server.startServer();
 
         //Panels

@@ -1,25 +1,21 @@
 package network;
 
 import com.google.gson.*;
+import encryption.RSAUtil;
 import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
-import Exceptions.*;
-import ui.RandomData;
-import ui.windows.Application;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientHandler implements Runnable {
     final Socket socket;
@@ -29,13 +25,14 @@ public class ClientHandler implements Runnable {
     private final Gson gson = new Gson();;
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
-    private PublicKey serverPB; //This is going to be the server's public key
+    private KeyPair serverKeyPair; //This is going to be the server's public key
+    private PublicKey clientPublicKey; //This is going to be the client's public key
     private SecretKey AESkey;
 
-    public ClientHandler(Socket socket, Server server, PublicKey serverPB) throws IOException {
+    public ClientHandler(Socket socket, Server server, KeyPair serverKeyPair) throws IOException {
         this.socket = socket;
         this.server = server;
-        this.serverPB = serverPB;
+        this.serverKeyPair = serverKeyPair;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         running = new AtomicBoolean(true);
@@ -44,7 +41,7 @@ public class ClientHandler implements Runnable {
     @Override
     public void run(){
         try {
-            //before doing anything, the client receives the public key right after connecting
+            //Before doing anything, the server sends its public key
             sendPublicKey();
 
             String line;
@@ -55,15 +52,17 @@ public class ClientHandler implements Runnable {
 
                 JsonObject request;
                 try {
-                   request = gson.fromJson(line, JsonObject.class);
+                   request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject
                 }catch (JsonSyntaxException e){
                     System.out.println(line);
                     continue;
                 }
                 if (request == null) {continue;}
 
+                // Extract the type field from the JSON
                 String type = request.get("type").getAsString();
 
+                // The type will tell the server what action to perform
                 switch (type) {
                     case "STOP_CLIENT":
                         //Client asked to stop itself or server asked client to stop and client echoes
@@ -115,6 +114,29 @@ public class ClientHandler implements Runnable {
                         System.out.println("REQUEST_PATIENT_SIGNALS");
                         handleRequestPatientSignals(request.getAsJsonObject("data"));
                         break;
+                    }
+                    case "SAVE_REPORT":{
+                        System.out.println("SAVE_REPORT");
+                        handleSaveReportRequest(request.getAsJsonObject("data"));
+                        break;
+                    }
+
+                    case "CLIENT_AES_KEY" : {
+                        System.out.println("CLIENT_AES_KEY");
+                        String encryptedAESkey = request.get("data").getAsString();
+                        try {
+                            String decryptedAESkey = RSAUtil.decrypt(encryptedAESkey, serverKeyPair.getPrivate());
+                            byte[] AESkeyBytes = Base64.getDecoder().decode(decryptedAESkey); //In bytes
+                            SecretKey AESkey = new SecretKeySpec(AESkeyBytes, 0, AESkeyBytes.length, "AES");
+                            //Store the secret key inside the Handler for the connection
+                            this.AESkey = AESkey;
+                            System.out.println("AES key retrieved and decrypted successfully");
+                            System.out.println("This is the Server's secret key AES:"+Base64.getEncoder().encodeToString(AESkey.getEncoded()));
+                            System.out.println("This is the Server's public key RSA:"+Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded())+"and the private RSA key: "+Base64.getEncoder().encode(serverKeyPair.getPrivate().getEncoded()));
+
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                 }
@@ -203,7 +225,7 @@ public class ClientHandler implements Runnable {
             sendRawJson(response);
 
         }else {
-            byte[] zipBytes = Files.readAllBytes(signal.getPath().toPath());
+            byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
             JsonObject metadata = new JsonObject();
             metadata.addProperty("type", "REQUEST_SIGNAL_METADATA");
@@ -272,8 +294,16 @@ public class ClientHandler implements Runnable {
     }
 
 
+    /**
+     * Sends the Server's public key as a JSON Object to follow the protocol. Adds a "type" field to tell the client
+     * what kind of message it is and encodes the server's public key from binary into a Base64 String into the "data"
+     * field. This makes it safe to send over a text stream.
+     */
     public void sendPublicKey() {
-
+        JsonObject serverKey = new JsonObject();
+        serverKey.addProperty("type", "SERVER_PUBLIC_KEY");
+        serverKey.addProperty("data", Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));
+        sendRawJson(serverKey);
     }
 
     /**
@@ -308,6 +338,12 @@ public class ClientHandler implements Runnable {
         return socket.getInetAddress().toString();
     }
 
+    /**
+     * Converts the JsonObject into a raw JSON string and writes it to the client's output stream.
+     * It immediately sends the data instead of buffering it.
+     *
+     * @param json  The JsonObject that will be converted it into a raw JSON string
+     */
     private void sendRawJson(JsonObject json){
         try {
             out.write(gson.toJson(json));
@@ -436,7 +472,7 @@ public class ClientHandler implements Runnable {
             sendRawJson(response);
             return;
         }
-        //If the patient is requesting the Doctor info of a Doctor that is not their's, don't authorize the access
+        //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access
         if(role.getRolename().equals("Patient")){
             Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
             if(patient.getDoctorId() != doctor_id){
@@ -483,7 +519,21 @@ public class ClientHandler implements Runnable {
         Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(email);
         if(patient != null) {
             response.addProperty("status", "SUCCESS");
-            response.add("patient", patient.toJason());
+            List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());
+            List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());
+            JsonObject pJson = patient.toJason();
+            JsonArray signalArray = new JsonArray();
+            for (Signal s : signals) {
+                signalArray.add(s.toJson());
+            }
+            JsonArray symptomsArray = new JsonArray();
+            for (Report s : symptoms) {
+                symptomsArray.add(s.toJson());
+            }
+            pJson.add("signals", signalArray);
+            pJson.add("reports", symptomsArray);
+            response.add("patient", pJson);
+            System.out.println(pJson.toString());
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
@@ -507,7 +557,21 @@ public class ClientHandler implements Runnable {
 
             JsonArray patientArray = new JsonArray();
             for (Patient p : patients) {
-                patientArray.add(p.toJason());
+                List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(p.getId());
+                List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(p.getId());
+                JsonObject pJson = p.toJason();
+                JsonArray signalArray = new JsonArray();
+                for (Signal s : signals) {
+                    signalArray.add(s.toJson());
+                }
+                JsonArray symptomsArray = new JsonArray();
+                for (Report s : symptoms) {
+                    symptomsArray.add(s.toJson());
+                }
+                pJson.add("signals", signalArray);
+                pJson.add("reports", symptomsArray);
+
+                patientArray.add(pJson);
             }
 
             response.add("patients", patientArray);
@@ -545,6 +609,52 @@ public class ClientHandler implements Runnable {
 
         if(doctor!= null && doctor1 != null && doctor1.getId() == doctor.getId()) {
             if(server.getAppMain().medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {
+                response.addProperty("status", "SUCCESS");
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Error saving comments");
+            }
+        }else {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+        }
+
+        sendRawJson(response);
+    }
+
+    private void handleSaveReportRequest(JsonObject data) throws IOException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SAVE_REPORT_RESPONSE");
+
+        Integer user_id = data.get("user_id").getAsInt();
+        Integer patient_id = data.get("patient_id").getAsInt();
+        Report report = Report.fromJson(data.get("report").getAsJsonObject());
+        if(report == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Error parsing report");
+            sendRawJson(response);
+            return;
+        }
+
+        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        if(user == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
+        if(patient == null) {
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Not authorized");
+            sendRawJson(response);
+            return;
+        }
+
+        if(patient.getEmail().equals(user.getEmail())) {
+            report.setPatientId(patient_id);
+            if(server.getAppMain().medicalManager.getReportJDBC().insertReport(report)) {
                 response.addProperty("status", "SUCCESS");
             }else{
                 response.addProperty("status", "ERROR");
