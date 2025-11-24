@@ -49,7 +49,7 @@ public class ClientHandler implements Runnable {
             while (running.get() && (line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty()) {continue;} //Skip empty lines
-
+                // Desencriptar Json
                 JsonObject request;
                 try {
                    request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject
