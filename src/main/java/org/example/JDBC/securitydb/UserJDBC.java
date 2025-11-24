@@ -39,7 +39,7 @@ public class UserJDBC {
      *                  <code> true </code> if the user was successfully inserted into the database
      *                  <code> false </code> otherwise
      */
-    public boolean insertUser(User user) {
+    public boolean insertUser(User user) throws RegisterError {
         String sql = "INSERT INTO Users (email, password, role_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -51,7 +51,7 @@ public class UserJDBC {
             return true;
         } catch (SQLException e) {
             System.err.println("Error inserting user: " + e.getMessage());
-            return false;
+            throw new RegisterError("Error inserting user: " + e.getMessage());
         }
     }
     /**
@@ -191,9 +191,9 @@ public class UserJDBC {
     public boolean register(User user) throws RegisterError {
         //Verification of email and password
         if (!UserLogIn.validatePassword(user.getPassword())){
-            return false;
+            throw new RegisterError("Invalid password");
         } else if (!NewPatientPanel.validateEmail(user.getEmail())){
-            return false;
+            throw new RegisterError("Invalid email");
         }else try {
             {
                 //Hash the password for security in the database

@@ -157,7 +157,6 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         passwordHeading.setFont(contentFont);
         passwordHeading.setForeground(contentColor);
         formContainer.add(passwordHeading, "grow");
-        //add(nameText, "skip 1, grow");
 
         //ROW 4
         formContainer.add(password, "grow, skip 1");
@@ -165,7 +164,6 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         //Add buttons
         cancelButton = new MyButton("CANCEL", Application.turquoise, Color.white);
         cancelButton.addActionListener(this);
-        //add(goBackButton,"cell 1 7, left, gapx 10, gapy 5");
         add(cancelButton, "cell 1 9, grow, center");
 
         saveChangesBt = new MyButton("SAVE AND GO BACK", Application.turquoise, Color.white);
@@ -176,7 +174,6 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         errorMessage.setFont(new Font("sansserif", Font.BOLD, 12));
         errorMessage.setForeground(Color.red);
         errorMessage.setText("Error message test");
-        //this.add(errorMessage, "cell 0 8, span, left");
         this.add(errorMessage, "cell 0 8, span, center");
         errorMessage.setVisible(false);
 
@@ -209,12 +206,12 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             }
 
 
-            if(!validateEmail(d.getEmail())){return;}
-            if(!validatePassword(password.getText())){return;}
+            if(!validateEmail(d.getEmail())){return;} //validateEmail already show an error message
+            if(!validatePassword(password.getText())){return;} //validatePassword already shows an error message
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Doctor");
             User u = new User(d.getEmail(), password.getText(), role.getId(), true);
 
-            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getEmail().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty() || password.getText() == "") {
+            if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty()) {
                 showErrorMessage("Please fill all the fields");
             }else {
                 //TODO: Cambiar para register
@@ -256,6 +253,8 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         phoneNumber.setText("");
         password.setText("");
         errorMessage.setVisible(false);
+        speciality.setText("");
+        department.setText("");
         saved = false;
     }
 
@@ -323,7 +322,6 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
                 return true;
             }
         }
-        //System.out.println("Valid email? "+validEmail);
         showErrorMessage("Invalid Email");
         return false;
     }
