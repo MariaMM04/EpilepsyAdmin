@@ -9,13 +9,15 @@ git clone https://github.com/MariaMM04/EpilepsyAdmin
 ```
 2. Navigate to the project root folder.
 3. Run the executable `.jar` or execute the `Application.java` class.
-> ⚠️ The Admin Application performs automatic login, so you will not see the login screen when launching this module.
+> ⚠️ The Admin Application log in is done with  
+> User:  admin@nightguardian.com  
+> Password: Telemedicine25
 
 ## Initial Conditions
 When the Admin Application is launched for the first time:
-* The administrator is logged in automatically  
+* The administrator needs to Log in
 * The database may be empty (no doctors/patients unless previously created)  
-* The Main Menu appears immediately  
+* The Main Menu appears immediately after the log in
 * Server-monitoring tools are active  
 
 ## Main Menu
@@ -31,7 +33,7 @@ When the system starts, the Admin Main Menu displays seven options:
 ---
 
 ## Create Patient
-Selecting **Create Patient** opens a form with eight fields distributed in two columns.
+Selecting **Create Patient** opens a form with eight fields, to be filled, distributed in two columns:
 
 **Left column:**  
 * Name  
@@ -46,13 +48,13 @@ Selecting **Create Patient** opens a form with eight fields distributed in two c
 * Password  
 
 **Buttons:**  
-* **Cancel:** asks for confirmation before exiting without saving  
-* **Save and Go Back:** saves the patient and returns to the Main Menu  
+* **Cancel:** asks for confirmation before exiting without saving. If it was pressed by mistake, it goes back to the Create Patient screen.  
+* **Save and Go Back:** saves the patient and returns to the Main Menu.  
 
 ---
 
 ## Create Doctor
-Selecting **Create Doctor** opens a similar form with seven fields.
+Selecting **Create Doctor** opens a similar form with seven fields to fill with the doctor's information:
 
 **Left column:**  
 * Name  
@@ -66,15 +68,15 @@ Selecting **Create Doctor** opens a similar form with seven fields.
 * Email (`name@nightguardian.com`)  
 
 **Buttons:**  
-* **Cancel:** confirmation dialog before losing changes  
-* **Save and Go Back:** stores the doctor and returns to the Main Menu  
+* **Cancel:** confirmation dialog before losing changes. If it was pressed by mistake, it goes back to the Create Doctor screen.  
+* **Save and Go Back:** stores the doctor and returns to the Main Menu.  
 
 ---
 
 ## Doctor List
 This section displays all doctors in the system.
 
-**Right panel:** scrollable list showing:  
+**Right panel:** scrollable list showing every Doctor's information:  
 * Name and surname  
 * Department  
 * Speciality  
@@ -83,15 +85,15 @@ This section displays all doctors in the system.
 * Account status (Active / Inactive)  
 
 **Left panel:**  
-* **Search:** enter surname and click *Search*. If the doctor is not found, *Doctor not found* appears  
-* **Reset:** restores full list  
-* **Switch Status:** activate or deactivate selected doctor  
-* **Back to Menu:** returns to Main Menu  
+* **Search:** enter surname and click *Search*. If the doctor is not found, *Doctor not found* appears.  
+* **Reset:** restores *Search* filter and shows full list.  
+* **Switch Status:** activate or deactivate selected doctor. A message confirming the status change will appear.  
+* **Back to Menu:** returns to Main Menu.  
 
 ---
 
 ## Patient List
-This section mirrors the Doctor List, but with patient information.
+This section mirrors the Doctor List, but with patient information:
 
 **Right panel:**  
 * Name and surname  
@@ -104,8 +106,8 @@ This section mirrors the Doctor List, but with patient information.
 
 **Left panel:**  
 * **Search:** by surname (shows *Patient not found* if none exist)  
-* **Reset:** restores full list  
-* **Switch Status:** activates or deactivates patient  
+* **Reset:** restores *Search* filter and shows full list.
+* **Switch Status:** activates or deactivates selected patient. A message confirming the status change will appear.
 * **Back to Menu:** returns to Main Menu  
 
 ---
@@ -134,9 +136,10 @@ This option manages server availability.
 ---
 
 ## Log Out
-Selecting **Log Out** returns to the login screen.  
-> ⚠️ When the Admin Application is launched directly, it performs automatic login so the login screen is skipped.
-
+Selecting **Log Out** returns to the log in screen.  
+> ⚠️ When the Admin Application log in is done with  
+> User:  admin@nightguardian.com  
+> Password: Telemedicine25
 ---
 
 ## 👥 Authors

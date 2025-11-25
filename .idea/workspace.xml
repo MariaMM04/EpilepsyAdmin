@@ -4,23 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="New patient register">
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_Admin.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_Admin.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,25 +20,19 @@
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
   "lastFilter": {
     "state": "OPEN",
-    "assignee": "MartaSanchezDelHoyo"
+    "assignee": "MariaMM04"
   }
 }]]></component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/MariaMM04/EpilepsyAdmin.git",
-    "accountId": "71dc38ad-21e7-42df-be36-38716886eb37"
+    "accountId": "12626fc0-ed3c-4c85-9540-1d4369efb5a4"
   }
 }]]></component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
-  </component>
   <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
+  "associatedIndex": 2
 }]]></component>
-  <component name="ProjectId" id="35uw9Cc65wpoiv9dZNtZrfG0omQ" />
+  <component name="ProjectId" id="35yls9JlchaXpzJWWN4seVYlMJP" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -57,44 +43,26 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Application.executor": "Run",
+    "Application.MainAdmin.executor": "Run",
+    "Application.MainAdmin_try.executor": "Run",
     "Application.MedicalManager.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.SecurityManager.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor": "Run",
     "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mamen/Documents/Java/EpilepsyAdmin/src/main/java/org/example/DataBases",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\mamen\Documents\Java\EpilepsyAdmin\src\main\java\org\example\DataBases" />
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example.service" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="corretto-22" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
-      <module name="EpilepsyAdmin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ui.windows.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Application" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
@@ -120,7 +88,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SecurityManager" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration name="SecurityManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.JDBC.securitydb.SecurityManager" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
@@ -133,93 +101,43 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ui.windows.Application" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
+    <configuration name="ClientHandlerTest.testHandleLoginCorrectDoctorRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="ui.windows.*" />
+          <option name="PATTERN" value="network.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="network" />
+      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
+      <option name="METHOD_NAME" value="testHandleLoginCorrectDoctorRequest" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.SecurityManager" />
-      <item itemvalue="Application.MedicalManager" />
-      <item itemvalue="Application.Application" />
-      <item itemvalue="Application.ui.windows.Application" />
-    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
         <item itemvalue="Application.MedicalManager" />
-        <item itemvalue="Application.Application" />
-        <item itemvalue="Application.ui.windows.Application" />
+        <item itemvalue="Application.SecurityManager" />
+        <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
+        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-IU-252.26199.169" />
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="encryption RSA and AES">
-      <created>1763904969651</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1763904969651</updated>
-    </task>
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="encryption RSA and AES" />
-      <created>1763973111193</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1763973111193</updated>
-      <workItem from="1764006228868" duration="2254000" />
-    </task>
-    <task id="LOCAL-00002" summary="encryption RSA and AES">
-      <created>1763980910264</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1763980910264</updated>
-    </task>
-    <task id="LOCAL-00003" summary="New patient register">
-      <created>1763982697343</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1763982697343</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="encryption RSA and AES" />
-    <MESSAGE value="New patient register" />
-    <option name="LAST_COMMIT_MESSAGE" value="New patient register" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$Application.ic" NAME="Application Coverage Results" MODIFIED="1763945395477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>ui.windows.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.example.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$SecurityManager.ic" NAME="SecurityManager Coverage Results" MODIFIED="1763986129715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.example.JDBC.securitydb.*</FILTER>
-    </SUITE>
   </component>
 </project>
