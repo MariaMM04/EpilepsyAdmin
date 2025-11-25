@@ -14,6 +14,8 @@ import java.util.ArrayList;
  * <p>
  * It includes a gradient cover panel with a logo and title, and a customizable menu section containing buttons.
  * The distribution of the buttons is adjusted based on the number of buttons.
+ *
+ *  @author MamenCortes
  */
 public class MenuTemplate extends JPanel implements ActionListener {
 

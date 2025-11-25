@@ -11,6 +11,8 @@ import java.awt.*;
  * <p>
  * It displays two password fields, an error label, and two action buttons
  * ("Save" and "Cancel"). Error messages can be shown dynamically.
+ *
+ *  @author MamenCortes
  */
 public class ChangePassword extends JPanel {
 

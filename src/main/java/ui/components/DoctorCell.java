@@ -19,6 +19,8 @@ import java.awt.*;
  * <p>
  * It shows the doctor's name, speciality, department, contact information
  * and active status.
+ *
+ *  @author MamenCortes
  */
 public class DoctorCell implements ListCellRenderer<Doctor> {
 

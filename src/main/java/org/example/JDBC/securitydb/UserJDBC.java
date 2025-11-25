@@ -1,11 +1,15 @@
 package org.example.JDBC.securitydb;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import Exceptions.RegisterError;
 import encryption.PasswordHash;
 import org.example.entities_securitydb.User; // Import User class
+import ui.windows.NewPatientPanel;
 import ui.windows.UserLogIn;
 
 
@@ -35,7 +39,7 @@ public class UserJDBC {
      *                  <code> true </code> if the user was successfully inserted into the database
      *                  <code> false </code> otherwise
      */
-    public boolean insertUser(User user) {
+    public boolean insertUser(User user) throws RegisterError {
         String sql = "INSERT INTO Users (email, password, role_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -47,7 +51,7 @@ public class UserJDBC {
             return true;
         } catch (SQLException e) {
             System.err.println("Error inserting user: " + e.getMessage());
-            return false;
+            throw new RegisterError("Error inserting user: " + e.getMessage());
         }
     }
     /**
@@ -179,37 +183,29 @@ public class UserJDBC {
     }
 
     /**
-     * Registers a new user in the database after performing password validation.
      *
-     * @param email     the new user's email
-     * @param password  the new user's password
-     * @param active    the new users active flag. May be:
-     *                  <code> true </code> if the user was successfully updated into the database
-     *                  <code> false </code> otherwise
-     * @return          boolean value of the performed registration. May be:
-     *                  <code> true </code> if the user was successfully registered into the database
-     *                  <code> false </code> otherwise
+     *
+     * @param user
+     * @return
      */
-    public boolean register(String email, String password, boolean active) {
+    public boolean register(User user) throws RegisterError {
         //Verification of email and password
-        if (email.isBlank() || email == null || password.isBlank() || password == null || active == true) { // If the email or password are empty do not create
-            return false;
-        } else if (isUser(email)) {
-            return false;
-        } else if (!UserLogIn.validatePassword(password)){
-            return false;
-        } else if (!UserLogIn.validateEmail(email)){
-            return false;
+        if (!UserLogIn.validatePassword(user.getPassword())){
+            throw new RegisterError("Invalid password");
+        } else if (!NewPatientPanel.validateEmail(user.getEmail())){
+            throw new RegisterError("Invalid email");
         }else try {
             {
                 //Hash the password for security in the database
-                String hashedPassword = PasswordHash.generatePasswordHash(password);
-                User newUser = new User (email, hashedPassword,true);
+                String hashedPassword = PasswordHash.generatePasswordHash(user.getPassword());
+                User newUser = new User (user.getEmail(), hashedPassword,true);
+                newUser.setRole_id(user.getRole_id());
+                System.out.println("The user is: "+newUser.getEmail());
+                System.out.println("The user's password is: "+newUser.getPassword());
                 return insertUser(newUser);
             }
-        } catch (Exception e) {
-            System.out.println("Register failed: "+e.getMessage());
-            return false;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
+            throw new RegisterError("User is not registered");
         }
     }
 
@@ -223,7 +219,6 @@ public class UserJDBC {
      * @return          This {@code User} instance logged in
      */
 
-    //TODO: CHECK ACTIVE FLAG
     public User login(String email, String password) {
         if (email == null || email.isBlank() || password == null || password.isBlank()) {
             return null; // invalid input
@@ -282,6 +277,7 @@ public class UserJDBC {
     }
 
 
+    //TODO: hashear contraseña
     /**
      * Changes the password of the given user of the database.
      *

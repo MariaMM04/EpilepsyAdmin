@@ -66,12 +66,14 @@ public class PasswordHash {
      */
     public static boolean verifyPassword (String inputPassword, String dbPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String[] parts = dbPassword.split(":");
-        int iterations = Integer.parseInt(parts[0]);
 
+        // Use the stored salt, hash and iterations from dbPassword
+        int iterations = Integer.parseInt(parts[0]);
         byte[] salt = fromHex(parts[1]);
         byte[] hash = fromHex(parts[2]);
 
-        PBEKeySpec spec = new PBEKeySpec(dbPassword.toCharArray(),salt,iterations,hash.length*8);
+        // Hash the raw input password using salt, hash and iterations parameters
+        PBEKeySpec spec = new PBEKeySpec(inputPassword.toCharArray(),salt,iterations,hash.length*8);
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] testHash = skf.generateSecret(spec).getEncoded();
         int diff = hash.length ^ testHash.length;

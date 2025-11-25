@@ -59,6 +59,8 @@ public class SecurityManager {
             this.userJDBC = new UserJDBC(connection);
             this.roleJDBC = new RoleJDBC(connection);
 
+            addElementsIfEmptyDB();
+
         } catch (SQLException e) {
             System.err.println("Error connecting to securitydb: " + e.getMessage());
         }
@@ -88,6 +90,24 @@ public class SecurityManager {
             }
         } catch (SQLException e) {
             System.err.println("Error closing securitydb: " + e.getMessage());
+        }
+    }
+
+    private void addElementsIfEmptyDB() {
+        List<Role> reports = roleJDBC.getAllRoles();
+        if (reports.isEmpty()) {
+            roleJDBC.insertRole(new Role("Patient"));
+            roleJDBC.insertRole(new Role("Doctor"));
+            roleJDBC.insertRole(new Role("Administrator"));
+        }
+
+        List<User> users = userJDBC.getAllUsers();
+        if (users.isEmpty()) {
+            try {
+                userJDBC.register(new User("admin@nightguardian.com", "password1", roleJDBC.findRoleByName("Administrator").getId(), true));
+            }catch (Exception e){
+                System.err.println("Error inserting user: " + e.getMessage());
+            }
         }
     }
 }
