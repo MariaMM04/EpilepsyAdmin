@@ -1,6 +1,7 @@
 package network;
 
 import com.google.gson.*;
+import encryption.AESUtil;
 import encryption.RSAUtil;
 import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
@@ -8,6 +9,7 @@ import org.example.entities_securitydb.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.io.*;
 import java.net.Socket;
@@ -52,7 +54,8 @@ public class ClientHandler implements Runnable {
                 // Desencriptar Json
                 JsonObject request;
                 try {
-                   request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject
+                   request = gson.fromJson(line, JsonObject.class);
+                    System.out.println(request);//Turns the lines into a JsonObject
                 }catch (JsonSyntaxException e){
                     System.out.println(line);
                     continue;
@@ -61,9 +64,19 @@ public class ClientHandler implements Runnable {
 
                 // Extract the type field from the JSON
                 String type = request.get("type").getAsString();
+                String typeDecrypted = type; //default original type
+                JsonObject decryptedRequest = request; //default original request
+                if(type.equals("ENCRYPTED")){
+                    String encryptedData = request.get("data").getAsString();
+                    String decryptedJson = AESUtil.decrypt(encryptedData, AESkey);
+                    System.out.println("This is the decrypted json: "+decryptedJson);
+                    decryptedRequest = gson.fromJson(decryptedJson, JsonObject.class);
+                    typeDecrypted = decryptedRequest.get("type").getAsString();
+                }
+                System.out.println("This is the type"+typeDecrypted);
 
                 // The type will tell the server what action to perform
-                switch (type) {
+                switch (typeDecrypted) {
                     case "STOP_CLIENT":
                         //Client asked to stop itself or server asked client to stop and client echoes
                         System.out.println("Received STOP_CLIENT from"+getSocketAddress());
@@ -71,58 +84,59 @@ public class ClientHandler implements Runnable {
                         break;
                     case "LOGIN_REQUEST": {
                         System.out.println("LOGIN REQUEST");
-                        handleLogIn(request.getAsJsonObject("data"));
+                        handleLogIn(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_DOCTOR_BY_EMAIL": {
                         System.out.println("REQUEST DOCTOR_BY_EMAIL");
-                        handleRequestDoctorByEmail(request.getAsJsonObject("data"));
+                        handleRequestDoctorByEmail(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_PATIENTS_FROM_DOCTOR": {
                         System.out.println("REQUEST_PATIENTS_FROM_DOCTOR");
-                        handleRequestPatientsFromDoctor(request.getAsJsonObject("data"));
+                        handleRequestPatientsFromDoctor(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_PATIENT_BY_EMAIL": {
                         System.out.println("REQUEST_PATIENT_BY_EMAIL");
-                        handleRequestPatientByEmail(request.getAsJsonObject("data"));
+                        handleRequestPatientByEmail(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_DOCTOR_BY_ID": {
                         System.out.println("REQUEST DOCTOR_BY_ID");
-                        handleRequestDoctorById(request.getAsJsonObject("data"));
+                        handleRequestDoctorById(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "SAVE_COMMENTS_SIGNAL": {
                         System.out.println("SAVE_COMMENTS_SIGNAL");
-                        handleSaveCommentsSignal(request.getAsJsonObject("data"));
+                        handleSaveCommentsSignal(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "UPLOAD_SIGNAL" : {
                         System.out.println("UPLOAD_SIGNAL");
-                        handleRequestSignalPatient(request);
+                        handleRequestSignalPatient(decryptedRequest);
                         break;
                     }
                     case "REQUEST_SIGNAL" : {
                         System.out.println("REQUEST_SIGNAL");
-                        handleRequestSignal(request.getAsJsonObject("data"));
+                        handleRequestSignal(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
 
                     case "REQUEST_PATIENT_SIGNALS" : {
                         System.out.println("REQUEST_PATIENT_SIGNALS");
-                        handleRequestPatientSignals(request.getAsJsonObject("data"));
+                        handleRequestPatientSignals(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "SAVE_REPORT":{
                         System.out.println("SAVE_REPORT");
-                        handleSaveReportRequest(request.getAsJsonObject("data"));
+                        handleSaveReportRequest(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
 
                     case "CLIENT_AES_KEY" : {
                         System.out.println("CLIENT_AES_KEY");
+                        // This one is encrypted by public key encryption2
                         String encryptedAESkey = request.get("data").getAsString();
                         try {
                             String decryptedAESkey = RSAUtil.decrypt(encryptedAESkey, serverKeyPair.getPrivate());
@@ -142,7 +156,7 @@ public class ClientHandler implements Runnable {
                 }
 
             }
-        } catch (IOException e){
+        } catch (Exception e){
             if(e.getClass() == SocketException.class){
                 try {
                     System.out.println("Client stopped connection abruptly");
@@ -441,8 +455,9 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
         }
+        //TODO: ENCRYPTION
+        sendEncrypted(response, out, AESkey);
 
-        sendRawJson(response);
     }
 
     /**
@@ -667,5 +682,31 @@ public class ClientHandler implements Runnable {
 
         sendRawJson(response);
     }
+
+    /**
+     * Encrypts the Json's data property.
+     *
+     * @param message
+     * @param out
+     * @param AESkey
+     */
+    public void sendEncrypted(JsonObject message, BufferedWriter out, SecretKey AESkey){
+        try{
+            String encryptedJson = AESUtil.encrypt(message.toString(), AESkey);
+            JsonObject wrapper = new JsonObject();
+
+            //TODO: ver si realmente el type debería ser especifico para cada case o no
+            wrapper.addProperty("type", "ENCRYPTED");
+            wrapper.addProperty("data", encryptedJson);
+
+            System.out.println("This is the message:"+wrapper);
+
+            out.write(gson.toJson(wrapper)); //String Json
+            out.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
 
