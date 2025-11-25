@@ -211,6 +211,7 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleRequestSignal(JsonObject data) throws IOException {
+        System.out.println(data.toString());
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_SIGNAL_RESPONSE");
 
@@ -242,17 +243,18 @@ public class ClientHandler implements Runnable {
             byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
             JsonObject metadata = new JsonObject();
-            metadata.addProperty("type", "REQUEST_SIGNAL_METADATA");
             metadata.addProperty("signal_id", signal.getId());
             metadata.addProperty("patient_id", signal.getPatientId());
             metadata.addProperty("sampling_rate", signal.getSampleFrequency());
             metadata.addProperty("comments", signal.getComments());
             metadata.addProperty("date", signal.getDate().toString());
             response.addProperty("status", "SUCCESS");
+            response.add("metadata", metadata);
             response.addProperty("compression", "zip-base64");
             response.addProperty("filename", "signal_" + signal.getId() + ".zip");
-            response.addProperty("data", base64Zip);
-            response.add("metadata", metadata);
+            response.addProperty("dataBytes", base64Zip);
+
+            System.out.println(response.toString());
             sendRawJson(response);
         }
     }
@@ -265,13 +267,12 @@ public class ClientHandler implements Runnable {
             JsonObject metadata = dataIn.getAsJsonObject("metadata");
 
             int patientId = metadata.get("patient_id").getAsInt();
-            int samplingRate = metadata.get("sampling_rate").getAsInt();
-            int duration = metadata.get("duration_seconds").getAsInt();
+            int sampleFrequency = metadata.get("sampling_rate").getAsInt();
             String timestamp = metadata.get("timestamp").getAsString();
             LocalDateTime dateTime = LocalDateTime.parse(timestamp);
 
             String filename = dataIn.get("filename").getAsString();
-            String base64Data = dataIn.get("datafile").getAsString();
+            String base64Data = dataIn.get("dataBytes").getAsString();
 
             Patient patient = server.getAppMain().medicalManager.getPatientJDBC().findPatientByID(patientId);
 
@@ -294,16 +295,20 @@ public class ClientHandler implements Runnable {
                     dateTime.toLocalDate(),
                     "",              // comments initially empty
                     patientId,
-                    samplingRate
+                    sampleFrequency
             );
+            System.out.println("Inserting signal for patient ID: " + patientId + " with sampling rate: " + sampleFrequency + " at " + dateTime.toString());
 
-            server.getAppMain().medicalManager.getSignalJDBC().insertSignal(record);
-
-            response.addProperty("status", "SUCCESS");
-            response.addProperty("message", "Signal uploaded correctly");
-            sendRawJson(response);
-
-
+               if(!server.getAppMain().medicalManager.getSignalJDBC().insertSignal(record)) {
+                response.addProperty("status", "ERROR");
+                response.addProperty("type", "ERROR ADDING SIGNAL TO DATABASE");
+                response.addProperty("message", "Error saving signal: ");
+                sendRawJson(response);
+                }else {
+                   response.addProperty("status", "SUCCESS");
+                   response.addProperty("message", "Signal uploaded correctly");
+                   sendRawJson(response);
+               }
 
     }
 
@@ -458,6 +463,7 @@ public class ClientHandler implements Runnable {
         //TODO: ENCRYPTION
         sendEncrypted(response, out, AESkey);
 
+        sendRawJson(response);
     }
 
     /**
