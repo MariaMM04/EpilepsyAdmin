@@ -102,7 +102,6 @@ public class Application extends JFrame {
         });
     }
 
-    // TODO: Preguntar Mamen throws Exception
     /**
      * Creates a new instance of the Application, initializes:
      * <ul>
@@ -126,7 +125,7 @@ public class Application extends JFrame {
         adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
-        server = new Server(serverPort, this);
+        server = new Server(serverPort, adminLinkService);
         server.startServer();
 
         //Panels

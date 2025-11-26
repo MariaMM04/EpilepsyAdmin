@@ -1,6 +1,7 @@
 package network;
 
 import Exceptions.ClientError;
+import org.example.service.AdminLinkService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,14 @@ class ServerTest {
     private ServerSocket serverSocket;
     private InputStream in;
     private OutputStream out;
+    private AdminLinkService adminLinkService;
 
     @BeforeEach
     void setUp() throws Exception {
         app = mock(Application.class);
         serverSocket = mock(ServerSocket.class);
-        server = spy(new Server(serverSocket, app));
+        adminLinkService = mock(AdminLinkService.class);
+        server = spy(new Server(serverSocket, adminLinkService));
         doReturn(serverSocket).when(server).createServerSocket(anyInt());
         in = mock(InputStream.class);
         out = mock(OutputStream.class);

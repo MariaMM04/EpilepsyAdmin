@@ -38,7 +38,7 @@ import org.example.entities_securitydb.User;
  * @author MariaMM04
  * @author MamenCortes
  */
-public class MedicalManager {
+public class MedicalManager{
 
     public static void main(String[] args) {
         MedicalManager medicalManager = new MedicalManager();

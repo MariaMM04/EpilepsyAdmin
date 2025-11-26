@@ -205,7 +205,7 @@ public class UserJDBC {
                 return insertUser(newUser);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
-            throw new RegisterError("User is not registered");
+            throw new RegisterError("User is already registered");
         }
     }
 

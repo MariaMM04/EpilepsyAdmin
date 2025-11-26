@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.example.JDBC.medicaldb.MedicalConnection;
+import org.example.JDBC.medicaldb.MedicalManager;
 import org.example.JDBC.securitydb.SecurityConnection;
 
 /**
@@ -13,6 +14,8 @@ import org.example.JDBC.securitydb.SecurityConnection;
  * @author MariaMM04
  */
 public class JdbcUtil {
+    private MedicalManager medicalManager;
+    private SecurityManager securityManager;
 
     public static Connection getMedicalConnection() throws SQLException {
         return MedicalConnection.getConnection();
