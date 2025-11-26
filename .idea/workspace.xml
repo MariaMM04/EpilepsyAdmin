@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Manual of Admin done">
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README_Admin.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_Admin.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,21 +18,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "MariaMM04"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;MariaMM04&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/MariaMM04/EpilepsyAdmin.git",
-    "accountId": "12626fc0-ed3c-4c85-9540-1d4369efb5a4"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
+    &quot;accountId&quot;: &quot;12626fc0-ed3c-4c85-9540-1d4369efb5a4&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="35yls9JlchaXpzJWWN4seVYlMJP" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -48,12 +49,18 @@
     "Application.MedicalManager.executor": "Run",
     "Application.SecurityManager.executor": "Run",
     "JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm"
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -135,9 +142,30 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="Manual of Admin done">
+      <option name="closed" value="true" />
+      <created>1764091730998</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764091730998</updated>
+    </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Manual of Admin done" />
+      <created>1764152614333</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764152614333</updated>
+      <workItem from="1764152617418" duration="1374000" />
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Manual of Admin done" />
+    <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
   </component>
 </project>
