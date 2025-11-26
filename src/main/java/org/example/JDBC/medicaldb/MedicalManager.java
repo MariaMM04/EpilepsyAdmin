@@ -44,8 +44,8 @@ public class MedicalManager{
         MedicalManager medicalManager = new MedicalManager();
         SecurityManager securityManager = new SecurityManager();
 
-        Signal signal1 = new Signal(0, LocalDate.now(), "Random comments", 1, 100);
-        medicalManager.signalJDBC.insertSignal(signal1);
+        //Signal signal1 = new Signal(0, LocalDate.now(), "Random comments", 1, 100);
+        //medicalManager.signalJDBC.insertSignal(signal1);
         //medicalManager.signalJDBC.insertSignal(signal1);
         /*Report report1 = new Report(0, LocalDate.now(), new ArrayList<Report.Symptom>(), 5);
         report1.addSymptom(Report.Symptom.DIZZINESS);
@@ -63,7 +63,7 @@ public class MedicalManager{
 
         List<Patient> patients =  medicalManager.getPatientJDBC().getAllPatients();
         for (Patient patient : patients) {
-            System.out.println(patient.toJason().toString());
+            //System.out.println(patient.toJason().toString());
             List<Signal> signals = medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());
             List<Report> symptoms = medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());
             JsonObject pJson = patient.toJason();

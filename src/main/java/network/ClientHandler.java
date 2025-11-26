@@ -482,8 +482,13 @@ public class ClientHandler implements Runnable {
 
         Doctor doctor = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().findDoctorByEmail(email);
         if(doctor != null) {
-            response.addProperty("status", "SUCCESS");
-            response.add("doctor", doctor.toJason());
+            if(doctor.isActive()){
+                response.addProperty("status", "SUCCESS");
+                response.add("doctor", doctor.toJason());
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor is no longer active.");
+            }
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
@@ -572,22 +577,27 @@ public class ClientHandler implements Runnable {
 
         Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByEmail(email);
         if(patient != null) {
-            response.addProperty("status", "SUCCESS");
-            List<Signal> signals = server.getAdminLinkService().getMedicalManager().getSignalJDBC().getSignalsByPatientId(patient.getId());
-            List<Report> symptoms = server.getAdminLinkService().getMedicalManager().getReportJDBC().getReportsByPatientId(patient.getId());
-            JsonObject pJson = patient.toJason();
-            JsonArray signalArray = new JsonArray();
-            for (Signal s : signals) {
-                signalArray.add(s.toJson());
+            if(patient.isActive()) {
+                response.addProperty("status", "SUCCESS");
+                List<Signal> signals = server.getAdminLinkService().getMedicalManager().getSignalJDBC().getSignalsByPatientId(patient.getId());
+                List<Report> symptoms = server.getAdminLinkService().getMedicalManager().getReportJDBC().getReportsByPatientId(patient.getId());
+                JsonObject pJson = patient.toJason();
+                JsonArray signalArray = new JsonArray();
+                for (Signal s : signals) {
+                    signalArray.add(s.toJson());
+                }
+                JsonArray symptomsArray = new JsonArray();
+                for (Report s : symptoms) {
+                    symptomsArray.add(s.toJson());
+                }
+                pJson.add("signals", signalArray);
+                pJson.add("reports", symptomsArray);
+                response.add("patient", pJson);
+                System.out.println(pJson.toString());
+            }else {
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "The user is no longer active");
             }
-            JsonArray symptomsArray = new JsonArray();
-            for (Report s : symptoms) {
-                symptomsArray.add(s.toJson());
-            }
-            pJson.add("signals", signalArray);
-            pJson.add("reports", symptomsArray);
-            response.add("patient", pJson);
-            System.out.println(pJson.toString());
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");

@@ -184,7 +184,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         specHeading.setFont(contentFont);
         specHeading.setForeground(contentColor);
         formContainer.add(specHeading, "grow");
-        departmentHeading = new JLabel("Department*");
+        departmentHeading = new JLabel("Hospital/Department*");
         departmentHeading.setFont(contentFont);
         departmentHeading.setForeground(contentColor);
         formContainer.add(departmentHeading, "grow");
@@ -253,6 +253,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
             d.setContact(phoneNumber.getText());
             d.setSpeciality(speciality.getText());
             d.setDepartment(department.getText());
+            d.setActive(true);
 
             Integer phonenumber;
 
