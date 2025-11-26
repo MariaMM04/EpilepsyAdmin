@@ -96,8 +96,9 @@ public class SignalJDBC {
      *                  <code> true </code> if the signal was successfully inserted into the database
      *                  <code> false </code> otherwise
      */
-    public void insertSignal(Signal signal) {
-        String sql = "INSERT INTO signal (path, date, comments,sampling_frequency, patient_id ) VALUES (?, ?, ?, ?, ?)";
+    public boolean insertSignal(Signal signal) {
+        boolean inserted=false;
+        String sql = "INSERT INTO signal (path, date, comments, sampleFrequency, patient_id) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -111,14 +112,14 @@ public class SignalJDBC {
             ps.setDouble(4, signal.getSampleFrequency());
             ps.setInt(5, signal.getPatientId());
 
-
             ps.executeUpdate();
 
             System.out.println("Signal inserted successfully: " + signal.getFile());
-
+        inserted=true;
         } catch (SQLException | IOException e) {
             System.err.println("Error inserting signal: " + e.getMessage());
         }
+        return  inserted;
     }
 
     /**
@@ -273,7 +274,7 @@ public class SignalJDBC {
         //LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
         String comments = rs.getString("comments");
         int patientId = rs.getInt("patient_id");
-        double sampleFrequency = rs.getDouble(("sample_frequency"));
+        double sampleFrequency = rs.getDouble(("sampleFrequency"));
 
         return new Signal(id, file, date, comments, patientId, sampleFrequency);
     }

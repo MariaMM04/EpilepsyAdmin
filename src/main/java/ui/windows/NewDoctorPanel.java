@@ -114,12 +114,12 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
     public void initDoctorInfo() {
         this.titleText = "Physician information";
         name = new MyTextField();
-        name.setHint("Michal");
+        name.setHint("Antonio");
         surname = new MyTextField();
-        surname.setHint("Alhajjar");
+        surname.setHint("Recio");
         name.setEnabled(true);
         email = new MyTextField();
-        email.setHint("michal.alhajjar@gmail.com");
+        email.setHint("antonio.recio@nightguardian.com");
         email.setEnabled(true);
         password = new MyTextField();
         phoneNumber = new MyTextField();

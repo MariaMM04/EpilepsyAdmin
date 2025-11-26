@@ -1,7 +1,9 @@
 package network;
 
 import com.google.gson.*;
+import encryption.AESUtil;
 import encryption.RSAUtil;
+import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 
@@ -20,11 +22,11 @@ public class ClientHandler implements Runnable {
     final Socket socket;
     private final Server server;
     BufferedReader in;
-    private BufferedWriter out;
-    private final Gson gson = new Gson();;
+    private final PrintWriter out;
+    private final Gson gson = new Gson();
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
-    private KeyPair serverKeyPair; //This is going to be the server's public key
+    private final KeyPair serverKeyPair; //This is going to be the server's public key
     private PublicKey clientPublicKey; //This is going to be the client's public key
     private SecretKey AESkey;
 
@@ -33,7 +35,7 @@ public class ClientHandler implements Runnable {
         this.server = server;
         this.serverKeyPair = serverKeyPair;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
         running = new AtomicBoolean(true);
     }
 
@@ -48,10 +50,11 @@ public class ClientHandler implements Runnable {
             while (running.get() && (line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty()) {continue;} //Skip empty lines
-
+                // Desencriptar Json
                 JsonObject request;
                 try {
-                   request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject
+                   request = gson.fromJson(line, JsonObject.class);
+                    System.out.println(request);//Turns the lines into a JsonObject
                 }catch (JsonSyntaxException e){
                     System.out.println(line);
                     continue;
@@ -60,68 +63,91 @@ public class ClientHandler implements Runnable {
 
                 // Extract the type field from the JSON
                 String type = request.get("type").getAsString();
+                System.out.println("\nThis is the encrypted message received from the Client: "+request);
+                String typeDecrypted = type; //default original type
+                JsonObject decryptedRequest = request; //default original request
+                if(type.equals("ENCRYPTED")){
+                    String encryptedData = request.get("data").getAsString();
+                    String decryptedJson = AESUtil.decrypt(encryptedData, AESkey);
+                    decryptedRequest = gson.fromJson(decryptedJson, JsonObject.class);
+                    typeDecrypted = decryptedRequest.get("type").getAsString();
+                }
+                System.out.println("This is the decrypted message received in Server: "+decryptedRequest);
 
                 // The type will tell the server what action to perform
-                switch (type) {
+                switch (typeDecrypted) {
                     case "STOP_CLIENT":
+                        //TODO: Checked
                         //Client asked to stop itself or server asked client to stop and client echoes
                         System.out.println("Received STOP_CLIENT from"+getSocketAddress());
-                        releaseResources(in, out, socket);;
+                        releaseResources(in, out, socket);
                         break;
                     case "LOGIN_REQUEST": {
+                        //TODO: Checked
                         System.out.println("LOGIN REQUEST");
-                        handleLogIn(request.getAsJsonObject("data"));
+                        handleLogIn(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_DOCTOR_BY_EMAIL": {
+                        //TODO: try
                         System.out.println("REQUEST DOCTOR_BY_EMAIL");
-                        handleRequestDoctorByEmail(request.getAsJsonObject("data"));
+                        handleRequestDoctorByEmail(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_PATIENTS_FROM_DOCTOR": {
+                        //TODO: try
                         System.out.println("REQUEST_PATIENTS_FROM_DOCTOR");
-                        handleRequestPatientsFromDoctor(request.getAsJsonObject("data"));
+                        handleRequestPatientsFromDoctor(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_PATIENT_BY_EMAIL": {
+                        // TODO: Checked
                         System.out.println("REQUEST_PATIENT_BY_EMAIL");
-                        handleRequestPatientByEmail(request.getAsJsonObject("data"));
+                        handleRequestPatientByEmail(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "REQUEST_DOCTOR_BY_ID": {
+                        //TODO: Checked
                         System.out.println("REQUEST DOCTOR_BY_ID");
-                        handleRequestDoctorById(request.getAsJsonObject("data"));
+                        handleRequestDoctorById(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "SAVE_COMMENTS_SIGNAL": {
+                        //TODO: try
                         System.out.println("SAVE_COMMENTS_SIGNAL");
-                        handleSaveCommentsSignal(request.getAsJsonObject("data"));
+                        handleSaveCommentsSignal(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "UPLOAD_SIGNAL" : {
+                        //TODO: try
                         System.out.println("UPLOAD_SIGNAL");
-                        handleRequestSignalPatient(request);
+                        handleRequestSignalPatient(decryptedRequest);
                         break;
                     }
                     case "REQUEST_SIGNAL" : {
+                        //TODO: try
                         System.out.println("REQUEST_SIGNAL");
-                        handleRequestSignal(request.getAsJsonObject("data"));
+                        handleRequestSignal(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
 
                     case "REQUEST_PATIENT_SIGNALS" : {
+                        //TODO: try
                         System.out.println("REQUEST_PATIENT_SIGNALS");
-                        handleRequestPatientSignals(request.getAsJsonObject("data"));
+                        handleRequestPatientSignals(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
                     case "SAVE_REPORT":{
+                        //TODO: Checked
                         System.out.println("SAVE_REPORT");
-                        handleSaveReportRequest(request.getAsJsonObject("data"));
+                        handleSaveReportRequest(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
 
                     case "CLIENT_AES_KEY" : {
+                        //TODO: Checked
                         System.out.println("CLIENT_AES_KEY");
+                        // This one is encrypted by public key encryption2
                         String encryptedAESkey = request.get("data").getAsString();
                         try {
                             String decryptedAESkey = RSAUtil.decrypt(encryptedAESkey, serverKeyPair.getPrivate());
@@ -141,7 +167,7 @@ public class ClientHandler implements Runnable {
                 }
 
             }
-        } catch (IOException e){
+        } catch (Exception e){
             if(e.getClass() == SocketException.class){
                 try {
                     System.out.println("Client stopped connection abruptly");
@@ -167,14 +193,17 @@ public class ClientHandler implements Runnable {
         if (user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
-            sendRawJson(response);
+
+            System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
         Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if (role == null || !role.getRolename().equals("Doctor")) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -192,10 +221,12 @@ public class ClientHandler implements Runnable {
 
         response.addProperty("status", "SUCCESS");
         response.add("signals", signalsArray);
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleRequestSignal(JsonObject data) throws IOException {
+        System.out.println(data.toString());
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_SIGNAL_RESPONSE");
 
@@ -205,14 +236,16 @@ public class ClientHandler implements Runnable {
         if (user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_SIGNAL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
         Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if (role == null || !role.getRolename().equals("Doctor")) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -221,24 +254,27 @@ public class ClientHandler implements Runnable {
         if (signal == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Signal not found");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
 
         }else {
             byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
             JsonObject metadata = new JsonObject();
-            metadata.addProperty("type", "REQUEST_SIGNAL_METADATA");
             metadata.addProperty("signal_id", signal.getId());
             metadata.addProperty("patient_id", signal.getPatientId());
             metadata.addProperty("sampling_rate", signal.getSampleFrequency());
             metadata.addProperty("comments", signal.getComments());
             metadata.addProperty("date", signal.getDate().toString());
             response.addProperty("status", "SUCCESS");
+            //TODO: Ver si realmente coge bien la metadata
+            response.add("metadata", metadata);
             response.addProperty("compression", "zip-base64");
             response.addProperty("filename", "signal_" + signal.getId() + ".zip");
-            response.addProperty("data", base64Zip);
-            response.add("metadata", metadata);
-            sendRawJson(response);
+            response.addProperty("dataBytes", base64Zip);
+
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
         }
     }
 
@@ -250,28 +286,29 @@ public class ClientHandler implements Runnable {
             JsonObject metadata = dataIn.getAsJsonObject("metadata");
 
             int patientId = metadata.get("patient_id").getAsInt();
-            int samplingRate = metadata.get("sampling_rate").getAsInt();
-            int duration = metadata.get("duration_seconds").getAsInt();
+            int sampleFrequency = metadata.get("sampling_rate").getAsInt();
             String timestamp = metadata.get("timestamp").getAsString();
             LocalDateTime dateTime = LocalDateTime.parse(timestamp);
 
             String filename = dataIn.get("filename").getAsString();
-            String base64Data = dataIn.get("datafile").getAsString();
+            String base64Data = dataIn.get("dataBytes").getAsString();
 
             Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByID(patientId);
 
             if (patient == null) {
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Patient not found");
-                sendRawJson(response);
+
+                System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
+                sendEncrypted(response,out,AESkey);
                 return;
             }
             // Decode base64 data
             byte[] zipBytes = Base64.getDecoder().decode(base64Data);
 
-            File tempZip = File.createTempFile("signal_", ".zip");
+            File tempZip = File.createTempFile("signal_", ".zip"); //se guarda temporalmente en el servidor
             try (FileOutputStream fos = new FileOutputStream(tempZip)) {
-                fos.write(zipBytes);
+                fos.write(zipBytes);  //decodifica los bytes de la señal del paciente
             }
 
             Signal record = new Signal(
@@ -279,16 +316,24 @@ public class ClientHandler implements Runnable {
                     dateTime.toLocalDate(),
                     "",              // comments initially empty
                     patientId,
-                    samplingRate
+                    sampleFrequency
             );
+            System.out.println("Inserting signal for patient ID: " + patientId + " with sampling rate: " + sampleFrequency + " at " + dateTime.toString());
 
-            server.getAdminLinkService().getMedicalManager().getSignalJDBC().insertSignal(record);
-
-            response.addProperty("status", "SUCCESS");
-            response.addProperty("message", "Signal uploaded correctly");
-            sendRawJson(response);
-
-
+               if(!server.getAdminLinkService().getMedicalManager().getSignalJDBC().insertSignal(record)) {
+                response.addProperty("status", "ERROR");
+                response.addProperty("type", "ERROR ADDING SIGNAL TO DATABASE");
+                response.addProperty("message", "Error saving signal: ");
+                // TODO: Encriptar response
+                   System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
+                   sendEncrypted(response,out,AESkey);
+                }else {
+                   response.addProperty("status", "SUCCESS");
+                   response.addProperty("message", "Signal uploaded correctly");
+                   //TODO: encriptar response
+                   System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
+                   sendEncrypted(response,out,AESkey);
+               }
 
     }
 
@@ -311,13 +356,17 @@ public class ClientHandler implements Runnable {
     public void forceShutdown(){
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", "STOP_CLIENT");
-        sendRawJson(jsonObject);
+
+        System.out.println("\nBefore encryption, STOP_CLIENT to Client: "+jsonObject);
+        sendEncrypted(jsonObject,out,AESkey);
+
         running.set(false);
         try {
             socket.close(); //this will unblock readline() in run()
             System.out.println("Socktet closed"+socket.getInetAddress());
             server.removeClient(this);
         }catch (IOException e){
+            e.getMessage();
         }
     }
 
@@ -325,11 +374,11 @@ public class ClientHandler implements Runnable {
         return !running.get();
     }
 
-    void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
+    void releaseResources(BufferedReader bufferedReader, PrintWriter out, Socket clientSocket) throws IOException {
         server.removeClient(this);
         running.set(false);
         try {if (bufferedReader!=null) bufferedReader.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
-        try {if(bufferedWriter!=null)bufferedWriter.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
+        if(out!=null)out.close();
         try {if(clientSocket!=null && !clientSocket.isClosed())clientSocket.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
     }
 
@@ -344,11 +393,8 @@ public class ClientHandler implements Runnable {
      * @param json  The JsonObject that will be converted it into a raw JSON string
      */
     private void sendRawJson(JsonObject json){
-        try {
-            out.write(gson.toJson(json));
-            out.newLine();
+            out.println(json);
             out.flush();
-        } catch (IOException e) {}
     }
 
     /// If login success, message format:
@@ -406,8 +452,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "User not found");
         }
 
-        System.out.println(response.toString());
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, LOGIN_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {
@@ -420,7 +466,8 @@ public class ClientHandler implements Runnable {
         if(user == null){
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -428,7 +475,8 @@ public class ClientHandler implements Runnable {
         if(role==null || !role.getRolename().equals("Doctor") || !email.equals(user.getEmail())) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -440,8 +488,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
         }
-
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+        sendEncrypted(response, out, AESkey);
     }
 
     /**
@@ -459,8 +507,8 @@ public class ClientHandler implements Runnable {
         User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null){
             response.addProperty("status", "ERROR");
-            response.addProperty("message", "User not found");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -468,7 +516,8 @@ public class ClientHandler implements Runnable {
         if(role == null){
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Role not found");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
         //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access
@@ -477,7 +526,9 @@ public class ClientHandler implements Runnable {
             if(patient.getDoctorId() != doctor_id){
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Not authorized");
-                sendRawJson(response);
+
+                System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
+                sendEncrypted(response,out,AESkey);
                 return;
             }
         }
@@ -488,7 +539,9 @@ public class ClientHandler implements Runnable {
                 //If the doctor requesting for info is a different doctor
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Not authorized");
-                sendRawJson(response);
+
+                System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
+                sendEncrypted(response,out,AESkey);
                 return;
             }
             response.addProperty("status", "SUCCESS");
@@ -498,7 +551,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
         }
-        sendRawJson(response);
+        System.out.println("\nBefore encryption REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleRequestPatientByEmail(JsonObject data) throws IOException {
@@ -511,7 +565,8 @@ public class ClientHandler implements Runnable {
         if(user == null || !user.getEmail().equals(email)) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -537,7 +592,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
         }
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
@@ -580,7 +636,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Not authorized");
         }
 
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, REQUEST_PATIENT_FROM_DOCTOR_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
 
@@ -597,7 +654,8 @@ public class ClientHandler implements Runnable {
         if(user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, SAVE_COMMENTS_SIGNAL_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -618,7 +676,8 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Not authorized");
         }
 
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleSaveReportRequest(JsonObject data) throws IOException {
@@ -631,7 +690,8 @@ public class ClientHandler implements Runnable {
         if(report == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Error parsing report");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -639,7 +699,8 @@ public class ClientHandler implements Runnable {
         if(user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -647,7 +708,8 @@ public class ClientHandler implements Runnable {
         if(patient == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
-            sendRawJson(response);
+            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
+            sendEncrypted(response,out,AESkey);
             return;
         }
 
@@ -664,7 +726,34 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Not authorized");
         }
 
-        sendRawJson(response);
+        System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
+        sendEncrypted(response,out,AESkey);
     }
+
+    /**
+     * Encrypts the Json's data property.
+     *
+     * @param message
+     * @param out
+     * @param AESkey
+     */
+    public void sendEncrypted(JsonObject message, PrintWriter out, SecretKey AESkey){
+        try{
+            String encryptedJson = AESUtil.encrypt(message.toString(), AESkey);
+            JsonObject wrapper = new JsonObject();
+
+            //TODO: ver si realmente el type debería ser especifico para cada case o no
+            wrapper.addProperty("type", "ENCRYPTED");
+            wrapper.addProperty("data", encryptedJson);
+
+            System.out.println("\nThis is the encrypted message sent to Client: "+wrapper);
+
+            out.println(wrapper); //String Json
+            out.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
 

@@ -2,6 +2,9 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb.db" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

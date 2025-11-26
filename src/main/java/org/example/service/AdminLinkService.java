@@ -36,19 +36,27 @@ public class AdminLinkService {
         this.securityManager = securityManager;
     }
 
+    /**
+     * Method to create a User and a Doctor at the same time with the email connection they share
+     * @param user
+     * @param doctor
+     * @return boolean true if the objects were created and false if not
+     * @throws SQLException
+     */
+
     public Boolean createUserAndDoctor(User user, Doctor doctor) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
             medicalManager.getConnection().setAutoCommit(false);
 
-            // Inserta en securitydb
+            // Get's inserted in securitydb
             securityManager.getUserJDBC().register(user);
 
-            // Inserta en medicaldb
+            // Get's inserted in medicaldb
             medicalManager.getDoctorJDBC().insertDoctor(doctor);
 
-            // Si todo va bien:
+            // If there's no errors:
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
             result = true;
@@ -64,19 +72,24 @@ public class AdminLinkService {
         return result;
     }
 
+    /**
+     * Method to create a User and a Doctor at the same time with the email connection they share
+     * @param user
+     * @param patient
+     * @return boolean true if the objects were created and false if not
+     * @throws SQLException
+     */
+
     public Boolean createUserAndPatient(User user, Patient patient) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
             medicalManager.getConnection().setAutoCommit(false);
 
-            // Inserta en securitydb
             securityManager.getUserJDBC().register(user);
 
-            // Inserta en medicaldb
             medicalManager.getPatientJDBC().insertPatient(patient);
 
-            // Si todo va bien:
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
             result = true;
@@ -92,19 +105,24 @@ public class AdminLinkService {
         return result;
     }
 
+    /**
+     * Method to change the active status of a Doctor by their email
+     * @param email to search for the Doctor
+     * @param status active or not active
+     * @return boolean true if the objects were created and false if not
+     * @throws SQLException
+     */
+
     public Boolean changeDoctorStatus(String email, Boolean status) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
             medicalManager.getConnection().setAutoCommit(false);
 
-            // Inserta en securitydb
             securityManager.getUserJDBC().updateUserActiveStatus(email, status);
 
-            // Inserta en medicaldb
             medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, status);
 
-            // Si todo va bien:
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
             System.out.println("Doctor and corresponding User deactivated (" + email + ")");
@@ -121,19 +139,24 @@ public class AdminLinkService {
         return result;
     }
 
+    /**
+     * Method to change the active status of a Patient by their email
+     * @param email to search for the Patient
+     * @param status active or not active
+     * @return boolean true if the objects were created and false if not
+     * @throws SQLException
+     */
+
     public Boolean changePatientStatus(String email, Boolean status) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
             medicalManager.getConnection().setAutoCommit(false);
 
-            // Inserta en securitydb
             securityManager.getUserJDBC().updateUserActiveStatus(email, status);
 
-            // Inserta en medicaldb
             medicalManager.getPatientJDBC().updatePatientActiveStatus(email, status);
 
-            // Si todo va bien:
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
             System.out.println("Patient and corresponding User deactivated (" + email + ")");
@@ -151,8 +174,9 @@ public class AdminLinkService {
     }
 
     /**
-     * Deactivates a doctor and their corresponding user by email.
+     * Deactivates a Doctor and their corresponding user by email.
      * Performs logical deletion by setting active = false.
+     * @param email
      */
     public void deactivateDoctorAndUser(String email) {
         medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, false);
@@ -161,8 +185,9 @@ public class AdminLinkService {
     }
 
     /**
-     * Deactivates a patient and their corresponding user by email.
+     * Deactivates a Patient and their corresponding user by email.
      * Performs logical deletion by setting active = false.
+     * @param email
      */
     public void deactivatePatientAndUser(String email) {
         medicalManager.getPatientJDBC().updatePatientActiveStatus(email, false);
@@ -171,8 +196,9 @@ public class AdminLinkService {
     }
 
     /**
-     * Reactivates a doctor and their corresponding user by email.
+     * Reactivates a Doctor and their corresponding user by email.
      * Useful for restoring logically deleted accounts.
+     * @param email
      */
     public void reactivateDoctorAndUser(String email) {
         medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, true);
@@ -181,7 +207,9 @@ public class AdminLinkService {
     }
 
     /**
-     * Reactivates a patient and their corresponding user by email.
+     * Reactivates a Patient and their corresponding user by email.
+     * Useful for restoring logically deleted accounts.
+     * @param email
      */
     public void reactivatePatientAndUser(String email) {
         medicalManager.getPatientJDBC().updatePatientActiveStatus(email, true);
@@ -190,7 +218,8 @@ public class AdminLinkService {
     }
 
     /**
-     * Retrieves all patients
+     * Retrieves all patients of a Doctor
+     * @return
      */
     public List<Patient> getAllPatientsWithDoctor() {
         List<Patient> patients = medicalManager.getPatientJDBC().getAllPatients();
