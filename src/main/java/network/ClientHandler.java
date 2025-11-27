@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -161,6 +162,12 @@ public class ClientHandler implements Runnable {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
+                    }
+
+                    case "CHANGE_PASSWORD_REQUEST": {
+                        System.out.println("CHANGE_PASSWORD_REQUEST");
+                        handleChangePassword(decryptedRequest.getAsJsonObject("data"));
+                        break;
                     }
 
                 }
@@ -726,6 +733,36 @@ public class ClientHandler implements Runnable {
 
         System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
         sendEncrypted(response,out,AESkey);
+    }
+
+    private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");
+
+        String email = data.get("email").getAsString();
+        String newPassword = data.get("new_password").getAsString();
+
+        if(!server.getAppMain().userJDBC.isUser(email)){
+            response.addProperty("status","ERROR");
+            response.addProperty("message", "User not found");
+        } else{
+            User user = server.getAppMain().userJDBC.findUserByEmail(email);
+            String hashedPassword = encryption.PasswordHash.generatePasswordHash(newPassword);
+            boolean success = server.getAppMain().userJDBC.changePassword(user,hashedPassword);
+            if (success){
+                response.addProperty("status", "SUCCESS");
+                JsonObject userObj = new JsonObject();
+                userObj.addProperty("email", email);
+                response.add("data", userObj);
+                System.out.println("Password successfully updated for user: "+email);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Failed to update password");
+            }
+        }
+        System.out.println("\n Before encryption, CHANGE_PASSWORD_RESPONSE to Client: "+response);
+        sendEncrypted(response, out, AESkey);
+
     }
 
     /**
