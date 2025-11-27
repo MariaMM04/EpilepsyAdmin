@@ -6,22 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Manual of Admin done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/cancel-disclaimer.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/cancel-disclaimer.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/clients-connected-error.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/clients-connected-error.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/restart-server-fail.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/restart-server-fail.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/restart-server-success.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/restart-server-success.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_medicaldb/Patient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/components/DoctorCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/components/DoctorCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/components/PatientCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/components/PatientCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/NewDoctorPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/NewDoctorPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
