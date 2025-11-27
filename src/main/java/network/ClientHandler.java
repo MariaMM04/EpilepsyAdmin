@@ -163,6 +163,7 @@ public class ClientHandler implements Runnable {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
+                        break;
                     }
 
                     case "CHANGE_PASSWORD_REQUEST": {
