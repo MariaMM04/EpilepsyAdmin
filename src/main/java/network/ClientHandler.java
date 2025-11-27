@@ -3,6 +3,7 @@ package network;
 import com.google.gson.*;
 import encryption.AESUtil;
 import encryption.RSAUtil;
+import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 
@@ -13,6 +14,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -163,6 +165,12 @@ public class ClientHandler implements Runnable {
                         }
                     }
 
+                    case "CHANGE_PASSWORD_REQUEST": {
+                        System.out.println("CHANGE_PASSWORD_REQUEST");
+                        handleChangePassword(decryptedRequest.getAsJsonObject("data"));
+                        break;
+                    }
+
                 }
 
             }
@@ -188,7 +196,7 @@ public class ClientHandler implements Runnable {
 
         int patientId = data.get("patient_id").getAsInt();
         int userId   = data.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(userId);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(userId);
         if (user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
@@ -197,7 +205,7 @@ public class ClientHandler implements Runnable {
             sendEncrypted(response,out,AESkey);
             return;
         }
-        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if (role == null || !role.getRolename().equals("Doctor")) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -206,7 +214,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patientId);
+        List<Signal> signals = server.getAdminLinkService().getMedicalManager().getSignalJDBC().getSignalsByPatientId(patientId);
 
         JsonArray signalsArray = new JsonArray();
         for (Signal signal : signals) {
@@ -231,7 +239,7 @@ public class ClientHandler implements Runnable {
 
         int signalId = data.get("signal_id").getAsInt();
         int userId   = data.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(userId);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(userId);
         if (user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
@@ -239,7 +247,7 @@ public class ClientHandler implements Runnable {
             sendEncrypted(response,out,AESkey);
             return;
         }
-        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if (role == null || !role.getRolename().equals("Doctor")) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -248,7 +256,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Signal signal = server.getAppMain().medicalManager.getSignalJDBC().findSignalById(signalId);
+        Signal signal = server.getAdminLinkService().getMedicalManager().getSignalJDBC().findSignalById(signalId);
 
         if (signal == null) {
             response.addProperty("status", "ERROR");
@@ -292,7 +300,7 @@ public class ClientHandler implements Runnable {
             String filename = dataIn.get("filename").getAsString();
             String base64Data = dataIn.get("dataBytes").getAsString();
 
-            Patient patient = server.getAppMain().medicalManager.getPatientJDBC().findPatientByID(patientId);
+            Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByID(patientId);
 
             if (patient == null) {
                 response.addProperty("status", "ERROR");
@@ -319,7 +327,7 @@ public class ClientHandler implements Runnable {
             );
             System.out.println("Inserting signal for patient ID: " + patientId + " with sampling rate: " + sampleFrequency + " at " + dateTime.toString());
 
-               if(!server.getAppMain().medicalManager.getSignalJDBC().insertSignal(record)) {
+               if(!server.getAdminLinkService().getMedicalManager().getSignalJDBC().insertSignal(record)) {
                 response.addProperty("status", "ERROR");
                 response.addProperty("type", "ERROR ADDING SIGNAL TO DATABASE");
                 response.addProperty("message", "Error saving signal: ");
@@ -420,11 +428,11 @@ public class ClientHandler implements Runnable {
         JsonObject response = new JsonObject();
         response.addProperty("type", "LOGIN_RESPONSE");
 
-        if (server.getAppMain().userJDBC.isUser(email)) {
-            User user = server.getAppMain().userJDBC.login(email, password);
+        if (server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)) {
+            User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().login(email, password);
 
             if (user != null) {
-                Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+                Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
                 if(role != null && role.getRolename().equals(accessPermits)) {
                     if(user.isActive()){
                         response.addProperty("status", "SUCCESS");
@@ -461,7 +469,7 @@ public class ClientHandler implements Runnable {
 
         String email = dataIn.get("email").getAsString();
         Integer user_id = dataIn.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null){
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
@@ -470,7 +478,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Role role =  server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        Role role =  server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if(role==null || !role.getRolename().equals("Doctor") || !email.equals(user.getEmail())) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -479,10 +487,15 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Doctor doctor = server.getAppMain().doctorJDBC.findDoctorByEmail(email);
+        Doctor doctor = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().findDoctorByEmail(email);
         if(doctor != null) {
-            response.addProperty("status", "SUCCESS");
-            response.add("doctor", doctor.toJason());
+            if(doctor.isActive()){
+                response.addProperty("status", "SUCCESS");
+                response.add("doctor", doctor.toJason());
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Doctor is no longer active.");
+            }
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
@@ -503,7 +516,7 @@ public class ClientHandler implements Runnable {
 
         int doctor_id = data.get("doctor_id").getAsInt();
         int user_id = data.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null){
             response.addProperty("status", "ERROR");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
@@ -511,7 +524,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Role role =  server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+        Role role =  server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
         if(role == null){
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Role not found");
@@ -521,7 +534,7 @@ public class ClientHandler implements Runnable {
         }
         //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access
         if(role.getRolename().equals("Patient")){
-            Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
+            Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByEmail(user.getEmail());
             if(patient.getDoctorId() != doctor_id){
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Not authorized");
@@ -532,7 +545,7 @@ public class ClientHandler implements Runnable {
             }
         }
 
-        Doctor doctor = server.getAppMain().doctorJDBC.getDoctor(doctor_id);
+        Doctor doctor = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().getDoctor(doctor_id);
         if(doctor != null) {
             if(role.getRolename().equals("Doctor")&& !doctor.getEmail().equals(user.getEmail())) {
                 //If the doctor requesting for info is a different doctor
@@ -560,7 +573,7 @@ public class ClientHandler implements Runnable {
 
         String email = data.get("email").getAsString();
         Integer user_id = data.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null || !user.getEmail().equals(email)) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -569,23 +582,29 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(email);
+        Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByEmail(email);
         if(patient != null) {
-            response.addProperty("status", "SUCCESS");
-            List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());
-            List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());
-            JsonObject pJson = patient.toJason();
-            JsonArray signalArray = new JsonArray();
-            for (Signal s : signals) {
-                signalArray.add(s.toJson());
+            if(patient.isActive()) {
+                response.addProperty("status", "SUCCESS");
+                List<Signal> signals = server.getAdminLinkService().getMedicalManager().getSignalJDBC().getSignalsByPatientId(patient.getId());
+                List<Report> symptoms = server.getAdminLinkService().getMedicalManager().getReportJDBC().getReportsByPatientId(patient.getId());
+                JsonObject pJson = patient.toJason();
+                JsonArray signalArray = new JsonArray();
+                for (Signal s : signals) {
+                    signalArray.add(s.toJson());
+                }
+                JsonArray symptomsArray = new JsonArray();
+                for (Report s : symptoms) {
+                    symptomsArray.add(s.toJson());
+                }
+                pJson.add("signals", signalArray);
+                pJson.add("reports", symptomsArray);
+                response.add("patient", pJson);
+                System.out.println(pJson.toString());
+            }else {
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "The user is no longer active");
             }
-            JsonArray symptomsArray = new JsonArray();
-            for (Report s : symptoms) {
-                symptomsArray.add(s.toJson());
-            }
-            pJson.add("signals", signalArray);
-            pJson.add("reports", symptomsArray);
-            response.add("patient", pJson);
         }else{
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Doctor not found");
@@ -600,18 +619,18 @@ public class ClientHandler implements Runnable {
 
         Integer doctorId = data.get("doctor_id").getAsInt();
         Integer user_id = data.get("user_id").getAsInt();
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
-        Doctor doctor = server.getAppMain().doctorJDBC.getDoctor(doctorId);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
+        Doctor doctor = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().getDoctor(doctorId);
 
         if(user != null && doctor != null && doctor.getEmail().equals(user.getEmail())) {
 
             response.addProperty("status", "SUCCESS");
-            List<Patient> patients = server.getAppMain().medicalManager.getPatientJDBC().getPatientsOfDoctor(doctorId);
+            List<Patient> patients = server.getAdminLinkService().getMedicalManager().getPatientJDBC().getPatientsOfDoctor(doctorId);
 
             JsonArray patientArray = new JsonArray();
             for (Patient p : patients) {
-                List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(p.getId());
-                List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(p.getId());
+                List<Signal> signals = server.getAdminLinkService().getMedicalManager().getSignalJDBC().getSignalsByPatientId(p.getId());
+                List<Report> symptoms = server.getAdminLinkService().getMedicalManager().getReportJDBC().getReportsByPatientId(p.getId());
                 JsonObject pJson = p.toJason();
                 JsonArray signalArray = new JsonArray();
                 for (Signal s : signals) {
@@ -648,7 +667,7 @@ public class ClientHandler implements Runnable {
         Integer signal_id = data.get("signal_id").getAsInt();
         Integer patient_id = data.get("patient_id").getAsInt();
 
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -658,12 +677,12 @@ public class ClientHandler implements Runnable {
         }
 
         //If the user is the doctor
-        Doctor doctor = server.getAppMain().doctorJDBC.findDoctorByEmail(user.getEmail());
+        Doctor doctor = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().findDoctorByEmail(user.getEmail());
         //And the patient_id is a patient of them
-        Doctor doctor1 = server.getAppMain().doctorJDBC.getDoctorFromPatient(patient_id);
+        Doctor doctor1 = server.getAdminLinkService().getMedicalManager().getDoctorJDBC().getDoctorFromPatient(patient_id);
 
         if(doctor!= null && doctor1 != null && doctor1.getId() == doctor.getId()) {
-            if(server.getAppMain().medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {
+            if(server.getAdminLinkService().getMedicalManager().getSignalJDBC().updateSignalComments(signal_id, comments)) {
                 response.addProperty("status", "SUCCESS");
             }else{
                 response.addProperty("status", "ERROR");
@@ -693,7 +712,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        User user = server.getAppMain().userJDBC.findUserByID(user_id);
+        User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByID(user_id);
         if(user == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -702,7 +721,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());
+        Patient patient = server.getAdminLinkService().getMedicalManager().getPatientJDBC().findPatientByEmail(user.getEmail());
         if(patient == null) {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
@@ -713,7 +732,7 @@ public class ClientHandler implements Runnable {
 
         if(patient.getEmail().equals(user.getEmail())) {
             report.setPatientId(patient_id);
-            if(server.getAppMain().medicalManager.getReportJDBC().insertReport(report)) {
+            if(server.getAdminLinkService().getMedicalManager().getReportJDBC().insertReport(report)) {
                 response.addProperty("status", "SUCCESS");
             }else{
                 response.addProperty("status", "ERROR");
@@ -726,6 +745,36 @@ public class ClientHandler implements Runnable {
 
         System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
         sendEncrypted(response,out,AESkey);
+    }
+
+    private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");
+
+        String email = data.get("email").getAsString();
+        String newPassword = data.get("new_password").getAsString();
+
+        if(!server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)){
+            response.addProperty("status","ERROR");
+            response.addProperty("message", "User not found");
+        } else{
+            User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByEmail(email);
+            String hashedPassword = encryption.PasswordHash.generatePasswordHash(newPassword);
+            boolean success = server.getAdminLinkService().getSecurityManager().getUserJDBC().changePassword(user,hashedPassword);
+            if (success){
+                response.addProperty("status", "SUCCESS");
+                JsonObject userObj = new JsonObject();
+                userObj.addProperty("email", email);
+                response.add("data", userObj);
+                System.out.println("Password successfully updated for user: "+email);
+            }else{
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Failed to update password");
+            }
+        }
+        System.out.println("\n Before encryption, CHANGE_PASSWORD_RESPONSE to Client: "+response);
+        sendEncrypted(response, out, AESkey);
+
     }
 
     /**

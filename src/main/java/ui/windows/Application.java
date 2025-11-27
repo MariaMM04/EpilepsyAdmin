@@ -10,6 +10,7 @@ import org.example.JDBC.securitydb.*;
 import org.example.entities_securitydb.User;
 import org.example.service.AdminLinkService;
 import ui.components.MyButton;
+import ui.components.QuestionDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -102,7 +103,6 @@ public class Application extends JFrame {
         });
     }
 
-    // TODO: Preguntar Mamen throws Exception
     /**
      * Creates a new instance of the Application, initializes:
      * <ul>
@@ -126,7 +126,7 @@ public class Application extends JFrame {
         adminLinkService = new AdminLinkService(medicalManager, securityManager);
 
         //Network
-        server = new Server(serverPort, this);
+        server = new Server(serverPort, adminLinkService);
         server.startServer();
 
         //Panels
@@ -168,7 +168,7 @@ public class Application extends JFrame {
                             showMessageDialog(null, ex.getMessage());
                         }
                     }else{
-                        int option = JOptionPane.showConfirmDialog(
+                        /*int option = JOptionPane.showConfirmDialog(
                                 null,
                                 "There are clients still connected\nDo you want to interrupt the connection?",
                                 "Error",
@@ -182,7 +182,21 @@ public class Application extends JFrame {
                             } catch (ClientError exc) {
                                 showMessageDialog(null, exc.getMessage());
                             }
-                        }
+                        }*/
+                        MyButton okButton = new MyButton("YES");
+                        MyButton cancelButton = new MyButton("NO");
+                        okButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                try {
+                                    server.stop();
+                                    System.exit(0);
+                                } catch (ClientError exc) {
+                                    showMessageDialog(null, exc.getMessage());
+                                }
+                            }
+                        });
+                        showQuestionPanel(null, "There are clients still connected\nDo you want to interrupt the connection?", okButton, cancelButton);
                     }
                 }else{
                     System.out.println("Server is already stopped");
@@ -249,11 +263,7 @@ public class Application extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new MigLayout("wrap, fill, inset 15", "[center]", "push[]25[]push"));
         panel.setBackground(Color.white);
-        panel.setPreferredSize(new Dimension(400, 300));
-
-        JLabel label = new JLabel(message);
-        label.setFont(new Font("sansserif", 1, 25));
-        label.setForeground(Application.dark_purple);
+        panel.setPreferredSize(new Dimension(250, 150));
 
         JTextArea labelLikeText = new JTextArea(message);
         labelLikeText.setLineWrap(true);
@@ -268,7 +278,7 @@ public class Application extends JFrame {
         MyButton okButton = new MyButton("OK", Application.turquoise, Color.white);
         panel.add(okButton, "center");
 
-        JDialog dialog = new JDialog(parentFrame, "Message dialog", false); //dont allow interacting with other panels at the same time
+        JDialog dialog = new JDialog(parentFrame, "Message dialog", true); //dont allow interacting with other panels at the same time
         dialog.getContentPane().add(panel);
         dialog.getContentPane().setBackground(Color.white);
         dialog.pack();
@@ -277,6 +287,34 @@ public class Application extends JFrame {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {dialog.dispose();}
+        });
+
+        dialog.setVisible(true);
+    }
+
+    /**
+     * Displays a confirmation dialog asking if the user id sure they want to close the server connection..
+     *
+     * @param parentFrame parent window for dialog centering
+     * @param question    text shown in the confirmation dialog
+     */
+    private void showQuestionPanel(JFrame parentFrame, String question, MyButton okButton, MyButton cancelButton) {
+        //MyButton okButton = new MyButton("YES");
+        //MyButton cancelButton = new MyButton("CONTINUE EDITING");
+
+        QuestionDialog panel = new QuestionDialog(question, okButton, cancelButton);
+        panel.setPreferredSize(new Dimension(300, 150));
+        JDialog dialog = new JDialog(parentFrame, "Are you sure?", true);
+        dialog.getContentPane().add(panel);
+        dialog.getContentPane().setBackground(Color.white);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parentFrame);
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
         });
 
         dialog.setVisible(true);

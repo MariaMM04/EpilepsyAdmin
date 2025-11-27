@@ -52,7 +52,9 @@ public class Patient {
     /**
      * Creates an empty {@code Patient} instance
      */
-    public Patient() {}
+    public Patient() {
+        active = true;
+    }
 
     /**
      * Creates a {@code Patient} instance with most field values specified

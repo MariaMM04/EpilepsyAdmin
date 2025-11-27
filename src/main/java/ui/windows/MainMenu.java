@@ -212,7 +212,12 @@ public class MainMenu extends MenuTemplate {
                         try {
                             //TODO: ask for correct password
                             String password = JOptionPane.showInputDialog(parentFrame, "Enter the password:");
-                            if(password.equals("1234")){
+                            String correctPass = "1234";
+                            //TODO: check if password is saved correctly in user to do this
+                            if(appMain.user != null && appMain.user.getPassword().isEmpty()) {
+                                correctPass = appMain.user.getPassword();
+                            }
+                            if(password.equals(correctPass)){
                                 appMain.server.stop();
                                 panel.showErrorMessage("Server stopped");
                             }else{

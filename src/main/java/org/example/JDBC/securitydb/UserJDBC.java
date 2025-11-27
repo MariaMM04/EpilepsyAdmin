@@ -184,9 +184,9 @@ public class UserJDBC {
 
     /**
      *
-     *
      * @param user
      * @return
+     * @throws RegisterError
      */
     public boolean register(User user) throws RegisterError {
         //Verification of email and password
@@ -205,7 +205,7 @@ public class UserJDBC {
                 return insertUser(newUser);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
-            throw new RegisterError("User is not registered");
+            throw new RegisterError("User is already registered");
         }
     }
 
@@ -276,8 +276,6 @@ public class UserJDBC {
         }
     }
 
-
-    //TODO: hashear contraseña
     /**
      * Changes the password of the given user of the database.
      *
@@ -288,19 +286,28 @@ public class UserJDBC {
      *                  <code> false </code> otherwise
      */
     public boolean changePassword(User u, String password) {
-        if (u==null || u.getId() <= 0 || password == null || password.isBlank()){
+        if (u == null || u.getId() <= 0 || password == null || password.isBlank()) {
             return false;
         }
-        String sql = "UPDATE users SET password = ? WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)){
-            ps.setString(1, password);
-            ps.setInt(2, u.getId());
-            // to check if one row has been changed
-            int row = ps.executeUpdate();
-            return row == 1;
-        } catch (SQLException e) {
-            throw new RuntimeException(e); // return false
+        try {
+            //Hash the new password with PBKDF2
+            String hashedPassword = PasswordHash.generatePasswordHash(password);
+
+            String sql = "UPDATE users SET password = ? WHERE id = ?";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+                ps.setString(1, password);
+                ps.setInt(2, u.getId());
+                // to check if one row has been changed
+                int row = ps.executeUpdate();
+                return row == 1;
+            } catch (SQLException e) {
+                throw new RuntimeException(e); // return false
+            }
+        }catch (Exception e){
+            System.out.println("Could not change password: "+e.getMessage());
         }
+        return false;
     }
 }
 

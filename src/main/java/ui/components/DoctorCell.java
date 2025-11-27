@@ -78,10 +78,15 @@ public class DoctorCell implements ListCellRenderer<Doctor> {
         JLabel emailText = new JLabel(value.getEmail());
         emailText.setForeground(contentColor);
         emailText.setFont(contentFont);
-        JLabel statusHeading = new JLabel("Status:");
+        JLabel statusHeading = new JLabel("Subscription:");
         statusHeading.setForeground(titleColor);
         statusHeading.setFont(titleFont);
-        JLabel statusTxt = new JLabel(String.valueOf(value.isActive()));
+        JLabel statusTxt = new JLabel();
+        if(value.isActive()){
+            statusTxt.setText("Active");
+        }else {
+            statusTxt.setText("Inactive");
+        }
         statusTxt.setForeground(contentColor);
         statusTxt.setFont(contentFont);
 

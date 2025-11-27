@@ -104,7 +104,8 @@ public class SecurityManager {
         List<User> users = userJDBC.getAllUsers();
         if (users.isEmpty()) {
             try {
-                userJDBC.register(new User("admin@nightguardian.com", "password1", roleJDBC.findRoleByName("Administrator").getId(), true));
+                //Antes password1
+                userJDBC.register(new User("admin@nightguardian.com", "Telemedicine25", roleJDBC.findRoleByName("Administrator").getId(), true));
             }catch (Exception e){
                 System.err.println("Error inserting user: " + e.getMessage());
             }

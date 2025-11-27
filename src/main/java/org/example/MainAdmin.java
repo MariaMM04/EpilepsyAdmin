@@ -72,20 +72,6 @@ public class MainAdmin {
         medicalManager.getReportJDBC().insertReport(report);
 
         // -----------------------------------------------------
-        // DEACTIVATE BOTH
-        // -----------------------------------------------------
-        System.out.println("\n--- Deactivating doctor and patient ---");
-        adminService.deactivateDoctorAndUser("laura@gmail.com");
-        adminService.deactivatePatientAndUser("carlos@gmail.com");
-
-        // -----------------------------------------------------
-        // REACTIVATE BOTH
-        // -----------------------------------------------------
-        System.out.println("\n--- Reactivating doctor and patient ---");
-        adminService.reactivateDoctorAndUser("laura@gmail.com");
-        adminService.reactivatePatientAndUser("carlos@gmail.com");
-
-        // -----------------------------------------------------
         // CLOSE CONNECTIONS
         // -----------------------------------------------------
         medicalManager.close();

@@ -1,6 +1,7 @@
 package network;
 
 import encryption.RSAKeyManager;
+import org.example.service.AdminLinkService;
 import ui.windows.Application;
 
 import java.io.*;
@@ -22,13 +23,13 @@ public class Server {
     private final CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
     //private List<ClientHandler> clients;
     private volatile Boolean running = false; //Para que otros hilos vean directamente si hay cambios en ella
-    private final Application appMain; //To access the centralized medicalManager and securityManager
+    //private final Application appMain; //To access the centralized medicalManager and securityManager
     private KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
+    private AdminLinkService adminConn;
 
-    public Server(int port,  Application appMain){
+    public Server(int port, AdminLinkService adminConn) {
         this.port = port;
-        //clients = new ArrayList<>();
-        this.appMain = appMain;
+        this.adminConn = adminConn;
         // Creates the key pair for public encryption
         try {
             this.keyPair = RSAKeyManager.generateKeyPair();
@@ -38,11 +39,11 @@ public class Server {
     }
 
     // TEST constructor
-    public Server(ServerSocket serverSocket, Application appMain) throws Exception{
+    public Server(ServerSocket serverSocket, AdminLinkService adminConn) throws Exception{
         this.serverSocket = serverSocket;
         this.port = -1; // unused
-        this.appMain = appMain;
         this.keyPair = RSAKeyManager.generateKeyPair();
+        this.adminConn = adminConn;
     }
 
     public void startServer(){
@@ -136,8 +137,8 @@ public class Server {
         System.out.println("Client removed from list. Total: " + clients.size());
     }
 
-    public Application getAppMain() {
-        return appMain;
+    public AdminLinkService getAdminLinkService() {
+        return adminConn;
     }
 
 }

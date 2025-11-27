@@ -9,6 +9,7 @@ import org.example.JDBC.securitydb.SecurityManager;
 import org.example.JDBC.securitydb.UserJDBC;
 import org.example.entities_securitydb.*;
 import org.example.entities_medicaldb.*;
+import org.example.service.AdminLinkService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -36,12 +37,14 @@ public class ClientHandlerTest {
     private OutputStream out;
     private ClientHandler handler;
     private KeyPair keyPair;
+    private AdminLinkService adminLinkService;
 
     @BeforeEach
     void setUp() throws Exception {
         app = mock(Application.class);
         serverSocket = mock(ServerSocket.class);
-        server = new Server(serverSocket, app);
+        adminLinkService = mock(AdminLinkService.class);
+        server = new Server(serverSocket, adminLinkService);
         in = mock(InputStream.class);
         out = mock(OutputStream.class);
         keyPair = mock(KeyPair.class);
