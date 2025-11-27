@@ -1,0 +1,792 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"1ca6306d-00e1-4b57-816b-26a31c7662b6\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources.local.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources.local.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;MariaMM04&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\r\n  \"selectedUrlAndAccountId\": {\r\n    \"url\": \"https://github.com/MariaMM04/EpilepsyAdmin.git\",\r\n    \"accountId\": \"71dc38ad-21e7-42df-be36-38716886eb37\"\r\n  }\r\n}]]></component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 2\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"35yls9JlchaXpzJWWN4seVYlMJP\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Application.Application.executor\": \"Run\",\r\n    \"Application.MainAdmin.executor\": \"Run\",\r\n    \"Application.MainAdmin_try.executor\": \"Run\",\r\n    \"Application.MedicalManager.executor\": \"Run\",\r\n    \"Application.SecurityManager.executor\": \"Run\",\r\n    \"JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyClassDialog.RECENTS_KEY\">\r\n      <recent name=\"org.example.service\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Application.Application\">\r\n    <configuration name=\"Application\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"ui.windows.Application\" />\r\n      <module name=\"EpilepsyAdmin\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"ui.windows.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"MedicalManager\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"org.example.JDBC.medicaldb.MedicalManager\" />\r\n      <module name=\"EpilepsyAdmin\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"org.example.JDBC.medicaldb.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SecurityManager\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"org.example.JDBC.securitydb.SecurityManager\" />\r\n      <module name=\"EpilepsyAdmin\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"org.example.JDBC.securitydb.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"ClientHandlerTest.testHandleLoginCorrectDoctorRequest\" type=\"JUnit\" factoryName=\"JUnit\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"EpilepsyAdmin\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"network.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <option name=\"PACKAGE_NAME\" value=\"network\" />\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"network.ClientHandlerTest\" />\r\n      <option name=\"METHOD_NAME\" value=\"testHandleLoginCorrectDoctorRequest\" />\r\n      <option name=\"TEST_OBJECT\" value=\"method\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <list>\r\n      <item itemvalue=\"Application.SecurityManager\" />\r\n      <item itemvalue=\"Application.MedicalManager\" />\r\n      <item itemvalue=\"Application.Application\" />\r\n      <item itemvalue=\"JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest\" />\r\n    </list>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Application\" />\r\n        <item itemvalue=\"Application.MedicalManager\" />\r\n        <item itemvalue=\"Application.SecurityManager\" />\r\n        <item itemvalue=\"JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"1ca6306d-00e1-4b57-816b-26a31c7662b6\" name=\"Changes\" comment=\"\" />\r\n      <created>1764146178840</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1764146178840</updated>\r\n      <workItem from=\"1764146180268\" duration=\"690000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
++++ b/.idea/workspace.xml	(date 1764183199071)
+@@ -4,10 +4,15 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="">
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
++    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Manual of Admin done">
++      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++<<<<<<< HEAD
+       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
++=======
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MainAdmin.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" afterDir="false" />
++>>>>>>> 090585e24d490e62b33928e6d5181c931bb44381
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -23,12 +28,21 @@
+     &quot;assignee&quot;: &quot;MariaMM04&quot;
+   }
+ }</component>
++<<<<<<< HEAD
+   <component name="GithubPullRequestsUISettings"><![CDATA[{
+   "selectedUrlAndAccountId": {
+     "url": "https://github.com/MariaMM04/EpilepsyAdmin.git",
+     "accountId": "71dc38ad-21e7-42df-be36-38716886eb37"
+   }
+ }]]></component>
++=======
++  <component name="GithubPullRequestsUISettings">{
++  &quot;selectedUrlAndAccountId&quot;: {
++    &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
++    &quot;accountId&quot;: &quot;12626fc0-ed3c-4c85-9540-1d4369efb5a4&quot;
++  }
++}</component>
++>>>>>>> 090585e24d490e62b33928e6d5181c931bb44381
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 2
+ }</component>
+@@ -51,12 +65,20 @@
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "RunOnceActivity.git.unshallow": "true",
+     "git-widget-placeholder": "master",
++<<<<<<< HEAD
++=======
++    "junie.onboarding.icon.badge.shown": "true",
++>>>>>>> 090585e24d490e62b33928e6d5181c931bb44381
+     "kotlin-language-version-configured": "true",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
+     "nodejs_package_manager_path": "npm",
++<<<<<<< HEAD
++=======
++    "to.speed.mode.migration.done": "true",
++>>>>>>> 090585e24d490e62b33928e6d5181c931bb44381
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+@@ -146,6 +168,7 @@
+   </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
++<<<<<<< HEAD
+     <task active="true" id="Default" summary="Default task">
+       <changelist id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="" />
+       <created>1764146178840</created>
+@@ -154,9 +177,32 @@
+       <updated>1764146178840</updated>
+       <workItem from="1764146180268" duration="690000" />
+     </task>
++=======
++    <task id="LOCAL-00001" summary="Manual of Admin done">
++      <option name="closed" value="true" />
++      <created>1764091730998</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1764091730998</updated>
++    </task>
++    <task active="true" id="Default" summary="Default task">
++      <changelist id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Manual of Admin done" />
++      <created>1764152614333</created>
++      <option name="number" value="Default" />
++      <option name="presentableId" value="Default" />
++      <updated>1764152614333</updated>
++      <workItem from="1764152617418" duration="1374000" />
++    </task>
++    <option name="localTasksCounter" value="2" />
++>>>>>>> 090585e24d490e62b33928e6d5181c931bb44381
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="Manual of Admin done" />
++    <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: .idea/data_source_mapping.xml
+===================================================================
+diff --git a/.idea/data_source_mapping.xml b/.idea/data_source_mapping.xml
+deleted file mode 100644
+--- a/.idea/data_source_mapping.xml	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
++++ /dev/null	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="DataSourcePerFileMappings">
+-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/74b7560f-3677-488a-92cc-20a294f343be/console.sql" value="74b7560f-3677-488a-92cc-20a294f343be" />
+-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/8e5b6995-1baf-4ca7-bfbf-e6b9573867db/console.sql" value="8e5b6995-1baf-4ca7-bfbf-e6b9573867db" />
+-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/aa2b759d-45ae-4a5d-ac66-b09eb9c5b536/console.sql" value="aa2b759d-45ae-4a5d-ac66-b09eb9c5b536" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: src/main/java/network/ClientHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package network;\r\n\r\nimport com.google.gson.*;\r\nimport encryption.RSAUtil;\r\nimport org.example.JDBC.medicaldb.SignalJDBC;\r\nimport org.example.entities_medicaldb.*;\r\nimport org.example.entities_securitydb.*;\r\n\r\nimport javax.crypto.SecretKey;\r\nimport javax.crypto.spec.SecretKeySpec;\r\nimport java.security.*;\r\nimport java.io.*;\r\nimport java.net.Socket;\r\nimport java.net.SocketException;\r\nimport java.nio.file.Files;\r\nimport java.time.LocalDateTime;\r\nimport java.util.*;\r\nimport java.util.concurrent.atomic.AtomicBoolean;\r\n\r\npublic class ClientHandler implements Runnable {\r\n    final Socket socket;\r\n    private final Server server;\r\n    BufferedReader in;\r\n    private BufferedWriter out;\r\n    private final Gson gson = new Gson();;\r\n    //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions\r\n    private AtomicBoolean running;\r\n    private KeyPair serverKeyPair; //This is going to be the server's public key\r\n    private PublicKey clientPublicKey; //This is going to be the client's public key\r\n    private SecretKey AESkey;\r\n\r\n    public ClientHandler(Socket socket, Server server, KeyPair serverKeyPair) throws IOException {\r\n        this.socket = socket;\r\n        this.server = server;\r\n        this.serverKeyPair = serverKeyPair;\r\n        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));\r\n        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));\r\n        running = new AtomicBoolean(true);\r\n    }\r\n\r\n    @Override\r\n    public void run(){\r\n        try {\r\n            //Before doing anything, the server sends its public key\r\n            sendPublicKey();\r\n\r\n            String line;\r\n            label:\r\n            while (running.get() && (line = in.readLine()) != null) {\r\n                line = line.trim();\r\n                if (line.isEmpty()) {continue;} //Skip empty lines\r\n\r\n                JsonObject request;\r\n                try {\r\n                   request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject\r\n                }catch (JsonSyntaxException e){\r\n                    System.out.println(line);\r\n                    continue;\r\n                }\r\n                if (request == null) {continue;}\r\n\r\n                // Extract the type field from the JSON\r\n                String type = request.get(\"type\").getAsString();\r\n\r\n                // The type will tell the server what action to perform\r\n                switch (type) {\r\n                    case \"STOP_CLIENT\":\r\n                        //Client asked to stop itself or server asked client to stop and client echoes\r\n                        System.out.println(\"Received STOP_CLIENT from\"+getSocketAddress());\r\n                        releaseResources(in, out, socket);;\r\n                        break;\r\n                    case \"LOGIN_REQUEST\": {\r\n                        System.out.println(\"LOGIN REQUEST\");\r\n                        handleLogIn(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"REQUEST_DOCTOR_BY_EMAIL\": {\r\n                        System.out.println(\"REQUEST DOCTOR_BY_EMAIL\");\r\n                        handleRequestDoctorByEmail(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"REQUEST_PATIENTS_FROM_DOCTOR\": {\r\n                        System.out.println(\"REQUEST_PATIENTS_FROM_DOCTOR\");\r\n                        handleRequestPatientsFromDoctor(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"REQUEST_PATIENT_BY_EMAIL\": {\r\n                        System.out.println(\"REQUEST_PATIENT_BY_EMAIL\");\r\n                        handleRequestPatientByEmail(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"REQUEST_DOCTOR_BY_ID\": {\r\n                        System.out.println(\"REQUEST DOCTOR_BY_ID\");\r\n                        handleRequestDoctorById(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"SAVE_COMMENTS_SIGNAL\": {\r\n                        System.out.println(\"SAVE_COMMENTS_SIGNAL\");\r\n                        handleSaveCommentsSignal(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"UPLOAD_SIGNAL\" : {\r\n                        System.out.println(\"UPLOAD_SIGNAL\");\r\n                        handleRequestSignalPatient(request);\r\n                        break;\r\n                    }\r\n                    case \"REQUEST_SIGNAL\" : {\r\n                        System.out.println(\"REQUEST_SIGNAL\");\r\n                        handleRequestSignal(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n                    case \"SAVE_REPORT\":{\r\n                        System.out.println(\"SAVE_REPORT\");\r\n                        handleSaveReportRequest(request.getAsJsonObject(\"data\"));\r\n                        break;\r\n                    }\r\n\r\n                    case \"CLIENT_AES_KEY\" : {\r\n                        System.out.println(\"CLIENT_AES_KEY\");\r\n                        String encryptedAESkey = request.get(\"data\").getAsString();\r\n                        try {\r\n                            String decryptedAESkey = RSAUtil.decrypt(encryptedAESkey, serverKeyPair.getPrivate());\r\n                            byte[] AESkeyBytes = Base64.getDecoder().decode(decryptedAESkey); //In bytes\r\n                            SecretKey AESkey = new SecretKeySpec(AESkeyBytes, 0, AESkeyBytes.length, \"AES\");\r\n                            //Store the secret key inside the Handler for the connection\r\n                            this.AESkey = AESkey;\r\n                            System.out.println(\"AES key retrieved and decrypted successfully\");\r\n                            System.out.println(\"This is the Server's secret key AES:\"+Base64.getEncoder().encodeToString(AESkey.getEncoded()));\r\n                            System.out.println(\"This is the Server's public key RSA:\"+Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded())+\"and the private RSA key: \"+Base64.getEncoder().encode(serverKeyPair.getPrivate().getEncoded()));\r\n\r\n                        } catch (Exception e) {\r\n                            throw new RuntimeException(e);\r\n                        }\r\n                    }\r\n\r\n                }\r\n\r\n            }\r\n        } catch (IOException e){\r\n            if(e.getClass() == SocketException.class){\r\n                try {\r\n                    System.out.println(\"Client stopped connection abruptly\");\r\n                    releaseResources(in, out, socket);\r\n                    System.out.println(\"Client thread stopped\");\r\n                } catch (IOException ex) {\r\n                    throw new RuntimeException(ex);\r\n                }\r\n            }else{\r\n                System.out.println(\"Client: \"+socket.getInetAddress()+\":\"+running.get());\r\n                //System.out.println(\"Error reading from client\"+e.getMessage());\r\n            }\r\n        }\r\n    }\r\n\r\n    private void handleRequestPatientSignals(JsonObject data) {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_PATIENT_SIGNALS_RESPONSE\");\r\n\r\n        int patientId = data.get(\"patient_id\").getAsInt();\r\n        int userId   = data.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(userId);\r\n        if (user == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"User not found\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());\r\n        if (role == null || !role.getRolename().equals(\"Doctor\")) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patientId);\r\n\r\n        JsonArray signalsArray = new JsonArray();\r\n        for (Signal signal : signals) {\r\n            JsonObject signalObj = new JsonObject();\r\n            signalObj.addProperty(\"signal_id\", signal.getId());\r\n            signalObj.addProperty(\"date\", signal.getDate().toString());\r\n            signalObj.addProperty(\"sampling_rate\", signal.getSampleFrequency());\r\n            signalObj.addProperty(\"comments\", signal.getComments());\r\n            signalsArray.add(signalObj);\r\n        }\r\n\r\n        response.addProperty(\"status\", \"SUCCESS\");\r\n        response.add(\"signals\", signalsArray);\r\n        sendRawJson(response);\r\n    }\r\n\r\n    private void handleRequestSignal(JsonObject data) throws IOException {\r\n        System.out.println(data.toString());\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_SIGNAL_RESPONSE\");\r\n\r\n        int signalId = data.get(\"signal_id\").getAsInt();\r\n        int userId   = data.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(userId);\r\n        if (user == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"User not found\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n        Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());\r\n        if (role == null || !role.getRolename().equals(\"Doctor\")) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Signal signal = server.getAppMain().medicalManager.getSignalJDBC().findSignalById(signalId);\r\n\r\n        if (signal == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Signal not found\");\r\n            sendRawJson(response);\r\n\r\n        }else {\r\n            byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());\r\n            String base64Zip = Base64.getEncoder().encodeToString(zipBytes);\r\n            JsonObject metadata = new JsonObject();\r\n            metadata.addProperty(\"signal_id\", signal.getId());\r\n            metadata.addProperty(\"patient_id\", signal.getPatientId());\r\n            metadata.addProperty(\"sampling_rate\", signal.getSampleFrequency());\r\n            metadata.addProperty(\"comments\", signal.getComments());\r\n            metadata.addProperty(\"date\", signal.getDate().toString());\r\n            response.addProperty(\"status\", \"SUCCESS\");\r\n            response.add(\"metadata\", metadata);\r\n            response.addProperty(\"compression\", \"zip-base64\");\r\n            response.addProperty(\"filename\", \"signal_\" + signal.getId() + \".zip\");\r\n            response.addProperty(\"dataBytes\", base64Zip);\r\n\r\n            System.out.println(response.toString());\r\n            sendRawJson(response);\r\n        }\r\n    }\r\n\r\n    private void handleRequestSignalPatient(JsonObject dataIn) throws IOException {\r\n\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"UPLOAD_SIGNAL_RESPONSE\");\r\n\r\n            JsonObject metadata = dataIn.getAsJsonObject(\"metadata\");\r\n\r\n            int patientId = metadata.get(\"patient_id\").getAsInt();\r\n            int sampleFrequency = metadata.get(\"sampling_rate\").getAsInt();\r\n            String timestamp = metadata.get(\"timestamp\").getAsString();\r\n            LocalDateTime dateTime = LocalDateTime.parse(timestamp);\r\n\r\n            String filename = dataIn.get(\"filename\").getAsString();\r\n            String base64Data = dataIn.get(\"dataBytes\").getAsString();\r\n\r\n            Patient patient = server.getAppMain().medicalManager.getPatientJDBC().findPatientByID(patientId);\r\n\r\n            if (patient == null) {\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Patient not found\");\r\n                sendRawJson(response);\r\n                return;\r\n            }\r\n            // Decode base64 data\r\n            byte[] zipBytes = Base64.getDecoder().decode(base64Data);\r\n\r\n            File tempZip = File.createTempFile(\"signal_\", \".zip\");\r\n            try (FileOutputStream fos = new FileOutputStream(tempZip)) {\r\n                fos.write(zipBytes);\r\n            }\r\n\r\n            Signal record = new Signal(\r\n                    tempZip,\r\n                    dateTime.toLocalDate(),\r\n                    \"\",              // comments initially empty\r\n                    patientId,\r\n                    sampleFrequency\r\n            );\r\n            System.out.println(\"Inserting signal for patient ID: \" + patientId + \" with sampling rate: \" + sampleFrequency + \" at \" + dateTime.toString());\r\n\r\n               if(!server.getAppMain().medicalManager.getSignalJDBC().insertSignal(record)) {\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"type\", \"ERROR ADDING SIGNAL TO DATABASE\");\r\n                response.addProperty(\"message\", \"Error saving signal: \");\r\n                sendRawJson(response);\r\n                }else {\r\n                   response.addProperty(\"status\", \"SUCCESS\");\r\n                   response.addProperty(\"message\", \"Signal uploaded correctly\");\r\n                   sendRawJson(response);\r\n               }\r\n\r\n    }\r\n\r\n\r\n    /**\r\n     * Sends the Server's public key as a JSON Object to follow the protocol. Adds a \"type\" field to tell the client\r\n     * what kind of message it is and encodes the server's public key from binary into a Base64 String into the \"data\"\r\n     * field. This makes it safe to send over a text stream.\r\n     */\r\n    public void sendPublicKey() {\r\n        JsonObject serverKey = new JsonObject();\r\n        serverKey.addProperty(\"type\", \"SERVER_PUBLIC_KEY\");\r\n        serverKey.addProperty(\"data\", Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));\r\n        sendRawJson(serverKey);\r\n    }\r\n\r\n    /**\r\n     * Server-side forced shutdown\r\n     */\r\n    public void forceShutdown(){\r\n        JsonObject jsonObject = new JsonObject();\r\n        jsonObject.addProperty(\"type\", \"STOP_CLIENT\");\r\n        sendRawJson(jsonObject);\r\n        running.set(false);\r\n        try {\r\n            socket.close(); //this will unblock readline() in run()\r\n            System.out.println(\"Socktet closed\"+socket.getInetAddress());\r\n            server.removeClient(this);\r\n        }catch (IOException e){\r\n        }\r\n    }\r\n\r\n    public boolean isStopped(){\r\n        return !running.get();\r\n    }\r\n\r\n    void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {\r\n        server.removeClient(this);\r\n        running.set(false);\r\n        try {if (bufferedReader!=null) bufferedReader.close();} catch (IOException ex) {System.out.println(\"Error closing socket\"+ex.getMessage());}\r\n        try {if(bufferedWriter!=null)bufferedWriter.close();} catch (IOException ex) {System.out.println(\"Error closing socket\"+ex.getMessage());}\r\n        try {if(clientSocket!=null && !clientSocket.isClosed())clientSocket.close();} catch (IOException ex) {System.out.println(\"Error closing socket\"+ex.getMessage());}\r\n    }\r\n\r\n    public String getSocketAddress(){\r\n        return socket.getInetAddress().toString();\r\n    }\r\n\r\n    /**\r\n     * Converts the JsonObject into a raw JSON string and writes it to the client's output stream.\r\n     * It immediately sends the data instead of buffering it.\r\n     *\r\n     * @param json  The JsonObject that will be converted it into a raw JSON string\r\n     */\r\n    private void sendRawJson(JsonObject json){\r\n        try {\r\n            out.write(gson.toJson(json));\r\n            out.newLine();\r\n            out.flush();\r\n        } catch (IOException e) {}\r\n    }\r\n\r\n    /// If login success, message format:\r\n    /// {\r\n    ///   \"type\": \"LOGIN_RESPONSE\",\r\n    ///   \"status\": \"SUCCESS\",\r\n    ///   \"user\": {\r\n    ///     \"id\": 1,\r\n    ///     \"email\": \"juan@demo.com\",\r\n    ///     \"role\": \"patient\"\r\n    ///   }\r\n    /// }\r\n    /// If login failed, message format:\r\n    /// {\r\n    ///   \"type\": \"LOGIN_RESPONSE\",\r\n    ///   \"status\": \"ERROR\",\r\n    ///   \"message\": \"Invalid credentials\"\r\n    /// }\r\n    private void handleLogIn(JsonObject data) throws IOException {\r\n        String email = data.get(\"email\").getAsString();\r\n        String password = data.get(\"password\").getAsString();\r\n        String accessPermits = data.get(\"access_permits\").getAsString();\r\n\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"LOGIN_RESPONSE\");\r\n\r\n        if (server.getAppMain().userJDBC.isUser(email)) {\r\n            User user = server.getAppMain().userJDBC.login(email, password);\r\n\r\n            if (user != null) {\r\n                Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());\r\n                if(role != null && role.getRolename().equals(accessPermits)) {\r\n                    if(user.isActive()){\r\n                        response.addProperty(\"status\", \"SUCCESS\");\r\n                        JsonObject userObj = new JsonObject();\r\n                        userObj.addProperty(\"id\", user.getId());\r\n                        userObj.addProperty(\"email\", user.getEmail());\r\n                        userObj.addProperty(\"role\", role.getRolename());\r\n                        response.add(\"data\", userObj);\r\n                    }else {\r\n                        response.addProperty(\"status\", \"ERROR\");\r\n                        response.addProperty(\"message\", \"The user is no longer active.\");\r\n                    }\r\n\r\n                }else{\r\n                    response.addProperty(\"status\", \"ERROR\");\r\n                    response.addProperty(\"message\", \"Authorization denied\");\r\n                }\r\n            } else {\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Invalid password\");\r\n            }\r\n        } else {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"User not found\");\r\n        }\r\n\r\n        System.out.println(response.toString());\r\n        sendRawJson(response);\r\n    }\r\n\r\n    private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_DOCTOR_BY_EMAIL_RESPONSE\");\r\n\r\n        String email = dataIn.get(\"email\").getAsString();\r\n        Integer user_id = dataIn.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        if(user == null){\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"User not found\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Role role =  server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());\r\n        if(role==null || !role.getRolename().equals(\"Doctor\") || !email.equals(user.getEmail())) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Doctor doctor = server.getAppMain().doctorJDBC.findDoctorByEmail(email);\r\n        if(doctor != null) {\r\n            response.addProperty(\"status\", \"SUCCESS\");\r\n            response.add(\"doctor\", doctor.toJason());\r\n        }else{\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Doctor not found\");\r\n        }\r\n\r\n        sendRawJson(response);\r\n    }\r\n\r\n    /**\r\n     * Both the Doctor, Admin and the Patient whose Doctor is the requested doctor should have access\r\n     * Each Doctor can only access their own info, not other doctor's info\r\n     * @param data\r\n     * @throws IOException\r\n     */\r\n    private void handleRequestDoctorById(JsonObject data) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_DOCTOR_BY_ID_RESPONSE\");\r\n\r\n        int doctor_id = data.get(\"doctor_id\").getAsInt();\r\n        int user_id = data.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        if(user == null){\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"User not found\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Role role =  server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());\r\n        if(role == null){\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Role not found\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n        //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access\r\n        if(role.getRolename().equals(\"Patient\")){\r\n            Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());\r\n            if(patient.getDoctorId() != doctor_id){\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Not authorized\");\r\n                sendRawJson(response);\r\n                return;\r\n            }\r\n        }\r\n\r\n        Doctor doctor = server.getAppMain().doctorJDBC.getDoctor(doctor_id);\r\n        if(doctor != null) {\r\n            if(role.getRolename().equals(\"Doctor\")&& !doctor.getEmail().equals(user.getEmail())) {\r\n                //If the doctor requesting for info is a different doctor\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Not authorized\");\r\n                sendRawJson(response);\r\n                return;\r\n            }\r\n            response.addProperty(\"status\", \"SUCCESS\");\r\n            response.add(\"doctor\", doctor.toJason());\r\n\r\n        }else{\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Doctor not found\");\r\n        }\r\n        sendRawJson(response);\r\n    }\r\n\r\n    private void handleRequestPatientByEmail(JsonObject data) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_PATIENT_BY_EMAIL_RESPONSE\");\r\n\r\n        String email = data.get(\"email\").getAsString();\r\n        Integer user_id = data.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        if(user == null || !user.getEmail().equals(email)) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(email);\r\n        if(patient != null) {\r\n            response.addProperty(\"status\", \"SUCCESS\");\r\n            List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(patient.getId());\r\n            List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(patient.getId());\r\n            JsonObject pJson = patient.toJason();\r\n            JsonArray signalArray = new JsonArray();\r\n            for (Signal s : signals) {\r\n                signalArray.add(s.toJson());\r\n            }\r\n            JsonArray symptomsArray = new JsonArray();\r\n            for (Report s : symptoms) {\r\n                symptomsArray.add(s.toJson());\r\n            }\r\n            pJson.add(\"signals\", signalArray);\r\n            pJson.add(\"reports\", symptomsArray);\r\n            response.add(\"patient\", pJson);\r\n            System.out.println(pJson.toString());\r\n        }else{\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Doctor not found\");\r\n        }\r\n        sendRawJson(response);\r\n    }\r\n\r\n    private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"REQUEST_PATIENTS_FROM_DOCTOR_RESPONSE\");\r\n\r\n        Integer doctorId = data.get(\"doctor_id\").getAsInt();\r\n        Integer user_id = data.get(\"user_id\").getAsInt();\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        Doctor doctor = server.getAppMain().doctorJDBC.getDoctor(doctorId);\r\n\r\n        if(user != null && doctor != null && doctor.getEmail().equals(user.getEmail())) {\r\n\r\n            response.addProperty(\"status\", \"SUCCESS\");\r\n            List<Patient> patients = server.getAppMain().medicalManager.getPatientJDBC().getPatientsOfDoctor(doctorId);\r\n\r\n            JsonArray patientArray = new JsonArray();\r\n            for (Patient p : patients) {\r\n                List<Signal> signals = server.getAppMain().medicalManager.getSignalJDBC().getSignalsByPatientId(p.getId());\r\n                List<Report> symptoms = server.getAppMain().medicalManager.getReportJDBC().getReportsByPatientId(p.getId());\r\n                JsonObject pJson = p.toJason();\r\n                JsonArray signalArray = new JsonArray();\r\n                for (Signal s : signals) {\r\n                    signalArray.add(s.toJson());\r\n                }\r\n                JsonArray symptomsArray = new JsonArray();\r\n                for (Report s : symptoms) {\r\n                    symptomsArray.add(s.toJson());\r\n                }\r\n                pJson.add(\"signals\", signalArray);\r\n                pJson.add(\"reports\", symptomsArray);\r\n\r\n                patientArray.add(pJson);\r\n            }\r\n\r\n            response.add(\"patients\", patientArray);\r\n\r\n        }else {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n        }\r\n\r\n        sendRawJson(response);\r\n    }\r\n\r\n\r\n    private void handleSaveCommentsSignal(JsonObject data) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"SAVE_COMMENTS_SIGNAL_RESPONSE\");\r\n\r\n        String comments = data.get(\"comments\").getAsString();\r\n        Integer user_id = data.get(\"user_id\").getAsInt();\r\n        Integer signal_id = data.get(\"signal_id\").getAsInt();\r\n        Integer patient_id = data.get(\"patient_id\").getAsInt();\r\n\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        if(user == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        //If the user is the doctor\r\n        Doctor doctor = server.getAppMain().doctorJDBC.findDoctorByEmail(user.getEmail());\r\n        //And the patient_id is a patient of them\r\n        Doctor doctor1 = server.getAppMain().doctorJDBC.getDoctorFromPatient(patient_id);\r\n\r\n        if(doctor!= null && doctor1 != null && doctor1.getId() == doctor.getId()) {\r\n            if(server.getAppMain().medicalManager.getSignalJDBC().updateSignalComments(signal_id, comments)) {\r\n                response.addProperty(\"status\", \"SUCCESS\");\r\n            }else{\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Error saving comments\");\r\n            }\r\n        }else {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n        }\r\n\r\n        sendRawJson(response);\r\n    }\r\n\r\n    private void handleSaveReportRequest(JsonObject data) throws IOException {\r\n        JsonObject response = new JsonObject();\r\n        response.addProperty(\"type\", \"SAVE_REPORT_RESPONSE\");\r\n\r\n        Integer user_id = data.get(\"user_id\").getAsInt();\r\n        Integer patient_id = data.get(\"patient_id\").getAsInt();\r\n        Report report = Report.fromJson(data.get(\"report\").getAsJsonObject());\r\n        if(report == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Error parsing report\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        User user = server.getAppMain().userJDBC.findUserByID(user_id);\r\n        if(user == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        Patient patient = server.getAppMain().patientJDBC.findPatientByEmail(user.getEmail());\r\n        if(patient == null) {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n            sendRawJson(response);\r\n            return;\r\n        }\r\n\r\n        if(patient.getEmail().equals(user.getEmail())) {\r\n            report.setPatientId(patient_id);\r\n            if(server.getAppMain().medicalManager.getReportJDBC().insertReport(report)) {\r\n                response.addProperty(\"status\", \"SUCCESS\");\r\n            }else{\r\n                response.addProperty(\"status\", \"ERROR\");\r\n                response.addProperty(\"message\", \"Error saving comments\");\r\n            }\r\n        }else {\r\n            response.addProperty(\"status\", \"ERROR\");\r\n            response.addProperty(\"message\", \"Not authorized\");\r\n        }\r\n\r\n        sendRawJson(response);\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/network/ClientHandler.java b/src/main/java/network/ClientHandler.java
+--- a/src/main/java/network/ClientHandler.java	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
++++ b/src/main/java/network/ClientHandler.java	(date 1764252195645)
+@@ -1,8 +1,8 @@
+ package network;
+ 
+ import com.google.gson.*;
++import encryption.AESUtil;
+ import encryption.RSAUtil;
+-import org.example.JDBC.medicaldb.SignalJDBC;
+ import org.example.entities_medicaldb.*;
+ import org.example.entities_securitydb.*;
+ 
+@@ -21,11 +21,11 @@
+     final Socket socket;
+     private final Server server;
+     BufferedReader in;
+-    private BufferedWriter out;
+-    private final Gson gson = new Gson();;
++    private final PrintWriter out;
++    private final Gson gson = new Gson();
+     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
+     private AtomicBoolean running;
+-    private KeyPair serverKeyPair; //This is going to be the server's public key
++    private final KeyPair serverKeyPair; //This is going to be the server's public key
+     private PublicKey clientPublicKey; //This is going to be the client's public key
+     private SecretKey AESkey;
+ 
+@@ -34,7 +34,7 @@
+         this.server = server;
+         this.serverKeyPair = serverKeyPair;
+         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
++        out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+         running = new AtomicBoolean(true);
+     }
+ 
+@@ -49,10 +49,11 @@
+             while (running.get() && (line = in.readLine()) != null) {
+                 line = line.trim();
+                 if (line.isEmpty()) {continue;} //Skip empty lines
+-
++                // Desencriptar Json
+                 JsonObject request;
+                 try {
+-                   request = gson.fromJson(line, JsonObject.class); //Turns the lines into a JsonObject
++                   request = gson.fromJson(line, JsonObject.class);
++                    System.out.println(request);//Turns the lines into a JsonObject
+                 }catch (JsonSyntaxException e){
+                     System.out.println(line);
+                     continue;
+@@ -61,62 +62,91 @@
+ 
+                 // Extract the type field from the JSON
+                 String type = request.get("type").getAsString();
++                System.out.println("\nThis is the encrypted message received from the Client: "+request);
++                String typeDecrypted = type; //default original type
++                JsonObject decryptedRequest = request; //default original request
++                if(type.equals("ENCRYPTED")){
++                    String encryptedData = request.get("data").getAsString();
++                    String decryptedJson = AESUtil.decrypt(encryptedData, AESkey);
++                    decryptedRequest = gson.fromJson(decryptedJson, JsonObject.class);
++                    typeDecrypted = decryptedRequest.get("type").getAsString();
++                }
++                System.out.println("This is the decrypted message received in Server: "+decryptedRequest);
+ 
+                 // The type will tell the server what action to perform
+-                switch (type) {
++                switch (typeDecrypted) {
+                     case "STOP_CLIENT":
++                        //TODO: Checked
+                         //Client asked to stop itself or server asked client to stop and client echoes
+                         System.out.println("Received STOP_CLIENT from"+getSocketAddress());
+-                        releaseResources(in, out, socket);;
++                        releaseResources(in, out, socket);
+                         break;
+                     case "LOGIN_REQUEST": {
++                        //TODO: Checked
+                         System.out.println("LOGIN REQUEST");
+-                        handleLogIn(request.getAsJsonObject("data"));
++                        handleLogIn(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "REQUEST_DOCTOR_BY_EMAIL": {
++                        //TODO: try
+                         System.out.println("REQUEST DOCTOR_BY_EMAIL");
+-                        handleRequestDoctorByEmail(request.getAsJsonObject("data"));
++                        handleRequestDoctorByEmail(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "REQUEST_PATIENTS_FROM_DOCTOR": {
++                        //TODO: try
+                         System.out.println("REQUEST_PATIENTS_FROM_DOCTOR");
+-                        handleRequestPatientsFromDoctor(request.getAsJsonObject("data"));
++                        handleRequestPatientsFromDoctor(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "REQUEST_PATIENT_BY_EMAIL": {
++                        // TODO: Checked
+                         System.out.println("REQUEST_PATIENT_BY_EMAIL");
+-                        handleRequestPatientByEmail(request.getAsJsonObject("data"));
++                        handleRequestPatientByEmail(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "REQUEST_DOCTOR_BY_ID": {
++                        //TODO: Checked
+                         System.out.println("REQUEST DOCTOR_BY_ID");
+-                        handleRequestDoctorById(request.getAsJsonObject("data"));
++                        handleRequestDoctorById(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "SAVE_COMMENTS_SIGNAL": {
++                        //TODO: try
+                         System.out.println("SAVE_COMMENTS_SIGNAL");
+-                        handleSaveCommentsSignal(request.getAsJsonObject("data"));
++                        handleSaveCommentsSignal(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "UPLOAD_SIGNAL" : {
++                        //TODO: try
+                         System.out.println("UPLOAD_SIGNAL");
+-                        handleRequestSignalPatient(request);
++                        handleRequestSignalPatient(decryptedRequest);
+                         break;
+                     }
+                     case "REQUEST_SIGNAL" : {
++                        //TODO: try
+                         System.out.println("REQUEST_SIGNAL");
+-                        handleRequestSignal(request.getAsJsonObject("data"));
++                        handleRequestSignal(decryptedRequest.getAsJsonObject("data"));
++                        break;
++                    }
++
++                    case "REQUEST_PATIENT_SIGNALS" : {
++                        //TODO: try
++                        System.out.println("REQUEST_PATIENT_SIGNALS");
++                        handleRequestPatientSignals(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+                     case "SAVE_REPORT":{
++                        //TODO: Checked
+                         System.out.println("SAVE_REPORT");
+-                        handleSaveReportRequest(request.getAsJsonObject("data"));
++                        handleSaveReportRequest(decryptedRequest.getAsJsonObject("data"));
+                         break;
+                     }
+ 
+                     case "CLIENT_AES_KEY" : {
++                        //TODO: Checked
+                         System.out.println("CLIENT_AES_KEY");
++                        // This one is encrypted by public key encryption2
+                         String encryptedAESkey = request.get("data").getAsString();
+                         try {
+                             String decryptedAESkey = RSAUtil.decrypt(encryptedAESkey, serverKeyPair.getPrivate());
+@@ -136,7 +166,7 @@
+                 }
+ 
+             }
+-        } catch (IOException e){
++        } catch (Exception e){
+             if(e.getClass() == SocketException.class){
+                 try {
+                     System.out.println("Client stopped connection abruptly");
+@@ -162,14 +192,17 @@
+         if (user == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "User not found");
+-            sendRawJson(response);
++
++            System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+         Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+         if (role == null || !role.getRolename().equals("Doctor")) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -187,7 +220,8 @@
+ 
+         response.addProperty("status", "SUCCESS");
+         response.add("signals", signalsArray);
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+     private void handleRequestSignal(JsonObject data) throws IOException {
+@@ -201,14 +235,16 @@
+         if (user == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "User not found");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_SIGNAL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+         Role role = server.getAppMain().securityManager.getRoleJDBC().findRoleByID(user.getRole_id());
+         if (role == null || !role.getRolename().equals("Doctor")) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -217,7 +253,8 @@
+         if (signal == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Signal not found");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+ 
+         }else {
+             byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
+@@ -229,13 +266,14 @@
+             metadata.addProperty("comments", signal.getComments());
+             metadata.addProperty("date", signal.getDate().toString());
+             response.addProperty("status", "SUCCESS");
++            //TODO: Ver si realmente coge bien la metadata
+             response.add("metadata", metadata);
+             response.addProperty("compression", "zip-base64");
+             response.addProperty("filename", "signal_" + signal.getId() + ".zip");
+             response.addProperty("dataBytes", base64Zip);
+ 
+-            System.out.println(response.toString());
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+         }
+     }
+ 
+@@ -259,15 +297,17 @@
+             if (patient == null) {
+                 response.addProperty("status", "ERROR");
+                 response.addProperty("message", "Patient not found");
+-                sendRawJson(response);
++
++                System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
++                sendEncrypted(response,out,AESkey);
+                 return;
+             }
+             // Decode base64 data
+             byte[] zipBytes = Base64.getDecoder().decode(base64Data);
+ 
+-            File tempZip = File.createTempFile("signal_", ".zip");
++            File tempZip = File.createTempFile("signal_", ".zip"); //se guarda temporalmente en el servidor
+             try (FileOutputStream fos = new FileOutputStream(tempZip)) {
+-                fos.write(zipBytes);
++                fos.write(zipBytes);  //decodifica los bytes de la señal del paciente
+             }
+ 
+             Signal record = new Signal(
+@@ -283,11 +323,15 @@
+                 response.addProperty("status", "ERROR");
+                 response.addProperty("type", "ERROR ADDING SIGNAL TO DATABASE");
+                 response.addProperty("message", "Error saving signal: ");
+-                sendRawJson(response);
++                // TODO: Encriptar response
++                   System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
++                   sendEncrypted(response,out,AESkey);
+                 }else {
+                    response.addProperty("status", "SUCCESS");
+                    response.addProperty("message", "Signal uploaded correctly");
+-                   sendRawJson(response);
++                   //TODO: encriptar response
++                   System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
++                   sendEncrypted(response,out,AESkey);
+                }
+ 
+     }
+@@ -311,13 +355,17 @@
+     public void forceShutdown(){
+         JsonObject jsonObject = new JsonObject();
+         jsonObject.addProperty("type", "STOP_CLIENT");
+-        sendRawJson(jsonObject);
++
++        System.out.println("\nBefore encryption, STOP_CLIENT to Client: "+jsonObject);
++        sendEncrypted(jsonObject,out,AESkey);
++
+         running.set(false);
+         try {
+             socket.close(); //this will unblock readline() in run()
+             System.out.println("Socktet closed"+socket.getInetAddress());
+             server.removeClient(this);
+         }catch (IOException e){
++            e.getMessage();
+         }
+     }
+ 
+@@ -325,11 +373,11 @@
+         return !running.get();
+     }
+ 
+-    void releaseResources(BufferedReader bufferedReader, BufferedWriter bufferedWriter, Socket clientSocket) throws IOException {
++    void releaseResources(BufferedReader bufferedReader, PrintWriter out, Socket clientSocket) throws IOException {
+         server.removeClient(this);
+         running.set(false);
+         try {if (bufferedReader!=null) bufferedReader.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
+-        try {if(bufferedWriter!=null)bufferedWriter.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
++        if(out!=null)out.close();
+         try {if(clientSocket!=null && !clientSocket.isClosed())clientSocket.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
+     }
+ 
+@@ -344,11 +392,8 @@
+      * @param json  The JsonObject that will be converted it into a raw JSON string
+      */
+     private void sendRawJson(JsonObject json){
+-        try {
+-            out.write(gson.toJson(json));
+-            out.newLine();
++            out.println(json);
+             out.flush();
+-        } catch (IOException e) {}
+     }
+ 
+     /// If login success, message format:
+@@ -406,8 +451,8 @@
+             response.addProperty("message", "User not found");
+         }
+ 
+-        System.out.println(response.toString());
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, LOGIN_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+     private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {
+@@ -420,7 +465,8 @@
+         if(user == null){
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "User not found");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -428,7 +474,8 @@
+         if(role==null || !role.getRolename().equals("Doctor") || !email.equals(user.getEmail())) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -440,8 +487,8 @@
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Doctor not found");
+         }
+-
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++        sendEncrypted(response, out, AESkey);
+     }
+ 
+     /**
+@@ -459,8 +506,8 @@
+         User user = server.getAppMain().userJDBC.findUserByID(user_id);
+         if(user == null){
+             response.addProperty("status", "ERROR");
+-            response.addProperty("message", "User not found");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -468,7 +515,8 @@
+         if(role == null){
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Role not found");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+         //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access
+@@ -477,7 +525,9 @@
+             if(patient.getDoctorId() != doctor_id){
+                 response.addProperty("status", "ERROR");
+                 response.addProperty("message", "Not authorized");
+-                sendRawJson(response);
++
++                System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
++                sendEncrypted(response,out,AESkey);
+                 return;
+             }
+         }
+@@ -488,7 +538,9 @@
+                 //If the doctor requesting for info is a different doctor
+                 response.addProperty("status", "ERROR");
+                 response.addProperty("message", "Not authorized");
+-                sendRawJson(response);
++
++                System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
++                sendEncrypted(response,out,AESkey);
+                 return;
+             }
+             response.addProperty("status", "SUCCESS");
+@@ -498,7 +550,8 @@
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Doctor not found");
+         }
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+     private void handleRequestPatientByEmail(JsonObject data) throws IOException {
+@@ -511,7 +564,8 @@
+         if(user == null || !user.getEmail().equals(email)) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -532,12 +586,12 @@
+             pJson.add("signals", signalArray);
+             pJson.add("reports", symptomsArray);
+             response.add("patient", pJson);
+-            System.out.println(pJson.toString());
+         }else{
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Doctor not found");
+         }
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+     private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
+@@ -580,7 +634,8 @@
+             response.addProperty("message", "Not authorized");
+         }
+ 
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, REQUEST_PATIENT_FROM_DOCTOR_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+ 
+@@ -597,7 +652,8 @@
+         if(user == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, SAVE_COMMENTS_SIGNAL_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -618,7 +674,8 @@
+             response.addProperty("message", "Not authorized");
+         }
+ 
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
+ 
+     private void handleSaveReportRequest(JsonObject data) throws IOException {
+@@ -631,7 +688,8 @@
+         if(report == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Error parsing report");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -639,7 +697,8 @@
+         if(user == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -647,7 +706,8 @@
+         if(patient == null) {
+             response.addProperty("status", "ERROR");
+             response.addProperty("message", "Not authorized");
+-            sendRawJson(response);
++            System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
++            sendEncrypted(response,out,AESkey);
+             return;
+         }
+ 
+@@ -664,7 +724,34 @@
+             response.addProperty("message", "Not authorized");
+         }
+ 
+-        sendRawJson(response);
++        System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
++        sendEncrypted(response,out,AESkey);
+     }
++
++    /**
++     * Encrypts the Json's data property.
++     *
++     * @param message
++     * @param out
++     * @param AESkey
++     */
++    public void sendEncrypted(JsonObject message, PrintWriter out, SecretKey AESkey){
++        try{
++            String encryptedJson = AESUtil.encrypt(message.toString(), AESkey);
++            JsonObject wrapper = new JsonObject();
++
++            //TODO: ver si realmente el type debería ser especifico para cada case o no
++            wrapper.addProperty("type", "ENCRYPTED");
++            wrapper.addProperty("data", encryptedJson);
++
++            System.out.println("\nThis is the encrypted message sent to Client: "+wrapper);
++
++            out.println(wrapper); //String Json
++            out.flush();
++        }catch (Exception e){
++            e.printStackTrace();
++        }
++    }
++
+ }
+ 
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Encoding\">\r\n    <file url=\"file://$PROJECT_DIR$/src/main/java\" charset=\"UTF-8\" />\r\n    <file url=\"file://$PROJECT_DIR$/src/main/resources\" charset=\"UTF-8\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+--- a/.idea/encodings.xml	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
++++ b/.idea/encodings.xml	(date 1764183199071)
+@@ -2,6 +2,9 @@
+ <project version="4">
+   <component name="Encoding">
+     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb.db" charset="UTF-16" />
++    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" charset="UTF-16" />
++    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" charset="UTF-16" />
+     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/main/java/encryption/AESUtil.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package encryption;\r\n\r\nimport network.Server;\r\n\r\nimport javax.crypto.Cipher;\r\nimport javax.crypto.KeyGenerator;\r\nimport javax.crypto.SecretKey;\r\nimport java.nio.charset.StandardCharsets;\r\nimport java.security.Key;\r\nimport java.security.NoSuchAlgorithmException;\r\n\r\npublic class AESUtil {\r\n\r\n    public static SecretKey generateAESKey() throws NoSuchAlgorithmException {\r\n        KeyGenerator keyGenerator = KeyGenerator.getInstance(\"AES\");\r\n        keyGenerator.init(128);\r\n        SecretKey AESkey = keyGenerator.generateKey();\r\n        return AESkey;\r\n    }\r\n\r\n    public static byte[] encrypt(String text, SecretKey AESkey) throws Exception{\r\n        Cipher cipher = Cipher.getInstance(\"AES\");\r\n        cipher.init(Cipher.ENCRYPT_MODE, AESkey);\r\n        return cipher.doFinal(text.getBytes(StandardCharsets.UTF_8));\r\n    }\r\n\r\n    public static String decrypt(byte[] encryptedText, SecretKey AESkey) throws Exception{\r\n        Cipher cipher = Cipher.getInstance(\"AES\");\r\n        cipher.init(Cipher.DECRYPT_MODE, AESkey);\r\n        byte[] decrypted = cipher.doFinal(encryptedText);\r\n        return new String(decrypted, StandardCharsets.UTF_8);\r\n    }\r\n\r\n    //TODO: No se para que es esto\r\n    /*\r\n    public static byte[] getKeyBytes(SecretKey key) {\r\n        return key.getEncoded();\r\n    }\r\n\r\n    public static SecretKey restoreKey(byte[] keyBytes) {\r\n        return new SecretKeySpec(keyBytes, 0, keyBytes.length, \"AES\");\r\n    }\r\n     */\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/encryption/AESUtil.java b/src/main/java/encryption/AESUtil.java
+--- a/src/main/java/encryption/AESUtil.java	(revision 4e989f4bb7514c5b4ec1a94ae6507ab4fa994a9b)
++++ b/src/main/java/encryption/AESUtil.java	(date 1764183199071)
+@@ -5,12 +5,19 @@
+ import javax.crypto.Cipher;
+ import javax.crypto.KeyGenerator;
+ import javax.crypto.SecretKey;
++import javax.crypto.spec.GCMParameterSpec;
++import java.nio.ByteBuffer;
+ import java.nio.charset.StandardCharsets;
+ import java.security.Key;
+ import java.security.NoSuchAlgorithmException;
++import java.security.SecureRandom;
++import java.util.Base64;
+ 
+ public class AESUtil {
+ 
++    private static final int tag_length_bits = 128;
++    private static final int iv_length_bytes = 12;
++
+     public static SecretKey generateAESKey() throws NoSuchAlgorithmException {
+         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+         keyGenerator.init(128);
+@@ -18,17 +25,55 @@
+         return AESkey;
+     }
+ 
+-    public static byte[] encrypt(String text, SecretKey AESkey) throws Exception{
+-        Cipher cipher = Cipher.getInstance("AES");
+-        cipher.init(Cipher.ENCRYPT_MODE, AESkey);
+-        return cipher.doFinal(text.getBytes(StandardCharsets.UTF_8));
++    /**
++     * Encrypts the plain text using AES-GCM with a random IV. The putput is a Base64 string containing
++     * the IV + cipher text
++     *
++     * @param text      The text that is going to be encrypted
++     * @throws Exception
++     */
++    public static String encrypt(String text, SecretKey AESkey) throws Exception{
++        byte[] iv = new byte[iv_length_bytes];
++        new SecureRandom().nextBytes(iv);
++
++        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
++        GCMParameterSpec spec = new GCMParameterSpec(tag_length_bits,iv);
++        cipher.init(Cipher.ENCRYPT_MODE,AESkey,spec);
++
++        byte[] encryptedText = cipher.doFinal(text.getBytes(StandardCharsets.UTF_8));
++        //Use the IV for the encryption
++        ByteBuffer buffer = ByteBuffer.allocate(iv.length + encryptedText.length);
++        buffer.put(iv);
++        buffer.put(encryptedText);
++
++        return Base64.getEncoder().encodeToString(buffer.array());
+     }
+ 
+-    public static String decrypt(byte[] encryptedText, SecretKey AESkey) throws Exception{
+-        Cipher cipher = Cipher.getInstance("AES");
+-        cipher.init(Cipher.DECRYPT_MODE, AESkey);
+-        byte[] decrypted = cipher.doFinal(encryptedText);
+-        return new String(decrypted, StandardCharsets.UTF_8);
++    /**
++     *
++     *
++     * @param encryptedText     String that contains the encrypted data (previously encoded in Base64)
++     * @param AESkey            The shared secret key used for AES-GCM decryption
++     * @return
++     * @throws Exception    for simplicity
++     */
++    public static String decrypt(String encryptedText, SecretKey AESkey) throws Exception{
++        byte[] decoded = Base64.getDecoder().decode(encryptedText); //decodes the input string into bytes
++        ByteBuffer buffer = ByteBuffer.wrap(decoded); //To easily read chunks
++
++        byte[] iv = new byte[iv_length_bytes]; //allocates 12 bytes for the iv
++        buffer.get(iv);
++
++        byte[] restEncrypted = new byte[buffer.remaining()]; //message+tag
++        buffer.get(restEncrypted);
++
++        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
++        GCMParameterSpec spec = new GCMParameterSpec(tag_length_bits, iv);
++        cipher.init(Cipher.DECRYPT_MODE, AESkey,spec);
++
++        byte[] decrypted = cipher.doFinal(restEncrypted);
++
++        return new String(decrypted, StandardCharsets.UTF_8); //readable string
+     }
+ 
+     //TODO: No se para que es esto
