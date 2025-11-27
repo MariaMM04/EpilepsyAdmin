@@ -754,13 +754,13 @@ public class ClientHandler implements Runnable {
         String email = data.get("email").getAsString();
         String newPassword = data.get("new_password").getAsString();
 
-        if(!server.getAppMain().userJDBC.isUser(email)){
+        if(!server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)){
             response.addProperty("status","ERROR");
             response.addProperty("message", "User not found");
         } else{
-            User user = server.getAppMain().userJDBC.findUserByEmail(email);
+            User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByEmail(email);
             String hashedPassword = encryption.PasswordHash.generatePasswordHash(newPassword);
-            boolean success = server.getAppMain().userJDBC.changePassword(user,hashedPassword);
+            boolean success = server.getAdminLinkService().getSecurityManager().getUserJDBC().changePassword(user,hashedPassword);
             if (success){
                 response.addProperty("status", "SUCCESS");
                 JsonObject userObj = new JsonObject();
