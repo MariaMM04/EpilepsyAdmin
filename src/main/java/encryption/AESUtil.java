@@ -75,15 +75,4 @@ public class AESUtil {
 
         return new String(decrypted, StandardCharsets.UTF_8); //readable string
     }
-
-    //TODO: No se para que es esto
-    /*
-    public static byte[] getKeyBytes(SecretKey key) {
-        return key.getEncoded();
-    }
-
-    public static SecretKey restoreKey(byte[] keyBytes) {
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES");
-    }
-     */
 }
