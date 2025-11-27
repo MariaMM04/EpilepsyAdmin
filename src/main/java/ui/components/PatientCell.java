@@ -101,10 +101,15 @@ public class PatientCell implements ListCellRenderer<Patient> {
         JLabel doctorText = new JLabel("None");
         doctorText.setForeground(contentColor);
         doctorText.setFont(contentFont);
-        JLabel statusHeading = new JLabel("Status:");
+        JLabel statusHeading = new JLabel("Subscription:");
         statusHeading.setForeground(titleColor);
         statusHeading.setFont(titleFont);
-        JLabel statusTxt = new JLabel(String.valueOf(value.isActive()));
+        JLabel statusTxt = new JLabel();
+        if(value.isActive()){
+            statusTxt.setText("Active");
+        }else {
+            statusTxt.setText("Inactive");
+        }
         statusTxt.setForeground(contentColor);
         statusTxt.setFont(contentFont);
 

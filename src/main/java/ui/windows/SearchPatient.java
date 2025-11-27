@@ -138,7 +138,7 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        switchStatus = new MyButton("SWITCH STATUS");
+        switchStatus = new MyButton("TOGGLE STATUS");
         switchStatus.addActionListener(this);
         add(switchStatus, "cell 0 4, center, gapy 5, span 2, grow");
 
@@ -285,7 +285,11 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
                 if(result) {
                     selectedPatient.setActive(!selectedPatient.isActive());
                     updatePatientDefModel(allPatients);
-                    showErrorMessage("Status changed to "+selectedPatient.isActive());
+                    if(selectedPatient.isActive()) {
+                        showErrorMessage("Patient has been activated");
+                    }else {
+                        showErrorMessage("Patient has been deactivated");
+                    }
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");

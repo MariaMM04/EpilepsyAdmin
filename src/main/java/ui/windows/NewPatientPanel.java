@@ -283,6 +283,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
             p.setGender(gender.getSelectedItem().toString());
             p.setEmail(email.getText());
             p.setContact(phoneNumber.getText());
+            p.setActive(true);
             LocalDate fecha;
             Integer phonenumber;
 
@@ -410,11 +411,13 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         MyButton cancelButton = new MyButton("CONTINUE EDITING");
 
         QuestionDialog panel = new QuestionDialog(question, okButton, cancelButton);
-        JDialog dialog = new JDialog(parentFrame, "Change Password", true);
+        panel.setPreferredSize(new Dimension(300, 150));
+        JDialog dialog = new JDialog(parentFrame, "Are you sure?", true);
         dialog.getContentPane().add(panel);
         dialog.getContentPane().setBackground(Color.white);
         dialog.pack();
         dialog.setLocationRelativeTo(parentFrame);
+
 
         okButton.addActionListener(new ActionListener() {
             @Override

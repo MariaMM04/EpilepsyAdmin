@@ -20,6 +20,14 @@ import java.util.List;
  */
 public class AdminLinkService {
 
+    public MedicalManager getMedicalManager() {
+        return medicalManager;
+    }
+
+    public SecurityManager getSecurityManager() {
+        return securityManager;
+    }
+
     private final MedicalManager medicalManager;
     private final SecurityManager securityManager;
 
