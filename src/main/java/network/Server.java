@@ -19,14 +19,21 @@ import Exceptions.*;
 public class Server {
     private int port;
     private ServerSocket serverSocket;
-    //Implementación de List para concurrencia segura sin bloqueos. Ideal para apps multihilos con muchas consultas y pocas modificaciones
+    // List implementation for lock-free thread-safe concurrency. Ideal for multithreaded apps with many reads and few modifications.
     private final CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
-    //private List<ClientHandler> clients;
-    private volatile Boolean running = false; //Para que otros hilos vean directamente si hay cambios en ella
-    //private final Application appMain; //To access the centralized medicalManager and securityManager
-    private KeyPair keyPair; //To have a public and private key (RSA asymmetric encryption)
+// private List<ClientHandler> clients;
+    private volatile Boolean running = false; // So other threads can immediately see changes to this variable
+// private final Application appMain; // To access the centralized medicalManager and securityManager
+    private KeyPair keyPair; // To store the public and private RSA keys (asymmetric encryption)
     private AdminLinkService adminConn;
 
+
+    /**
+     * Creates a new server instance on the given port, stores the AdminLinkService
+     * reference, and generates the RSA key pair for secure communication.
+     * @param port
+     * @param adminConn
+     */
     public Server(int port, AdminLinkService adminConn) {
         this.port = port;
         this.adminConn = adminConn;
@@ -38,7 +45,14 @@ public class Server {
         }
     }
 
-    // TEST constructor
+
+    /**
+     * Test-only constructor that injects a predefined ServerSocket and initializes
+     * the RSA key pair without binding to a real port.
+     * @param serverSocket
+     * @param adminConn
+     * @throws Exception
+     */
     public Server(ServerSocket serverSocket, AdminLinkService adminConn) throws Exception{
         this.serverSocket = serverSocket;
         this.port = -1; // unused
@@ -46,6 +60,11 @@ public class Server {
         this.adminConn = adminConn;
     }
 
+    /**
+     * Starts the server in a dedicated thread, opens the ServerSocket,
+     * accepts incoming client connections, and creates a new ClientHandler
+     * thread for each connected client.
+     */
     public void startServer(){
         if (running) return;  //to avoid it starting 2 times
 
@@ -124,6 +143,11 @@ public class Server {
         }
     }
 
+    /**
+     * Returns a list of human-readable strings describing all currently
+     * connected clients and their socket addresses.
+     */
+
     public ArrayList<String> getConnectedClients() {
         ArrayList<String>  connectedClients = new ArrayList<>();
         for (int i = 0; i < clients.size(); i++) {
@@ -131,6 +155,11 @@ public class Server {
         }
         return connectedClients;
     }
+
+    /**
+     * Removes the given ClientHandler from the active client list and logs
+     * the updated client count.
+     */
 
     public void removeClient(ClientHandler handler) {
         clients.remove(handler);
