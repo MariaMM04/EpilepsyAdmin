@@ -40,12 +40,13 @@ public class UserJDBC {
      *                  <code> false </code> otherwise
      */
     public boolean insertUser(User user) throws RegisterError {
-        String sql = "INSERT INTO Users (email, password, role_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Users (email, password, role_id, publicKey) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setInt(3, user.getRole_id());
+            ps.setString(4,user.getPublicKey());
             ps.executeUpdate();
             System.out.println("User inserted successfully: " + user.getEmail());
             return true;
@@ -74,7 +75,8 @@ public class UserJDBC {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getBoolean("active"),
-                        rs.getInt("role_id"));
+                        rs.getInt("role_id"),
+                        rs.getString("publicKey"));
                 System.out.println("User found: " + email);
             } else {
                 System.out.println("No user found with email: " + email);
@@ -108,7 +110,8 @@ public class UserJDBC {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getBoolean("active"),
-                        rs.getInt("role_id"));
+                        rs.getInt("role_id"),
+                        rs.getString("publicKey"));
                 System.out.println("User found: " + id);
             } else {
                 System.out.println("No user found with ID: " + id);
@@ -140,7 +143,8 @@ public class UserJDBC {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getBoolean("active"),
-                        rs.getInt("role_id")));
+                        rs.getInt("role_id"),
+                        rs.getString("publicKey")));
             }
             System.out.println("Retrieved " + users.size() + " users.");
 
@@ -203,15 +207,45 @@ public class UserJDBC {
             {
                 //Hash the password for security in the database
                 String hashedPassword = PasswordHash.generatePasswordHash(user.getPassword());
-                User newUser = new User (user.getEmail(), hashedPassword,true);
+                User newUser = new User (user.getEmail(), hashedPassword,false);
                 newUser.setRole_id(user.getRole_id());
                 System.out.println("The user is: "+newUser.getEmail());
                 System.out.println("The user's password is: "+newUser.getPassword());
+                newUser.setPublicKey(user.getPublicKey());
                 return insertUser(newUser);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
             throw new RegisterError("User is already registered");
         }
+    }
+
+    /**
+     * In the fisrt Log in it sets the active status to true and changes the PublicKey to the users one
+     * @param u
+     * @param providedPublicKey
+     * @param newPublicKey
+     * @return
+     */
+    public boolean firstLogin(User u, String providedPublicKey, String newPublicKey) {
+
+        // 1. Check if it's actually first login
+        if (u == null || u.isActive()) {
+            return false; // not first login
+        }
+        // 2. Check if provided public key matches the one stored
+        String storedPublicKey = u.getPublicKey();
+        if (!storedPublicKey.equals(providedPublicKey)) {
+            System.out.println("Public key does not match ");
+            return false;
+        }
+
+        // 3. Change public key to the new one chosen by the user
+        boolean updatedKey = changePublicKey(u, newPublicKey);
+
+        // 4. Activate user
+        boolean activated = updateUserActiveStatus(u.getEmail(), true);
+
+        return updatedKey && activated;
     }
 
 
@@ -246,7 +280,8 @@ public class UserJDBC {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getBoolean("active"),
-                        rs.getInt("role_id")
+                        rs.getInt("role_id"),
+                        rs.getString("publicKey")
                 );
                 u.setRole_id(rs.getInt("role_id"));
                 return u;
@@ -283,7 +318,6 @@ public class UserJDBC {
 
     /**
      * Changes the password of the given user of the database.
-     *
      * @param u         the user that will have its password modified
      * @param password  the new password for the desired user
      * @return          boolean value of the performed modification. May be:
@@ -314,5 +348,40 @@ public class UserJDBC {
         }
         return false;
     }
+
+    /**
+     * Makes the change of the given publicKey to your own publicKey
+     * @param u
+     * @param newPublicKey
+     * @return
+     */
+    public boolean changePublicKey(User u, String newPublicKey) {
+        // Basic validation
+        if (u == null || u.getId() <= 0 || newPublicKey == null || newPublicKey.isBlank()) {
+            return false;
+        }
+
+        try {
+            String sql = "UPDATE Users SET publicKey = ? WHERE id = ?";
+
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+                ps.setString(1, newPublicKey);
+                ps.setInt(2, u.getId());
+
+                int row = ps.executeUpdate();
+                return row == 1; // true if exactly one row was updated
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Could not change public key: " + e.getMessage());
+        }
+
+        return false;
+    }
+
 }
 
