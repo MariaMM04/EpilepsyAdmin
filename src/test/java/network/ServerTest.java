@@ -1,12 +1,14 @@
 package network;
 
 import Exceptions.ClientError;
+import encryption.TokenUtils;
 import org.example.service.AdminLinkService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.windows.Application;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,6 +48,16 @@ class ServerTest {
     void tearDown() {
     }
 
+    private static void setField(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     void testServerStartsAndAcceptsMultipleClient() throws Exception {
         // Arrange
@@ -74,7 +86,6 @@ class ServerTest {
     @Test
     void testServerCloseAllClients() throws Exception {
         // Arrange
-
         Socket socket1 = mock(Socket.class);
         Socket socket2 = mock(Socket.class);
         when(serverSocket.accept())
@@ -85,7 +96,6 @@ class ServerTest {
         when(socket2.getInputStream()).thenReturn(in);
         when(socket2.getOutputStream()).thenReturn(out);
         when(socket2.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.2"));
-
         // Act
         server.startServer();
         Thread.sleep(300); // dejar que acepte

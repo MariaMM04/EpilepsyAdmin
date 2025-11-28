@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="encryption fixes (TOKEN)">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_03__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_03__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_05__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_05__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Change password correctly &amp; login error fixed">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entities_securitydb/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entities_securitydb/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +27,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
-    &quot;accountId&quot;: &quot;12626fc0-ed3c-4c85-9540-1d4369efb5a4&quot;
+    &quot;accountId&quot;: &quot;e387a1ed-66c0-4b42-9a08-e4d4d83c049c&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -52,9 +53,33 @@
     &quot;Application.MainAdmin.executor&quot;: &quot;Run&quot;,
     &quot;Application.MainAdmin_try.executor&quot;: &quot;Run&quot;,
     &quot;Application.MedicalManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NewPatientPanel.executor&quot;: &quot;Run&quot;,
     &quot;Application.SecurityManager.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectPatientRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectPatientRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginUserNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByEmail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByID.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientByEmail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientSignals2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignal2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleSaveCommentsSignal2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleStopClient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleStopClient2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testReleaseResources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.testServerCloseAllClients.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.testServerStartsAndAcceptsMultipleClient.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
@@ -73,47 +98,8 @@
       <recent name="org.example.service" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Application">
-    <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
-      <module name="EpilepsyAdmin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ui.windows.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MedicalManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.medicaldb.MedicalManager" />
-      <module name="EpilepsyAdmin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.JDBC.medicaldb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SecurityManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.securitydb.SecurityManager" />
-      <module name="EpilepsyAdmin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.JDBC.securitydb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ClientHandlerTest.testHandleLoginCorrectDoctorRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.ServerTest">
+    <configuration name="ClientHandlerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
@@ -123,32 +109,96 @@
       </extension>
       <option name="PACKAGE_NAME" value="network" />
       <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testHandleLoginCorrectDoctorRequest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientHandlerTest.testHandleRequestPatientSignals2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="network" />
+      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
+      <option name="METHOD_NAME" value="testHandleRequestPatientSignals2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ClientHandlerTest.testHandleRequestSignal2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="network" />
+      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
+      <option name="METHOD_NAME" value="testHandleRequestSignal2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientHandlerTest.testReleaseResources" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="network" />
+      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
+      <option name="METHOD_NAME" value="testReleaseResources" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="network" />
+      <option name="MAIN_CLASS_NAME" value="network.ServerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
-      <item itemvalue="Application.SecurityManager" />
-      <item itemvalue="Application.MedicalManager" />
-      <item itemvalue="Application.Application" />
-      <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
+      <item itemvalue="JUnit.ClientHandlerTest" />
+      <item itemvalue="JUnit.ClientHandlerTest.testHandleRequestPatientSignals2" />
+      <item itemvalue="JUnit.ClientHandlerTest.testHandleRequestSignal2" />
+      <item itemvalue="JUnit.ClientHandlerTest.testReleaseResources" />
+      <item itemvalue="JUnit.ServerTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Application" />
-        <item itemvalue="Application.MedicalManager" />
-        <item itemvalue="Application.SecurityManager" />
-        <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
+        <item itemvalue="JUnit.ServerTest" />
+        <item itemvalue="JUnit.ClientHandlerTest" />
+        <item itemvalue="JUnit.ClientHandlerTest.testReleaseResources" />
+        <item itemvalue="JUnit.ClientHandlerTest.testHandleRequestPatientSignals2" />
+        <item itemvalue="JUnit.ClientHandlerTest.testHandleRequestSignal2" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
-        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-IU-252.26199.169" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -169,15 +219,9 @@
       <option name="presentableId" value="Default" />
       <updated>1764152614333</updated>
       <workItem from="1764152617418" duration="1374000" />
+      <workItem from="1764337881188" duration="10936000" />
     </task>
-    <task id="LOCAL-00002" summary="encryption fixes (TOKEN)">
-      <created>1764326526620</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1764326526620</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,8 +229,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Manual of Admin done" />
-    <MESSAGE value="encryption fixes (TOKEN)" />
-    <option name="LAST_COMMIT_MESSAGE" value="encryption fixes (TOKEN)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$Application.ic" NAME="Application Coverage Results" MODIFIED="1763945395477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

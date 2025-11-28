@@ -40,6 +40,12 @@ public class ClientHandler implements Runnable {
         running = new AtomicBoolean(true);
     }
 
+    /**
+     * Main loop of the client handler thread. Reads incoming messages,
+     * performs the RSA/AES handshake if needed, decrypts further requests,
+     * dispatches each message type to its corresponding handler, and
+     * manages connection shutdown.
+     */
     @Override
     public void run(){
         try {
@@ -219,6 +225,11 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Decodes and stores the client's RSA public key from its Base64
+     * representation for subsequent encrypted communication.
+     * @param clientPublicKeyBase64
+     */
     private void handleClientPublicKey(String clientPublicKeyBase64){
         try{
             byte[] decoded = Base64.getDecoder().decode(clientPublicKeyBase64);
@@ -231,6 +242,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Generates a session AES token, encrypts it with the client's public key,
+     * signs it with the server's private key, and sends the token response
+     * to the client.
+     * @throws Exception
+     */
     private void sendTokenToClient () throws Exception{
         SecretKey token = TokenUtils.generateToken();
         this.token = token; //Stores token for this session
@@ -279,6 +296,11 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out,token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENT_SIGNALS request by validating the doctor,
+     * retrieving the patient's signals, and sending them in an encrypted response.
+     * @param data
+     */
     private void handleRequestPatientSignals(JsonObject data) {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENT_SIGNALS_RESPONSE");
@@ -321,6 +343,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_SIGNAL request by validating the user, locating the
+     * requested signal, encoding its ZIP file as Base64, and returning it
+     * with metadata in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestSignal(JsonObject data) throws IOException {
         System.out.println(data.toString());
         JsonObject response = new JsonObject();
@@ -374,6 +403,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Handles an UPLOAD_SIGNAL request by decoding the incoming ZIP data,
+     * reconstructing the signal metadata, inserting the signal into the
+     * database, and returning an encrypted response.
+     * @param dataIn
+     * @throws IOException
+     */
     private void handleRequestSignalPatient(JsonObject dataIn) throws IOException {
 
         JsonObject response = new JsonObject();
@@ -486,7 +522,7 @@ public class ClientHandler implements Runnable {
     ///   "status": "ERROR",
     ///   "message": "Invalid credentials"
     /// }
-    private void handleLogIn(JsonObject data) throws IOException {
+    void handleLogIn(JsonObject data) throws IOException {
         String email = data.get("email").getAsString();
         String password = data.get("password").getAsString();
         String accessPermits = data.get("access_permits").getAsString();
@@ -496,7 +532,7 @@ public class ClientHandler implements Runnable {
 
         if (server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)) {
             User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().login(email, password);
-
+            System.out.println(user);
             if (user != null) {
                 Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
                 if(role != null && role.getRolename().equals(accessPermits)) {
@@ -529,6 +565,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_DOCTOR_BY_EMAIL request by validating the user and role,
+     * retrieving the doctor data if authorized, and sending the encrypted response.
+     * @param dataIn
+     * @throws IOException
+     */
     private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_DOCTOR_BY_EMAIL_RESPONSE");
@@ -633,6 +675,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENT_BY_EMAIL request by validating the user,
+     * retrieving the patient and their related signals and reports, and
+     * sending the result in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestPatientByEmail(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENT_BY_EMAIL_RESPONSE");
@@ -679,6 +728,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENTS_FROM_DOCTOR request by validating the doctor,
+     * retrieving all associated patients with their signals and reports,
+     * and sending the aggregated data in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENTS_FROM_DOCTOR_RESPONSE");
@@ -723,7 +779,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
-
+    /**
+     * Handles a SAVE_COMMENTS_SIGNAL request by validating the doctor–patient
+     * relationship, updating the signal comments, and sending an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleSaveCommentsSignal(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SAVE_COMMENTS_SIGNAL_RESPONSE");
@@ -763,6 +824,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a SAVE_REPORT request by validating the user and patient,
+     * inserting the report into the database, and sending an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleSaveReportRequest(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SAVE_REPORT_RESPONSE");
@@ -813,6 +880,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Processes a CHANGE_PASSWORD request by validating the user, hashing the
+     * new password, updating it in the database, and sending an encrypted response.
+     * @param data
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
     private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");

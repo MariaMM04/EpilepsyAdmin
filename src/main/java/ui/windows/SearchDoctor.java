@@ -138,7 +138,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        switchStatus = new MyButton("TOGGLE STATUS");
+        switchStatus = new MyButton("DEACTIVATE USER");
         switchStatus.addActionListener(this);
         add(switchStatus, "cell 0 4, center, gapy 5, span 2, grow");
 
@@ -284,17 +284,13 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
                 //IF false change to true
                 Boolean result = false;
                 try{
-                    result = appMain.adminLinkService.changeDoctorStatus(selectedDoctor.getEmail(), !selectedDoctor.isActive());
+                    result = appMain.adminLinkService.changeDoctorStatus(selectedDoctor.getEmail(), false);
                 } catch (SQLException ex) {
                 }
                 if(result) {
                     selectedDoctor.setActive(!selectedDoctor.isActive());
                     updateDoctorDefModel(allDoctors);
-                    if(selectedDoctor.isActive()) {
-                        showErrorMessage("Doctor has been activated");
-                    }else {
-                        showErrorMessage("Doctor has been deactivated");
-                    }
+                    showErrorMessage("Doctor has been deactivated");
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");

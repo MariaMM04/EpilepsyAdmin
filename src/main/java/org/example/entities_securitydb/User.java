@@ -30,7 +30,7 @@ public class User {
     private String password;   // Encrypted or hashed password
     private boolean active;    // Account enabled/disabled flag
     private int role_id;        // Foreign key referencing the Role table
-
+    private String publicKey;
     // Constructors
 
     /**
@@ -68,11 +68,12 @@ public class User {
      * @param password  the user's password
      * @param role_id   foreign key identifying the associated role
      */
-    public User(String email, String password, int role_id) {
+    public User(String email, String password, int role_id, String publicKey) {
         this.email = email;
         this.password = password;
         this.role_id = role_id;
-        this.active = true;
+        this.publicKey= publicKey;
+        this.active = false;
     }
 
     /**
@@ -85,12 +86,13 @@ public class User {
      * @param active    logical flag whether the user is active
      * @param role_id   foreign key identifying the associated role
      */
-    public User(int id, String email, String password, boolean active, int role_id) {
+    public User(int id, String email, String password, boolean active, int role_id, String publicKey) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role_id = role_id;
         this.active = active;
+        this.publicKey= publicKey;
     }
 
     // Getters and Setters
@@ -109,6 +111,9 @@ public class User {
     public int getRole_id() { return role_id; }
     public void setRole_id(int role_id) { this.role_id = role_id;}
 
+    public String getPublicKey() { return publicKey; }
+    public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
+
     @Override
     public String toString() {
         return "User{" +
@@ -117,6 +122,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", active=" + active +
                 ", roleId=" + role_id +
+                ", publicKey='" + publicKey + '\'' +
                 '}';
     }
 
