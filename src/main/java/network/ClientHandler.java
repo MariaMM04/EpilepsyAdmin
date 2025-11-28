@@ -1,9 +1,8 @@
 package network;
 
 import com.google.gson.*;
-import encryption.AESUtil;
+import encryption.TokenUtils;
 import encryption.RSAUtil;
-import org.example.JDBC.medicaldb.SignalJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 
@@ -15,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable {
     private AtomicBoolean running;
     private final KeyPair serverKeyPair; //This is going to be the server's public key
     private PublicKey clientPublicKey; //This is going to be the client's public key
-    private SecretKey AESkey;
+    private SecretKey token;
 
     public ClientHandler(Socket socket, Server server, KeyPair serverKeyPair) throws IOException {
         this.socket = socket;
@@ -43,9 +43,6 @@ public class ClientHandler implements Runnable {
     @Override
     public void run(){
         try {
-            //Before doing anything, the server sends its public key
-            sendPublicKey();
-
             String line;
             label:
             while (running.get() && (line = in.readLine()) != null) {
@@ -64,12 +61,39 @@ public class ClientHandler implements Runnable {
 
                 // Extract the type field from the JSON
                 String type = request.get("type").getAsString();
+
+                if(token == null){
+                    switch (type){
+                        case "CLIENT_PUBLIC_KEY" : {
+                            System.out.println("This is the Server's Key Pair: ");
+                            System.out.println("Public Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));
+                            System.out.println("Private Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPrivate().getEncoded()));handleClientPublicKey(request.get("data").getAsString());
+                            System.out.println("🔍 JVM identity hash: " + System.identityHashCode(ClassLoader.getSystemClassLoader()));
+                            break;
+                        }
+                        case "TOKEN_REQUEST" : {
+                            if (clientPublicKey == null){
+                                System.err.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
+                                break;
+                            }
+                            sendPublicKey();
+                            sendTokenToClient();
+                            break;
+                        }
+                        default:
+                            System.err.println("Received unexpected message type before AES token exchange: "+type);
+                            break;
+                    }
+                    continue;
+                }
+
+                //Further requests
                 System.out.println("\nThis is the encrypted message received from the Client: "+request);
                 String typeDecrypted = type; //default original type
                 JsonObject decryptedRequest = request; //default original request
                 if(type.equals("ENCRYPTED")){
                     String encryptedData = request.get("data").getAsString();
-                    String decryptedJson = AESUtil.decrypt(encryptedData, AESkey);
+                    String decryptedJson = TokenUtils.decrypt(encryptedData, token);
                     decryptedRequest = gson.fromJson(decryptedJson, JsonObject.class);
                     typeDecrypted = decryptedRequest.get("type").getAsString();
                 }
@@ -155,7 +179,7 @@ public class ClientHandler implements Runnable {
                             byte[] AESkeyBytes = Base64.getDecoder().decode(decryptedAESkey); //In bytes
                             SecretKey AESkey = new SecretKeySpec(AESkeyBytes, 0, AESkeyBytes.length, "AES");
                             //Store the secret key inside the Handler for the connection
-                            this.AESkey = AESkey;
+                            this.token = AESkey;
                             System.out.println("AES key retrieved and decrypted successfully");
                             System.out.println("This is the Server's secret key AES:"+Base64.getEncoder().encodeToString(AESkey.getEncoded()));
                             System.out.println("This is the Server's public key RSA:"+Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded())+"and the private RSA key: "+Base64.getEncoder().encode(serverKeyPair.getPrivate().getEncoded()));
@@ -191,6 +215,59 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void handleClientPublicKey(String clientPublicKeyBase64){
+        try{
+            byte[] decoded = Base64.getDecoder().decode(clientPublicKeyBase64);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            this.clientPublicKey = keyFactory.generatePublic(spec);
+            System.out.println("Received and stored Client's Public Key: "+Base64.getEncoder().encodeToString(this.clientPublicKey.getEncoded()));
+        }catch (Exception e){
+            System.out.println("Failed to parse client's public key: "+e.getMessage());
+        }
+    }
+
+    private void sendTokenToClient () throws Exception{
+        SecretKey token = TokenUtils.generateToken();
+        this.token = token; //Stores token for this session
+        System.out.println("🔑 Server's AES Token (Base64): " + Base64.getEncoder().encodeToString(token.getEncoded()));
+        // Encrypt token with client's Public Key -> Confidentiality
+        String encryptedToken = RSAUtil.encrypt(Base64.getEncoder().encodeToString(token.getEncoded()), clientPublicKey);
+        // Sign token with server's Private Key -> Authenticity
+        //TODO: create maybe a method about signing?
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(serverKeyPair.getPrivate());
+        signature.update(token.getEncoded());
+        byte[] signatureBytes = signature.sign();
+
+        //Prepare JSON response to Client
+        JsonObject response = new JsonObject();
+        response.addProperty("type","TOKEN_REQUEST_RESPONSE");
+        response.addProperty("token", encryptedToken);
+        response.addProperty("signature", Base64.getEncoder().encodeToString(signatureBytes));
+
+        System.out.println("This is the token sent: "+response);
+        out.println(gson.toJson(response));
+        out.flush();
+        System.out.println("AES token sent to Client successfully");
+    }
+
+    /**
+     * Sends the Server's public key as a JSON Object to follow the protocol. Adds a "type" field to tell the client
+     * what kind of message it is and encodes the server's public key from binary into a Base64 String into the "data"
+     * field. This makes it safe to send over a text stream.
+     */
+    public void sendPublicKey() {
+        String serverPublicKey = Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded());
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SERVER_PUBLIC_KEY");
+        response.addProperty("data", serverPublicKey);
+        out.println(gson.toJson(response));
+        out.flush();
+
+        System.out.println("Sent Server's Public Key to Client");
+    }
+
     private void handleRequestPatientSignals(JsonObject data) {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENT_SIGNALS_RESPONSE");
@@ -203,7 +280,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "User not found");
 
             System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
         Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
@@ -211,7 +288,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -230,7 +307,7 @@ public class ClientHandler implements Runnable {
         response.addProperty("status", "SUCCESS");
         response.add("signals", signalsArray);
         System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleRequestSignal(JsonObject data) throws IOException {
@@ -245,7 +322,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
             System.out.println("\nBefore encryption, REQUEST_SIGNAL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
         Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
@@ -253,7 +330,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -263,7 +340,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Signal not found");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
 
         }else {
             byte[] zipBytes = Files.readAllBytes(signal.getFile().toPath());
@@ -282,7 +359,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("dataBytes", base64Zip);
 
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
         }
     }
 
@@ -308,7 +385,7 @@ public class ClientHandler implements Runnable {
                 response.addProperty("message", "Patient not found");
 
                 System.out.println("\nBefore encryption, REQUEST_PATIENT_SIGNALS_RESPONSE to Client: "+response);
-                sendEncrypted(response,out,AESkey);
+                sendEncrypted(response,out, token);
                 return;
             }
             // Decode base64 data
@@ -334,29 +411,17 @@ public class ClientHandler implements Runnable {
                 response.addProperty("message", "Error saving signal: ");
                 // TODO: Encriptar response
                    System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
-                   sendEncrypted(response,out,AESkey);
+                   sendEncrypted(response,out, token);
                 }else {
                    response.addProperty("status", "SUCCESS");
                    response.addProperty("message", "Signal uploaded correctly");
                    //TODO: encriptar response
                    System.out.println("\nBefore encryption, UPLOAD_SIGNAL_RESPONSE to Client: "+response);
-                   sendEncrypted(response,out,AESkey);
+                   sendEncrypted(response,out, token);
                }
 
     }
 
-
-    /**
-     * Sends the Server's public key as a JSON Object to follow the protocol. Adds a "type" field to tell the client
-     * what kind of message it is and encodes the server's public key from binary into a Base64 String into the "data"
-     * field. This makes it safe to send over a text stream.
-     */
-    public void sendPublicKey() {
-        JsonObject serverKey = new JsonObject();
-        serverKey.addProperty("type", "SERVER_PUBLIC_KEY");
-        serverKey.addProperty("data", Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));
-        sendRawJson(serverKey);
-    }
 
     /**
      * Server-side forced shutdown
@@ -366,7 +431,7 @@ public class ClientHandler implements Runnable {
         jsonObject.addProperty("type", "STOP_CLIENT");
 
         System.out.println("\nBefore encryption, STOP_CLIENT to Client: "+jsonObject);
-        sendEncrypted(jsonObject,out,AESkey);
+        sendEncrypted(jsonObject,out, token);
 
         running.set(false);
         try {
@@ -392,17 +457,6 @@ public class ClientHandler implements Runnable {
 
     public String getSocketAddress(){
         return socket.getInetAddress().toString();
-    }
-
-    /**
-     * Converts the JsonObject into a raw JSON string and writes it to the client's output stream.
-     * It immediately sends the data instead of buffering it.
-     *
-     * @param json  The JsonObject that will be converted it into a raw JSON string
-     */
-    private void sendRawJson(JsonObject json){
-            out.println(json);
-            out.flush();
     }
 
     /// If login success, message format:
@@ -461,7 +515,7 @@ public class ClientHandler implements Runnable {
         }
 
         System.out.println("\nBefore encryption, LOGIN_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {
@@ -475,7 +529,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "User not found");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -484,7 +538,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -502,7 +556,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Doctor not found");
         }
         System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-        sendEncrypted(response, out, AESkey);
+        sendEncrypted(response, out, token);
     }
 
     /**
@@ -521,7 +575,7 @@ public class ClientHandler implements Runnable {
         if(user == null){
             response.addProperty("status", "ERROR");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -530,7 +584,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Role not found");
             System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
         //If the patient is requesting the Doctor info of a Doctor that is not theirs, don't authorize the access
@@ -541,7 +595,7 @@ public class ClientHandler implements Runnable {
                 response.addProperty("message", "Not authorized");
 
                 System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
-                sendEncrypted(response,out,AESkey);
+                sendEncrypted(response,out, token);
                 return;
             }
         }
@@ -554,7 +608,7 @@ public class ClientHandler implements Runnable {
                 response.addProperty("message", "Not authorized");
 
                 System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
-                sendEncrypted(response,out,AESkey);
+                sendEncrypted(response,out, token);
                 return;
             }
             response.addProperty("status", "SUCCESS");
@@ -565,7 +619,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Doctor not found");
         }
         System.out.println("\nBefore encryption REQUEST_DOCTOR_BY_ID_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleRequestPatientByEmail(JsonObject data) throws IOException {
@@ -579,7 +633,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -611,7 +665,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("message", "Doctor not found");
         }
         System.out.println("\nBefore encryption, REQUEST_PATIENT_BY_EMAIL_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
@@ -655,7 +709,7 @@ public class ClientHandler implements Runnable {
         }
 
         System.out.println("\nBefore encryption, REQUEST_PATIENT_FROM_DOCTOR_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
 
@@ -673,7 +727,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, SAVE_COMMENTS_SIGNAL_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -695,7 +749,7 @@ public class ClientHandler implements Runnable {
         }
 
         System.out.println("\nBefore encryption, REQUEST_DOCTOR_BY_EMAIL_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleSaveReportRequest(JsonObject data) throws IOException {
@@ -709,7 +763,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Error parsing report");
             System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -718,7 +772,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -727,7 +781,7 @@ public class ClientHandler implements Runnable {
             response.addProperty("status", "ERROR");
             response.addProperty("message", "Not authorized");
             System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
-            sendEncrypted(response,out,AESkey);
+            sendEncrypted(response,out, token);
             return;
         }
 
@@ -745,7 +799,7 @@ public class ClientHandler implements Runnable {
         }
 
         System.out.println("\nBefore encryption, SAVE_REPORT_RESPONSE to Client: "+response);
-        sendEncrypted(response,out,AESkey);
+        sendEncrypted(response,out, token);
     }
 
     private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -774,7 +828,7 @@ public class ClientHandler implements Runnable {
             }
         }
         System.out.println("\n Before encryption, CHANGE_PASSWORD_RESPONSE to Client: "+response);
-        sendEncrypted(response, out, AESkey);
+        sendEncrypted(response, out, token);
 
     }
 
@@ -785,9 +839,9 @@ public class ClientHandler implements Runnable {
      * @param out
      * @param AESkey
      */
-    public void sendEncrypted(JsonObject message, PrintWriter out, SecretKey AESkey){
+    private void sendEncrypted(JsonObject message, PrintWriter out, SecretKey AESkey){
         try{
-            String encryptedJson = AESUtil.encrypt(message.toString(), AESkey);
+            String encryptedJson = TokenUtils.encrypt(message.toString(), AESkey);
             JsonObject wrapper = new JsonObject();
 
             //TODO: ver si realmente el type debería ser especifico para cada case o no
