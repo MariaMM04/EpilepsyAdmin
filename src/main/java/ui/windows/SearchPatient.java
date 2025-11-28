@@ -285,7 +285,7 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
                 if(result) {
                     selectedPatient.setActive(!selectedPatient.isActive());
                     updatePatientDefModel(allPatients);
-                    showErrorMessage("Patient has been deactivated");
+                    showErrorMessage(selectedPatient.getName()+" "+selectedPatient.getSurname()+" has been deactivated");
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");
