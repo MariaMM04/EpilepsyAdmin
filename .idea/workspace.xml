@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Change password correctly &amp; login error fixed">
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="encryption fixes (TOKEN)">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_03__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_03__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_05__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_11_2025_15_05__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/encryption/AESUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryption/TokenUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/encryption/RSAKeyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/encryption/RSAKeyManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +170,14 @@
       <updated>1764152614333</updated>
       <workItem from="1764152617418" duration="1374000" />
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="encryption fixes (TOKEN)">
+      <created>1764326526620</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1764326526620</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,7 +185,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Manual of Admin done" />
-    <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
+    <MESSAGE value="encryption fixes (TOKEN)" />
+    <option name="LAST_COMMIT_MESSAGE" value="encryption fixes (TOKEN)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$Application.ic" NAME="Application Coverage Results" MODIFIED="1763945395477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
