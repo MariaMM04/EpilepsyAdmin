@@ -169,7 +169,12 @@ public class UserJDBC {
             int affected = ps.executeUpdate();
 
             if (affected > 0) {
-                System.out.println("User " + (active ? "activated" : "deactivated") + ": " + email);
+                if(active){
+                    System.out.println("User activated successfully: " + email);
+                }else {
+                    System.out.println("User deactivated successfully: " + email);
+                }
+                //System.out.println("User " + (active ? "activated" : "deactivated") + ": " + email);
                 return true;
             } else {
                 System.out.println("No user found to update: " + email);

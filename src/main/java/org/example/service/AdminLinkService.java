@@ -120,12 +120,18 @@ public class AdminLinkService {
             medicalManager.getConnection().setAutoCommit(false);
 
             securityManager.getUserJDBC().updateUserActiveStatus(email, status);
+            System.out.println("User set active to "+status);
 
             medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, status);
+            System.out.println("Doctor set active to "+status);
 
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
-            System.out.println("Doctor and corresponding User deactivated (" + email + ")");
+            if(status){
+                System.out.println("Doctor and corresponding User activated (" + email + ")");
+            }else {
+                System.out.println("Doctor and corresponding User deactivated (" + email + ")");
+            }
             result = true;
 
         } catch (SQLException e) {
@@ -159,7 +165,11 @@ public class AdminLinkService {
 
             securityManager.getConnection().commit();
             medicalManager.getConnection().commit();
-            System.out.println("Patient and corresponding User deactivated (" + email + ")");
+            if(status){
+                System.out.println("Patient and corresponding User activated (" + email + ")");
+            }else {
+                System.out.println("Patient and corresponding User deactivated (" + email + ")");
+            }
             result = true;
 
         } catch (SQLException e) {
