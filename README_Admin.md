@@ -7,7 +7,7 @@ The **Night Guardian Admin Application** provides system administrators with all
 ```bash
 git clone https://github.com/MariaMM04/EpilepsyAdmin
 ```
-2. Navigate to the project root folder.
+2. Navigate to the project root folder `src/main/java/ui/windows`.
 3. Run the executable `.jar` or execute the `Application.java` class.
 > ⚠️ The Admin Application log in is done with  
 > User:  admin@nightguardian.com  
@@ -16,7 +16,7 @@ git clone https://github.com/MariaMM04/EpilepsyAdmin
 ## Initial Conditions
 When the Admin Application is launched for the first time:
 * The administrator needs to Log in
-* The database may be empty (no doctors/patients unless previously created)  
+* The database may be empty (no doctors/patients unless previously created) but will contain the Admin user
 * The Main Menu appears immediately after the log in
 * Server-monitoring tools are active  
 
@@ -49,7 +49,8 @@ Selecting **Create Patient** opens a form with eight fields, to be filled, distr
 
 **Buttons:**  
 * **Cancel:** asks for confirmation before exiting without saving. If it was pressed by mistake, it goes back to the Create Patient screen.  
-* **Save and Go Back:** saves the patient and returns to the Main Menu.  
+* **Save and Go Back:** saves the patient and creates a pop-up showing the user's email, temporal password and single-use Token. Then returns to the Main Menu.
+
 
 ---
 
@@ -69,7 +70,7 @@ Selecting **Create Doctor** opens a similar form with seven fields to fill with 
 
 **Buttons:**  
 * **Cancel:** confirmation dialog before losing changes. If it was pressed by mistake, it goes back to the Create Doctor screen.  
-* **Save and Go Back:** stores the doctor and returns to the Main Menu.  
+* **Save and Go Back:** stores the doctor and creates a pop-up showing the user's email, temporal password and single-use Token. Then returns to the Main Menu.  
 
 ---
 
@@ -87,7 +88,7 @@ This section displays all doctors in the system.
 **Left panel:**  
 * **Search:** enter surname and click *Search*. If the doctor is not found, *Doctor not found* appears.  
 * **Reset:** restores *Search* filter and shows full list.  
-* **Switch Status:** activate or deactivate selected doctor. A message confirming the status change will appear.  
+* **Deactivate User:** deactivates selected doctor. A message confirming the status change will appear.  
 * **Back to Menu:** returns to Main Menu.  
 
 ---
@@ -107,7 +108,7 @@ This section mirrors the Doctor List, but with patient information:
 **Left panel:**  
 * **Search:** by surname (shows *Patient not found* if none exist)  
 * **Reset:** restores *Search* filter and shows full list.
-* **Switch Status:** activates or deactivates selected patient. A message confirming the status change will appear.
+* **Deactivate User:** deactivates selected patient. A message confirming the status change will appear.
 * **Back to Menu:** returns to Main Menu  
 
 ---
