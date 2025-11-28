@@ -170,7 +170,11 @@ public class ClientHandler implements Runnable {
                         handleChangePassword(decryptedRequest.getAsJsonObject("data"));
                         break;
                     }
-
+                    case "ALERT_ADMIN": {
+                        System.out.println("ALERT_ADMIN");
+                        handleClientAlert(decryptedRequest.getAsJsonObject("data"));
+                        break;
+                    }
                 }
 
             }
@@ -188,6 +192,13 @@ public class ClientHandler implements Runnable {
                 //System.out.println("Error reading from client"+e.getMessage());
             }
         }
+    }
+
+    private void handleClientAlert(JsonObject data) {
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "SERVER_ALERT_RESPONSE");
+        response.addProperty("message", "Response not founded, help is on the way!" );
+        sendEncrypted(response,out,AESkey);
     }
 
     private void handleRequestPatientSignals(JsonObject data) {
