@@ -1,36 +1,52 @@
 package encryption;
 
-import network.Server;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class AESUtil {
+
+/**
+ * Utility class that provides AES symmetric encryption and decryption using AES-GCM algorithm to ensure security
+ * and authenticated encryption.
+ * It handles the following parameters:
+ * <ul>
+ *     <li> Key generation with 128-bit strength</li>
+ *     <li> Random IV generation</li>
+ *     <li> Secure encryption and decryption</li>
+ *     <li> Base64 encoding of output for transport over text-based protocols</li>
+ * </ul>
+ * The AES key must be securely exchanged between parties (encrypted via {@code RSAUtil} and {@code RSAManager}
+ *
+ * @author pblan
+ */
+public class TokenUtils {
 
     private static final int tag_length_bits = 128;
     private static final int iv_length_bytes = 12;
 
-    public static SecretKey generateAESKey() throws NoSuchAlgorithmException {
+
+    public static SecretKey generateToken() throws NoSuchAlgorithmException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(128);
+        keyGenerator.init(128, SecureRandom.getInstanceStrong());
         SecretKey AESkey = keyGenerator.generateKey();
         return AESkey;
     }
 
+
     /**
-     * Encrypts the plain text using AES-GCM with a random IV. The putput is a Base64 string containing
-     * the IV + cipher text
+     * Encrypts the plain text using AES-GCM with a random IV. The output is encoded in Base64 containing
+     * the IV + cipher text. This encryption allows the {@code decrypt} method to extract the IV for proper decryption
      *
-     * @param text      The text that is going to be encrypted
-     * @throws Exception
+     * @param text      The plain text to encrypt
+     * @param AESkey    The shared AES secret key
+     * @return          A Base64 encoded string that includes the IV and the ciphertext
+     * @throws Exception    if encryption fails for any reason
      */
     public static String encrypt(String text, SecretKey AESkey) throws Exception{
         byte[] iv = new byte[iv_length_bytes];
