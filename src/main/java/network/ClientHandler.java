@@ -486,7 +486,7 @@ public class ClientHandler implements Runnable {
     ///   "status": "ERROR",
     ///   "message": "Invalid credentials"
     /// }
-    private void handleLogIn(JsonObject data) throws IOException {
+    void handleLogIn(JsonObject data) throws IOException {
         String email = data.get("email").getAsString();
         String password = data.get("password").getAsString();
         String accessPermits = data.get("access_permits").getAsString();
@@ -496,7 +496,7 @@ public class ClientHandler implements Runnable {
 
         if (server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)) {
             User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().login(email, password);
-
+            System.out.println(user);
             if (user != null) {
                 Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
                 if(role != null && role.getRolename().equals(accessPermits)) {
