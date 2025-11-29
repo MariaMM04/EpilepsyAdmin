@@ -27,7 +27,6 @@ import static org.mockito.Mockito.*;
 /// correctamente al ejecutar el servidor la función shutdown
 class ServerTest {
     private Server server;
-    private Application app;
     private ServerSocket serverSocket;
     private InputStream in;
     private OutputStream out;
@@ -35,7 +34,6 @@ class ServerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        app = mock(Application.class);
         serverSocket = mock(ServerSocket.class);
         adminLinkService = mock(AdminLinkService.class);
         server = spy(new Server(serverSocket, adminLinkService));

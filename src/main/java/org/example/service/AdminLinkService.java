@@ -243,6 +243,25 @@ public class AdminLinkService {
         User u = securityManager.getUserJDBC().findUserByID(user_id);
         return medicalManager.getPatientJDBC().findPatientByEmail(u.getEmail());
     }
+
+    public static void main(String[] args) throws SQLException {
+        MedicalManager medicalManager = new MedicalManager();
+        SecurityManager securityManager = new SecurityManager();
+        AdminLinkService admin = new AdminLinkService(medicalManager, securityManager);
+        List<Patient> patients = medicalManager.getPatientJDBC().getAllPatients();
+        for(Patient patient : patients){
+            if(!patient.isActive()){
+                admin.changePatientStatus(patient.getEmail(), true);
+            }
+        }
+
+        List<Doctor> doctors = medicalManager.getDoctorJDBC().getAllDoctors();
+        for(Doctor doctor : doctors){
+            if(!doctor.isActive()){
+                admin.changeDoctorStatus(doctor.getEmail(), true);
+            }
+        }
+    }
 }
 
 

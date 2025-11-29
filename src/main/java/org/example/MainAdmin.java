@@ -44,7 +44,7 @@ public class MainAdmin {
         doctor.setSpeciality("Epilepsy Research");
         doctor.setActive(true);
 
-        User doctorUser = new User("laura@gmail.com", "secure123",2,true);
+        User doctorUser = new User("laura@gmail.com", "secure123", 1, false);
         doctorUser.setActive(true);
 
         adminService.createUserAndDoctor(doctorUser, doctor);
@@ -62,7 +62,7 @@ public class MainAdmin {
         );
         patient.setActive(true);
 
-        User patientUser = new User("carlos@gmail.com", "patient123", 2, true);
+        User patientUser = new User("carlos@gmail.com", "patient123", 2, false);
         patientUser.setActive(true);
 
         adminService.createUserAndPatient(patientUser, patient);

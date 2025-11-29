@@ -290,7 +290,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
                 if(result) {
                     selectedDoctor.setActive(!selectedDoctor.isActive());
                     updateDoctorDefModel(allDoctors);
-                    showErrorMessage("Doctor has been deactivated");
+                    showErrorMessage(selectedDoctor.getName()+" "+selectedDoctor.getSurname()+" has been deactivated");
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");
