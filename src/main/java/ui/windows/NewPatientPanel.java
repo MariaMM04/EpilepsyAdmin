@@ -540,7 +540,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
 
         JLabel email = new JLabel(user.getEmail());
         JLabel password = new JLabel(user.getPassword());
-        JLabel token = new JLabel(oneTimeToken); //TODO: replace with user token
+        JLabel token = new JLabel(oneTimeToken);
         email.setFont(contentFont);
         password.setFont(contentFont);
         token.setFont(contentFont);

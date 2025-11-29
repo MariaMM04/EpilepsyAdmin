@@ -1,8 +1,10 @@
 package network;
 
 import com.google.gson.*;
+import encryption.PasswordHash;
 import encryption.TokenUtils;
 import encryption.RSAUtil;
+import org.example.JDBC.securitydb.UserJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 
@@ -27,6 +29,7 @@ public class ClientHandler implements Runnable {
     private final Gson gson = new Gson();
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
+    private String clientEmail;
     private final KeyPair serverKeyPair; //This is going to be the server's public key
     private PublicKey clientPublicKey; //This is going to be the client's public key
     private SecretKey token;
@@ -70,11 +73,18 @@ public class ClientHandler implements Runnable {
 
                 if(token == null){
                     switch (type){
+                        case "ACTIVATION_REQUEST": {
+                            // Activation happens BEFORE the real token is exchanged
+                            handleActivationRequest(request.getAsJsonObject("data"));
+                            break;
+                        }
+
                         case "CLIENT_PUBLIC_KEY" : {
                             System.out.println("This is the Server's Key Pair: ");
                             System.out.println("Public Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));
-                            System.out.println("Private Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPrivate().getEncoded()));handleClientPublicKey(request.get("data").getAsString());
-                            System.out.println("🔍 JVM identity hash: " + System.identityHashCode(ClassLoader.getSystemClassLoader()));
+                            System.out.println("Private Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPrivate().getEncoded()));
+                            JsonObject data = request.getAsJsonObject("data");
+                            handleClientPublicKey(data);
                             break;
                         }
                         case "TOKEN_REQUEST" : {
@@ -228,17 +238,91 @@ public class ClientHandler implements Runnable {
     /**
      * Decodes and stores the client's RSA public key from its Base64
      * representation for subsequent encrypted communication.
-     * @param clientPublicKeyBase64
+     * @param data
      */
-    private void handleClientPublicKey(String clientPublicKeyBase64){
+    private void handleClientPublicKey(JsonObject data){
         try{
+            String email = data.get("email").getAsString();
+            String clientPublicKeyBase64 = data.get("public_key").getAsString();
+            //Decode the key and reconstruct the PublicKey object key
             byte[] decoded = Base64.getDecoder().decode(clientPublicKeyBase64);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             this.clientPublicKey = keyFactory.generatePublic(spec);
+
+
+            UserJDBC userJDBC = server.getAdminLinkService().getSecurityManager().getUserJDBC();
+            User user = userJDBC.findUserByEmail(email);
+
+            if (user !=null){
+                userJDBC.changePublicKey(user, clientPublicKeyBase64);
+                System.out.println("Stored new client public key for: "+user.getEmail());
+            }else{
+                System.out.println("User not found when storing public key");
+            }
             System.out.println("Received and stored Client's Public Key: "+Base64.getEncoder().encodeToString(this.clientPublicKey.getEncoded()));
         }catch (Exception e){
             System.out.println("Failed to parse client's public key: "+e.getMessage());
+        }
+    }
+
+    private void handleActivationRequest(JsonObject data){
+            String email = data.get("email").getAsString();
+            String tempPassword = data.get("temp_pass").getAsString();
+            String oneTimeToken = data.get("temp_token").getAsString();
+
+            System.out.println("Activation request from: "+email);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("type", "ACTIVATION_REQUEST_RESPONSE");
+        try{
+            User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByEmail(email);
+            if (user == null){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "User not found");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if (!PasswordHash.verifyPassword(tempPassword,user.getPassword())){
+                //Verification if the password is the same as the hashedPassword in the DB
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid temporary password");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if(!user.getPublicKey().equals(oneTimeToken)){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid temporary token");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if(user.isActive()){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Account already activated");
+                out.println(response);
+                out.flush();
+                return;
+            }
+
+            //Changes the active state
+            user.setActive(true);
+            //Updates its status
+            server.getAdminLinkService().getSecurityManager().getUserJDBC().updateUserActiveStatus(email,true);
+            response.addProperty("status", "SUCCESS");
+            response.addProperty("message", "Account activated successfully");
+            out.println(response);
+            out.flush();
+            System.out.println("User activated successfully: "+email);
+
+        }catch (Exception e){
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Server error during activation");
+            out.println(response);
+            out.flush();
+            e.printStackTrace();
         }
     }
 
@@ -255,7 +339,6 @@ public class ClientHandler implements Runnable {
         // Encrypt token with client's Public Key -> Confidentiality
         String encryptedToken = RSAUtil.encrypt(Base64.getEncoder().encodeToString(token.getEncoded()), clientPublicKey);
         // Sign token with server's Private Key -> Authenticity
-        //TODO: create maybe a method about signing?
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(serverKeyPair.getPrivate());
         signature.update(token.getEncoded());
@@ -292,7 +375,7 @@ public class ClientHandler implements Runnable {
     private void handleClientAlert(JsonObject data) {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SERVER_ALERT_RESPONSE");
-        response.addProperty("message", "Response not founded, help is on the way!" );
+        response.addProperty("message", "Response not found, help is on the way!" );
         sendEncrypted(response,out,token);
     }
 

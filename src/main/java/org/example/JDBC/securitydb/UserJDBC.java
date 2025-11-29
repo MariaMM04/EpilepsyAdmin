@@ -210,8 +210,9 @@ public class UserJDBC {
                 User newUser = new User (user.getEmail(), hashedPassword,false);
                 newUser.setRole_id(user.getRole_id());
                 System.out.println("The user is: "+newUser.getEmail());
-                System.out.println("The user's password is: "+newUser.getPassword());
+                System.out.println("The user's temporary password is: "+newUser.getPassword());
                 newUser.setPublicKey(user.getPublicKey());
+                System.out.println("The one-single-use token is: "+newUser.getPublicKey());
                 return insertUser(newUser);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException message) {
@@ -370,8 +371,8 @@ public class UserJDBC {
                 ps.setInt(2, u.getId());
 
                 int row = ps.executeUpdate();
+                System.out.println("Public key updated for user: "+u.getEmail());
                 return row == 1; // true if exactly one row was updated
-
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
