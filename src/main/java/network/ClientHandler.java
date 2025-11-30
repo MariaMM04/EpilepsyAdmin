@@ -88,8 +88,25 @@ public class ClientHandler implements Runnable {
                             break;
                         }
                         case "TOKEN_REQUEST" : {
+                            String email = request.get("email").getAsString();
+
+                            UserJDBC userJDBC = server.getAdminLinkService().getSecurityManager().getUserJDBC();
+                            User user = userJDBC.findUserByEmail(email);
+
+                            if (user!=null && user.getPublicKey()!=null){
+                                try{
+                                    byte[] keyBytes = Base64.getDecoder().decode(user.getPublicKey());
+                                    X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+                                    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                                    this.clientPublicKey = keyFactory.generatePublic(keySpec);
+                                    System.out.println("Retrieved and set client public key from DB for: "+email);
+                                }catch (Exception e){
+                                    System.err.println("Error decoding public key from client");
+                                    break;
+                                }
+                            }
                             if (clientPublicKey == null){
-                                System.err.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
+                                System.out.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
                                 break;
                             }
                             sendPublicKey();

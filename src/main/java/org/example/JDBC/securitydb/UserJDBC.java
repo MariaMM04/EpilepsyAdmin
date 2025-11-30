@@ -40,13 +40,14 @@ public class UserJDBC {
      *                  <code> false </code> otherwise
      */
     public boolean insertUser(User user) throws RegisterError {
-        String sql = "INSERT INTO Users (email, password, role_id, publicKey) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (email, password, role_id, publicKey, active) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setInt(3, user.getRole_id());
             ps.setString(4,user.getPublicKey());
+            ps.setBoolean(5, user.isActive());
             ps.executeUpdate();
             System.out.println("User inserted successfully: " + user.getEmail());
             return true;

@@ -1,5 +1,6 @@
 package ui.windows;
 
+import encryption.TokenUtils;
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_securitydb.Role;
@@ -10,10 +11,12 @@ import ui.components.MyComboBox;
 import ui.components.MyTextField;
 import ui.components.QuestionDialog;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -274,9 +277,12 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
 
             if(!validateEmail(d.getEmail())){return;} //validateEmail already show an error message
             if(!validatePassword(password.getText())){return;} //validatePassword already shows an error message
-            //TODO: generate token
+            // Generate one-time token
+            SecretKey token = TokenUtils.generateToken();
+            String oneTimeToken = Base64.getEncoder().encodeToString(token.getEncoded());
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Doctor");
-            User u = new User(d.getEmail(), password.getText(), role.getId(), false); //TODO: add token to user
+            User u = new User(d.getEmail(), password.getText(), role.getId(), false);
+            u.setPublicKey(oneTimeToken);
 
             if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty()) {
                 showErrorMessage("Please fill all the fields");
@@ -287,7 +293,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
                     return;
                 }
                 saved = true;
-                showUserCredentials(appMain, u);
+                showUserCredentials(appMain, u, oneTimeToken);
             }
 
         } catch (Exception ex) {
@@ -443,7 +449,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
      * @param parentFrame the parent frame for centering the dialog
      * @param user the user just registered
      */
-    private void showUserCredentials(JFrame parentFrame, User user) {
+    private void showUserCredentials(JFrame parentFrame, User user, String oneTimeToken) {
         JPanel panel = new JPanel();
         panel.setLayout(new MigLayout("wrap 2, fill, inset 15", "[30%][70%]", "push[][][][][]push"));
         panel.setBackground(Color.white);
@@ -467,7 +473,7 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
 
         JLabel email = new JLabel(user.getEmail());
         JLabel password = new JLabel(user.getPassword());
-        JLabel token = new JLabel("xcgshs"); //TODO: replace with user token
+        JLabel token = new JLabel(oneTimeToken); //TODO: replace with user token
         email.setFont(contentFont);
         password.setFont(contentFont);
         token.setFont(contentFont);
