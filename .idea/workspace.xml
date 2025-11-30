@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="commit db">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +26,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
-    &quot;accountId&quot;: &quot;e387a1ed-66c0-4b42-9a08-e4d4d83c049c&quot;
+    &quot;accountId&quot;: &quot;71dc38ad-21e7-42df-be36-38716886eb37&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -197,8 +189,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
       </set>
     </attachedChunks>
   </component>
@@ -220,6 +212,8 @@
       <updated>1764152614333</updated>
       <workItem from="1764152617418" duration="1374000" />
       <workItem from="1764337881188" duration="10936000" />
+      <workItem from="1764524554870" duration="161000" />
+      <workItem from="1764525360384" duration="310000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -281,12 +275,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>89</line>
+          <line>155</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>63</line>
+          <line>129</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>

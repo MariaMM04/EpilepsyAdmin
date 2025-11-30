@@ -20,6 +20,46 @@ import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+/**
+ * Handles all communication between the server and a single connected client.
+ * <p>
+ * Each {@code ClientHandler} instance runs in its own thread and is responsible for:
+ * </p>
+ * <ul>
+ *     <li>Reading incoming messages from the client's socket</li>
+ *     <li>Parsing JSON requests and dispatching them to the appropriate handlers</li>
+ *     <li>Managing RSA public-key exchange during the handshake phase</li>
+ *     <li>Receiving and decrypting the AES session key used for all encrypted communication</li>
+ *     <li>Processing encrypted client requests after token negotiation</li>
+ *     <li>Sending encrypted or plaintext responses depending on protocol stage</li>
+ *     <li>Tracking connection state and handling client disconnection</li>
+ *     <li>Cleaning up server-side resources when the connection closes</li>
+ * </ul>
+ *
+ * <h3>Encryption Workflow</h3>
+ * <ol>
+ *     <li>Client sends {@code CLIENT_PUBLIC_KEY}</li>
+ *     <li>Server responds with its own RSA public key</li>
+ *     <li>Client sends {@code TOKEN_REQUEST}</li>
+ *     <li>Server generates and RSA-encrypts an AES session key</li>
+ *     <li>Client decrypts AES session key and confirms via {@code CLIENT_AES_KEY}</li>
+ *     <li>All subsequent communication uses AES-GCM encrypted JSON</li>
+ * </ol>
+ *
+ * <h3>Thread Model</h3>
+ * This class implements {@link Runnable}. The {@link #run()} method loops while:
+ * <ul>
+ *     <li>the socket is open, and</li>
+ *     <li>{@code running.get()} is {@code true}</li>
+ * </ul>
+ * The loop terminates when the client disconnects, or when the server
+ * explicitly shuts down this handler.
+ *
+ * <h3>Failure Handling</h3>
+ * Invalid JSON, unexpected message types, or encryption errors do not crash
+ * the server. The handler safely cleans up and removes itself from the
+ * server’s active client list when needed.
+ */
 
 public class ClientHandler implements Runnable {
     final Socket socket;
@@ -33,6 +73,23 @@ public class ClientHandler implements Runnable {
     private final KeyPair serverKeyPair; //This is going to be the server's public key
     private PublicKey clientPublicKey; //This is going to be the client's public key
     private SecretKey token;
+    /**
+     * Creates a new {@code ClientHandler} bound to a single client socket.
+     * <p>
+     * The constructor:
+     * </p>
+     * <ul>
+     *     <li>Stores references to the server and the client's socket</li>
+     *     <li>Initializes input and output streams for communication</li>
+     *     <li>Stores the server's RSA key pair for handshake encryption</li>
+     *     <li>Initializes an {@link AtomicBoolean} to control thread lifecycle</li>
+     * </ul>
+     *
+     * @param socket        The socket associated with the connected client
+     * @param server        The main server instance managing all connections
+     * @param serverKeyPair The server's RSA key pair used during handshake and RSA decryption
+     * @throws IOException If input or output streams cannot be created
+     */
 
     public ClientHandler(Socket socket, Server server, KeyPair serverKeyPair) throws IOException {
         this.socket = socket;
@@ -44,11 +101,77 @@ public class ClientHandler implements Runnable {
     }
 
     /**
-     * Main loop of the client handler thread. Reads incoming messages,
-     * performs the RSA/AES handshake if needed, decrypts further requests,
-     * dispatches each message type to its corresponding handler, and
-     * manages connection shutdown.
+     * Main execution loop for the client handler thread.
+     * <p>
+     * This method continuously listens for messages coming from the connected client,
+     * parses them as JSON, decrypts them if required, and dispatches them to the
+     * appropriate handler method.
+     * </p>
+     *
+     * <h3>Workflow before AES token exchange:</h3>
+     * Messages received before the shared AES session key is established must be
+     * processed in plaintext. Only the following message types are allowed:
+     * <ul>
+     *     <li>{@code ACTIVATION_REQUEST} – account activation prior to login</li>
+     *     <li>{@code CLIENT_PUBLIC_KEY} – receives client RSA key for handshake</li>
+     *     <li>{@code TOKEN_REQUEST} – initiates token exchange (RSA-encrypted)</li>
+     * </ul>
+     * Any unexpected message type received before AES setup is logged as an error.
+     *
+     * <h3>RSA → AES Handshake:</h3>
+     * <ol>
+     *     <li>Client sends {@code CLIENT_PUBLIC_KEY}</li>
+     *     <li>Server responds with its own public key</li>
+     *     <li>Client sends {@code TOKEN_REQUEST}</li>
+     *     <li>Server encrypts AES token with client RSA public key</li>
+     *     <li>Client decrypts token and responds with {@code CLIENT_AES_KEY}</li>
+     *     <li>Server decrypts key and stores it in {@code token} field</li>
+     * </ol>
+     *
+     * <h3>Workflow after AES token exchange:</h3>
+     * All messages must be received in the form:
+     * <pre>
+     * {
+     *   "type": "ENCRYPTED",
+     *   "data": "<AES-GCM ciphertext>"
+     * }
+     * </pre>
+     * The body is decrypted into a secondary JSON object whose {@code type}
+     * determines which handler method is executed.
+     *
+     * <h3>Supported encrypted message types include:</h3>
+     * <ul>
+     *     <li>{@code LOGIN_REQUEST}</li>
+     *     <li>{@code REQUEST_DOCTOR_BY_EMAIL}</li>
+     *     <li>{@code REQUEST_PATIENT_BY_EMAIL}</li>
+     *     <li>{@code REQUEST_DOCTOR_BY_ID}</li>
+     *     <li>{@code UPLOAD_SIGNAL}</li>
+     *     <li>{@code REQUEST_SIGNAL}</li>
+     *     <li>{@code REQUEST_PATIENT_SIGNALS}</li>
+     *     <li>{@code SAVE_REPORT}</li>
+     *     <li>{@code SAVE_COMMENTS_SIGNAL}</li>
+     *     <li>{@code CHANGE_PASSWORD_REQUEST}</li>
+     *     <li>{@code ALERT_ADMIN}</li>
+     *     <li>{@code STOP_CLIENT}</li>
+     * </ul>
+     *
+     * <h3>Connection termination:</h3>
+     * If the client sends {@code STOP_CLIENT}, or the socket closes unexpectedly,
+     * the handler:
+     * <ul>
+     *     <li>Closes all I/O streams</li>
+     *     <li>Removes the client from the server's active list</li>
+     *     <li>Stops the handler thread</li>
+     * </ul>
+     *
+     * <h3>Error handling:</h3>
+     * Any malformed JSON or unexpected message type is skipped safely without
+     * crashing the thread. A {@link SocketException} triggers an immediate cleanup.
+     *
+     * <p>This loop continues running as long as the client is connected and
+     * {@code running.get()} remains {@code true}.</p>
      */
+
     @Override
     public void run(){
         try {
@@ -282,6 +405,65 @@ public class ClientHandler implements Runnable {
             System.out.println("Failed to parse client's public key: "+e.getMessage());
         }
     }
+    /**
+     * Handles an account activation request sent by a client prior to first login.
+     * <p>
+     * Expected incoming JSON format:
+     * <pre>
+     * {
+     *   "email": "example@demo.com",
+     *   "temp_pass": "temporaryPassword",
+     *   "temp_token": "oneTimeActivationToken"
+     * }
+     * </pre>
+     *
+     * <p>This method validates all activation requirements:</p>
+     * <ul>
+     *     <li>Verifies that the user exists in the SecurityDB</li>
+     *     <li>Checks that the temporary password matches the stored hashed password</li>
+     *     <li>Ensures the account is not already active</li>
+     *     <li>Validates the one-time activation token</li>
+     *     <li>Updates the user's active state in both SecurityDB and MedicalDB
+     *         (depending on whether the user is a Patient or Doctor)</li>
+     * </ul>
+     *
+     * <p>Success response:</p>
+     * <pre>
+     * {
+     *   "type": "ACTIVATION_REQUEST_RESPONSE",
+     *   "status": "SUCCESS",
+     *   "message": "Account activated successfully"
+     * }
+     * </pre>
+     *
+     * <p>Error response examples:</p>
+     * <pre>
+     * {
+     *   "status": "ERROR",
+     *   "message": "User not found"
+     * }
+     *
+     * {
+     *   "status": "ERROR",
+     *   "message": "Invalid temporary password"
+     * }
+     *
+     * {
+     *   "status": "ERROR",
+     *   "message": "Invalid temporary token"
+     * }
+     *
+     * {
+     *   "status": "ERROR",
+     *   "message": "Account already activated"
+     * }
+     * </pre>
+     *
+     * <p>The server writes the response back to the client in plaintext
+     * because activation happens before encryption keys are exchanged.</p>
+     *
+     * @param data JSON object containing email, temporary password, and one-time activation token
+     */
 
     private void handleActivationRequest(JsonObject data){
             System.out.println("Handling activation request");
@@ -585,8 +767,19 @@ public class ClientHandler implements Runnable {
 
 
     /**
-     * Server-side forced shutdown
+     * Forces an immediate shutdown of this client connection from the server side.
+     * <p>
+     * The method:
+     * <ul>
+     *     <li>Sends an encrypted {@code STOP_CLIENT} message to notify the client</li>
+     *     <li>Sets the running flag to {@code false}</li>
+     *     <li>Closes the underlying socket, unblocking any pending read operations</li>
+     *     <li>Removes the client instance from the server's active client list</li>
+     * </ul>
+     * This method is typically used when the server needs to terminate a client
+     * forcibly (e.g., server shutdown, security violation, or protocol error).
      */
+
     public void forceShutdown(){
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", "STOP_CLIENT");
@@ -603,10 +796,32 @@ public class ClientHandler implements Runnable {
             e.getMessage();
         }
     }
+    /**
+     * Returns whether this client handler is no longer running.
+     *
+     * @return {@code true} if the client has been stopped, {@code false} otherwise.
+     */
 
     public boolean isStopped(){
         return !running.get();
     }
+    /**
+     * Releases and closes all I/O resources associated with the client connection.
+     * <p>
+     * This includes:
+     * <ul>
+     *     <li>Removing the client from the server's active client list</li>
+     *     <li>Stopping the internal running flag</li>
+     *     <li>Closing the input stream</li>
+     *     <li>Closing the output stream</li>
+     *     <li>Closing the socket if still open</li>
+     * </ul>
+     *
+     * @param bufferedReader The input buffer to close (may be null)
+     * @param out            The output writer to close (may be null)
+     * @param clientSocket   The socket associated with the client (may be null)
+     * @throws IOException If any of the resources fail to close properly
+     */
 
     void releaseResources(BufferedReader bufferedReader, PrintWriter out, Socket clientSocket) throws IOException {
         server.removeClient(this);
@@ -615,27 +830,66 @@ public class ClientHandler implements Runnable {
         if(out!=null)out.close();
         try {if(clientSocket!=null && !clientSocket.isClosed())clientSocket.close();} catch (IOException ex) {System.out.println("Error closing socket"+ex.getMessage());}
     }
+    /**
+     * Returns the IP address of the connected client as a string.
+     *
+     * @return The client's socket IP address in string format.
+     */
 
     public String getSocketAddress(){
         return socket.getInetAddress().toString();
     }
 
-    /// If login success, message format:
-    /// {
-    ///   "type": "LOGIN_RESPONSE",
-    ///   "status": "SUCCESS",
-    ///   "user": {
-    ///     "id": 1,
-    ///     "email": "juan@demo.com",
-    ///     "role": "patient"
-    ///   }
-    /// }
-    /// If login failed, message format:
-    /// {
-    ///   "type": "LOGIN_RESPONSE",
-    ///   "status": "ERROR",
-    ///   "message": "Invalid credentials"
-    /// }
+    /**
+     * Handles a login request sent by a client and generates an encrypted
+     * {@code LOGIN_RESPONSE} message.
+     * <p>
+     * Expected incoming JSON format:
+     * <pre>
+     * {
+     *   "email": "example@demo.com",
+     *   "password": "1234",
+     *   "access_permits": "Patient"
+     * }
+     * </pre>
+     *
+     * <p>If login succeeds, the server responds with:</p>
+     * <pre>
+     * {
+     *   "type": "LOGIN_RESPONSE",
+     *   "status": "SUCCESS",
+     *   "data": {
+     *     "id": 1,
+     *     "email": "juan@demo.com",
+     *     "role": "patient"
+     *   }
+     * }
+     * </pre>
+     *
+     * <p>If login fails, the response contains an error message:</p>
+     * <pre>
+     * {
+     *   "type": "LOGIN_RESPONSE",
+     *   "status": "ERROR",
+     *   "message": "Invalid credentials"
+     * }
+     * </pre>
+     *
+     * <p>This method performs the following steps:</p>
+     * <ul>
+     *   <li>Extracts email, password, and access-permit role from the request</li>
+     *   <li>Checks whether the user exists in the SecurityDB</li>
+     *   <li>Validates the password</li>
+     *   <li>Verifies the user's assigned role against the required access permits</li>
+     *   <li>Ensures the user account is still active</li>
+     *   <li>Builds a JSON response containing either SUCCESS or ERROR</li>
+     *   <li>Sends the response encrypted using AES</li>
+     * </ul>
+     *
+     * @param data JSON object containing login credentials and required access-permit role
+     * @throws IOException If sending the encrypted response fails
+     */
+
     void handleLogIn(JsonObject data) throws IOException {
         String email = data.get("email").getAsString();
         String password = data.get("password").getAsString();
