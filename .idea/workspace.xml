@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="ENCRYPTION LAST commit">
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="commit db">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +26,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
-    &quot;accountId&quot;: &quot;e387a1ed-66c0-4b42-9a08-e4d4d83c049c&quot;
+    &quot;accountId&quot;: &quot;71dc38ad-21e7-42df-be36-38716886eb37&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -129,33 +128,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MedicalManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.medicaldb.MedicalManager" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="network.*" />
+          <option name="PATTERN" value="org.example.JDBC.medicaldb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testReleaseResources" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SecurityManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.JDBC.securitydb.SecurityManager" />
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="network.*" />
+          <option name="PATTERN" value="org.example.JDBC.securitydb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testReleaseResources" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -176,27 +170,27 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.MedicalManager" />
+      <item itemvalue="Application.SecurityManager" />
       <item itemvalue="Application.AdminLinkService" />
       <item itemvalue="Application.Application" />
-      <item itemvalue="JUnit.ClientHandlerTest" />
-      <item itemvalue="JUnit.ClientHandlerTest.testReleaseResources" />
       <item itemvalue="JUnit.ServerTest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
+        <item itemvalue="Application.MedicalManager" />
+        <item itemvalue="Application.SecurityManager" />
         <item itemvalue="Application.AdminLinkService" />
         <item itemvalue="JUnit.ServerTest" />
-        <item itemvalue="JUnit.ClientHandlerTest" />
-        <item itemvalue="JUnit.ClientHandlerTest.testReleaseResources" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
       </set>
     </attachedChunks>
   </component>
@@ -218,15 +212,10 @@
       <updated>1764152614333</updated>
       <workItem from="1764152617418" duration="1374000" />
       <workItem from="1764337881188" duration="10936000" />
+      <workItem from="1764524554870" duration="161000" />
+      <workItem from="1764525360384" duration="310000" />
     </task>
-    <task id="LOCAL-00002" summary="ENCRYPTION LAST commit">
-      <created>1764498806650</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1764498806650</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,8 +223,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Manual of Admin done" />
-    <MESSAGE value="ENCRYPTION LAST commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="ENCRYPTION LAST commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -277,43 +265,24 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java</url>
-          <line>88</line>
+          <line>84</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java</url>
-          <line>104</line>
+          <line>100</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>65</line>
+          <line>155</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
+          <line>129</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>116</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>74</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>90</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>73</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.lang.NullPointerException" package="java.lang" />
-          <option name="timeStamp" value="23" />
-        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

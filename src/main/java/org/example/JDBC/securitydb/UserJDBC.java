@@ -47,7 +47,7 @@ public class UserJDBC {
             ps.setString(2, user.getPassword());
             ps.setInt(3, user.getRole_id());
             ps.setString(4,user.getPublicKey());
-            ps.setBoolean(5, user.isActive());
+            ps.setBoolean(5, false); //false by default
             ps.executeUpdate();
             System.out.println("User inserted successfully: " + user.getEmail());
             return true;

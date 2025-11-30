@@ -7,11 +7,7 @@ import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import org.example.entities_securitydb.User;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,7 +109,7 @@ public class AdminLinkService {
      * @throws SQLException
      */
 
-    public Boolean changeDoctorStatus(String email, Boolean status) throws SQLException {
+    public Boolean changeDoctorAndUserStatus(String email, Boolean status) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
@@ -153,7 +149,7 @@ public class AdminLinkService {
      * @throws SQLException
      */
 
-    public Boolean changePatientStatus(String email, Boolean status) throws SQLException {
+    public Boolean changePatientAndUserStatus(String email, Boolean status) throws SQLException {
         Boolean result = false;
         try {
             securityManager.getConnection().setAutoCommit(false);
@@ -184,50 +180,6 @@ public class AdminLinkService {
     }
 
     /**
-     * Deactivates a Doctor and their corresponding user by email.
-     * Performs logical deletion by setting active = false.
-     * @param email
-     */
-    public void deactivateDoctorAndUser(String email) {
-        medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, false);
-        securityManager.getUserJDBC().updateUserActiveStatus(email, false);
-        System.out.println("Doctor and corresponding User deactivated (" + email + ")");
-    }
-
-    /**
-     * Deactivates a Patient and their corresponding user by email.
-     * Performs logical deletion by setting active = false.
-     * @param email
-     */
-    public void deactivatePatientAndUser(String email) {
-        medicalManager.getPatientJDBC().updatePatientActiveStatus(email, false);
-        securityManager.getUserJDBC().updateUserActiveStatus(email, false);
-        System.out.println("Patient and corresponding User deactivated (" + email + ")");
-    }
-
-    /**
-     * Reactivates a Doctor and their corresponding user by email.
-     * Useful for restoring logically deleted accounts.
-     * @param email
-     */
-    public void reactivateDoctorAndUser(String email) {
-        medicalManager.getDoctorJDBC().updateDoctorActiveStatus(email, true);
-        securityManager.getUserJDBC().updateUserActiveStatus(email, true);
-        System.out.println("Doctor and corresponding User reactivated (" + email + ")");
-    }
-
-    /**
-     * Reactivates a Patient and their corresponding user by email.
-     * Useful for restoring logically deleted accounts.
-     * @param email
-     */
-    public void reactivatePatientAndUser(String email) {
-        medicalManager.getPatientJDBC().updatePatientActiveStatus(email, true);
-        securityManager.getUserJDBC().updateUserActiveStatus(email, true);
-        System.out.println("Patient and corresponding User reactivated (" + email + ")");
-    }
-
-    /**
      * Retrieves all patients of a Doctor
      * @return
      */
@@ -251,14 +203,14 @@ public class AdminLinkService {
         List<Patient> patients = medicalManager.getPatientJDBC().getAllPatients();
         for(Patient patient : patients){
             if(!patient.isActive()){
-                admin.changePatientStatus(patient.getEmail(), true);
+                admin.changePatientAndUserStatus(patient.getEmail(), true);
             }
         }
 
         List<Doctor> doctors = medicalManager.getDoctorJDBC().getAllDoctors();
         for(Doctor doctor : doctors){
             if(!doctor.isActive()){
-                admin.changeDoctorStatus(doctor.getEmail(), true);
+                admin.changeDoctorAndUserStatus(doctor.getEmail(), true);
             }
         }
     }
