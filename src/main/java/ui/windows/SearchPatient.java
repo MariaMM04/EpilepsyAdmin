@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.miginfocom.swing.MigLayout;
-import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import org.example.service.AdminLinkService;
 import ui.components.MyButton;
@@ -56,7 +55,7 @@ import javax.swing.*;
  * <p>
  * The user can toggle a patient's {@code active} flag using the button
  * <b>SWITCH STATUS</b>, which internally calls:
- * {@link AdminLinkService#changePatientStatus(String, Boolean)}.
+ * {@link AdminLinkService#changePatientAndUserStatus(String, Boolean)}.
  * </p>
  * <p>
  * After successful status change, the list updates and a green message is displayed.
@@ -279,7 +278,7 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
                 //IF false change to true
                 Boolean result = false;
                 try{
-                    result = appMain.adminLinkService.changePatientStatus(selectedPatient.getEmail(),false);
+                    result = appMain.adminLinkService.changePatientAndUserStatus(selectedPatient.getEmail(),false);
                 } catch (SQLException ex) {
                 }
                 if(result) {

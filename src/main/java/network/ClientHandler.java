@@ -284,6 +284,7 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleActivationRequest(JsonObject data){
+            System.out.println("Handling activation request");
             String email = data.get("email").getAsString();
             String tempPassword = data.get("temp_pass").getAsString();
             String oneTimeToken = data.get("temp_token").getAsString();
@@ -309,13 +310,6 @@ public class ClientHandler implements Runnable {
                 out.flush();
                 return;
             }
-            if(!user.getPublicKey().equals(oneTimeToken)){
-                response.addProperty("status", "ERROR");
-                response.addProperty("message", "Invalid temporary token");
-                out.println(response);
-                out.flush();
-                return;
-            }
             if(user.isActive()){
                 response.addProperty("status", "ERROR");
                 response.addProperty("message", "Account already activated");
@@ -323,11 +317,31 @@ public class ClientHandler implements Runnable {
                 out.flush();
                 return;
             }
+            if(!user.getPublicKey().equals(oneTimeToken)){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid temporary token");
+                out.println(response);
+                out.flush();
+                return;
+            }
+
 
             //Changes the active state
             user.setActive(true);
             //Updates its status
-            server.getAdminLinkService().getSecurityManager().getUserJDBC().updateUserActiveStatus(email,true);
+            Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
+            if(role.getRolename().equals("Doctor")){
+                server.getAdminLinkService().changeDoctorAndUserStatus(email, true);
+                //server.getAdminLinkService().getMedicalManager().getDoctorJDBC().updateDoctorActiveStatus(email, true);
+
+            } else if (role.getRolename().equals("Patient")) {
+                server.getAdminLinkService().changePatientAndUserStatus(email, true);
+                //server.getAdminLinkService().getMedicalManager().getPatientJDBC().updatePatientActiveStatus(email, true);
+            }else{
+                server.getAdminLinkService().getSecurityManager().getUserJDBC().updateUserActiveStatus(email,true);
+            }
+
+
             response.addProperty("status", "SUCCESS");
             response.addProperty("message", "Account activated successfully");
             out.println(response);
