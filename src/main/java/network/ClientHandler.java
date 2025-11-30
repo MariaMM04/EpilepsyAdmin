@@ -1,8 +1,10 @@
 package network;
 
 import com.google.gson.*;
+import encryption.PasswordHash;
 import encryption.TokenUtils;
 import encryption.RSAUtil;
+import org.example.JDBC.securitydb.UserJDBC;
 import org.example.entities_medicaldb.*;
 import org.example.entities_securitydb.*;
 
@@ -27,6 +29,7 @@ public class ClientHandler implements Runnable {
     private final Gson gson = new Gson();
     //Asegura que los cambios en la variable se realizan sin interferencia de otros hilos. Evitar race conditions
     private AtomicBoolean running;
+    private String clientEmail;
     private final KeyPair serverKeyPair; //This is going to be the server's public key
     private PublicKey clientPublicKey; //This is going to be the client's public key
     private SecretKey token;
@@ -40,6 +43,12 @@ public class ClientHandler implements Runnable {
         running = new AtomicBoolean(true);
     }
 
+    /**
+     * Main loop of the client handler thread. Reads incoming messages,
+     * performs the RSA/AES handshake if needed, decrypts further requests,
+     * dispatches each message type to its corresponding handler, and
+     * manages connection shutdown.
+     */
     @Override
     public void run(){
         try {
@@ -64,16 +73,40 @@ public class ClientHandler implements Runnable {
 
                 if(token == null){
                     switch (type){
+                        case "ACTIVATION_REQUEST": {
+                            // Activation happens BEFORE the real token is exchanged
+                            handleActivationRequest(request.getAsJsonObject("data"));
+                            break;
+                        }
+
                         case "CLIENT_PUBLIC_KEY" : {
                             System.out.println("This is the Server's Key Pair: ");
                             System.out.println("Public Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPublic().getEncoded()));
-                            System.out.println("Private Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPrivate().getEncoded()));handleClientPublicKey(request.get("data").getAsString());
-                            System.out.println("🔍 JVM identity hash: " + System.identityHashCode(ClassLoader.getSystemClassLoader()));
+                            System.out.println("Private Key (Base64): " + Base64.getEncoder().encodeToString(serverKeyPair.getPrivate().getEncoded()));
+                            JsonObject data = request.getAsJsonObject("data");
+                            handleClientPublicKey(data);
                             break;
                         }
                         case "TOKEN_REQUEST" : {
+                            String email = request.get("email").getAsString();
+
+                            UserJDBC userJDBC = server.getAdminLinkService().getSecurityManager().getUserJDBC();
+                            User user = userJDBC.findUserByEmail(email);
+
+                            if (user!=null && user.getPublicKey()!=null){
+                                try{
+                                    byte[] keyBytes = Base64.getDecoder().decode(user.getPublicKey());
+                                    X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+                                    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                                    this.clientPublicKey = keyFactory.generatePublic(keySpec);
+                                    System.out.println("Retrieved and set client public key from DB for: "+email);
+                                }catch (Exception e){
+                                    System.err.println("Error decoding public key from client");
+                                    break;
+                                }
+                            }
                             if (clientPublicKey == null){
-                                System.err.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
+                                System.out.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
                                 break;
                             }
                             sendPublicKey();
@@ -219,18 +252,117 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleClientPublicKey(String clientPublicKeyBase64){
+    /**
+     * Decodes and stores the client's RSA public key from its Base64
+     * representation for subsequent encrypted communication.
+     * @param data
+     */
+    private void handleClientPublicKey(JsonObject data){
         try{
+            String email = data.get("email").getAsString();
+            String clientPublicKeyBase64 = data.get("public_key").getAsString();
+            //Decode the key and reconstruct the PublicKey object key
             byte[] decoded = Base64.getDecoder().decode(clientPublicKeyBase64);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             this.clientPublicKey = keyFactory.generatePublic(spec);
+
+
+            UserJDBC userJDBC = server.getAdminLinkService().getSecurityManager().getUserJDBC();
+            User user = userJDBC.findUserByEmail(email);
+
+            if (user !=null){
+                userJDBC.changePublicKey(user, clientPublicKeyBase64);
+                System.out.println("Stored new client public key for: "+user.getEmail());
+            }else{
+                System.out.println("User not found when storing public key");
+            }
             System.out.println("Received and stored Client's Public Key: "+Base64.getEncoder().encodeToString(this.clientPublicKey.getEncoded()));
         }catch (Exception e){
             System.out.println("Failed to parse client's public key: "+e.getMessage());
         }
     }
 
+    private void handleActivationRequest(JsonObject data){
+            System.out.println("Handling activation request");
+            String email = data.get("email").getAsString();
+            String tempPassword = data.get("temp_pass").getAsString();
+            String oneTimeToken = data.get("temp_token").getAsString();
+
+            System.out.println("Activation request from: "+email);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("type", "ACTIVATION_REQUEST_RESPONSE");
+        try{
+            User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByEmail(email);
+            if (user == null){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "User not found");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if (!PasswordHash.verifyPassword(tempPassword,user.getPassword())){
+                //Verification if the password is the same as the hashedPassword in the DB
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid temporary password");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if(user.isActive()){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Account already activated");
+                out.println(response);
+                out.flush();
+                return;
+            }
+            if(!user.getPublicKey().equals(oneTimeToken)){
+                response.addProperty("status", "ERROR");
+                response.addProperty("message", "Invalid temporary token");
+                out.println(response);
+                out.flush();
+                return;
+            }
+
+
+            //Changes the active state
+            user.setActive(true);
+            //Updates its status
+            Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
+            if(role.getRolename().equals("Doctor")){
+                server.getAdminLinkService().changeDoctorAndUserStatus(email, true);
+                //server.getAdminLinkService().getMedicalManager().getDoctorJDBC().updateDoctorActiveStatus(email, true);
+
+            } else if (role.getRolename().equals("Patient")) {
+                server.getAdminLinkService().changePatientAndUserStatus(email, true);
+                //server.getAdminLinkService().getMedicalManager().getPatientJDBC().updatePatientActiveStatus(email, true);
+            }else{
+                server.getAdminLinkService().getSecurityManager().getUserJDBC().updateUserActiveStatus(email,true);
+            }
+
+
+            response.addProperty("status", "SUCCESS");
+            response.addProperty("message", "Account activated successfully");
+            out.println(response);
+            out.flush();
+            System.out.println("User activated successfully: "+email);
+
+        }catch (Exception e){
+            response.addProperty("status", "ERROR");
+            response.addProperty("message", "Server error during activation");
+            out.println(response);
+            out.flush();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Generates a session AES token, encrypts it with the client's public key,
+     * signs it with the server's private key, and sends the token response
+     * to the client.
+     * @throws Exception
+     */
     private void sendTokenToClient () throws Exception{
         SecretKey token = TokenUtils.generateToken();
         this.token = token; //Stores token for this session
@@ -238,7 +370,6 @@ public class ClientHandler implements Runnable {
         // Encrypt token with client's Public Key -> Confidentiality
         String encryptedToken = RSAUtil.encrypt(Base64.getEncoder().encodeToString(token.getEncoded()), clientPublicKey);
         // Sign token with server's Private Key -> Authenticity
-        //TODO: create maybe a method about signing?
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(serverKeyPair.getPrivate());
         signature.update(token.getEncoded());
@@ -275,10 +406,15 @@ public class ClientHandler implements Runnable {
     private void handleClientAlert(JsonObject data) {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SERVER_ALERT_RESPONSE");
-        response.addProperty("message", "Response not founded, help is on the way!" );
+        response.addProperty("message", "Response not found, help is on the way!" );
         sendEncrypted(response,out,token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENT_SIGNALS request by validating the doctor,
+     * retrieving the patient's signals, and sending them in an encrypted response.
+     * @param data
+     */
     private void handleRequestPatientSignals(JsonObject data) {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENT_SIGNALS_RESPONSE");
@@ -321,6 +457,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_SIGNAL request by validating the user, locating the
+     * requested signal, encoding its ZIP file as Base64, and returning it
+     * with metadata in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestSignal(JsonObject data) throws IOException {
         System.out.println(data.toString());
         JsonObject response = new JsonObject();
@@ -374,6 +517,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Handles an UPLOAD_SIGNAL request by decoding the incoming ZIP data,
+     * reconstructing the signal metadata, inserting the signal into the
+     * database, and returning an encrypted response.
+     * @param dataIn
+     * @throws IOException
+     */
     private void handleRequestSignalPatient(JsonObject dataIn) throws IOException {
 
         JsonObject response = new JsonObject();
@@ -486,7 +636,7 @@ public class ClientHandler implements Runnable {
     ///   "status": "ERROR",
     ///   "message": "Invalid credentials"
     /// }
-    private void handleLogIn(JsonObject data) throws IOException {
+    void handleLogIn(JsonObject data) throws IOException {
         String email = data.get("email").getAsString();
         String password = data.get("password").getAsString();
         String accessPermits = data.get("access_permits").getAsString();
@@ -496,7 +646,7 @@ public class ClientHandler implements Runnable {
 
         if (server.getAdminLinkService().getSecurityManager().getUserJDBC().isUser(email)) {
             User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().login(email, password);
-
+            System.out.println(user);
             if (user != null) {
                 Role role = server.getAdminLinkService().getSecurityManager().getRoleJDBC().findRoleByID(user.getRole_id());
                 if(role != null && role.getRolename().equals(accessPermits)) {
@@ -529,6 +679,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_DOCTOR_BY_EMAIL request by validating the user and role,
+     * retrieving the doctor data if authorized, and sending the encrypted response.
+     * @param dataIn
+     * @throws IOException
+     */
     private void handleRequestDoctorByEmail(JsonObject dataIn) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_DOCTOR_BY_EMAIL_RESPONSE");
@@ -633,6 +789,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENT_BY_EMAIL request by validating the user,
+     * retrieving the patient and their related signals and reports, and
+     * sending the result in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestPatientByEmail(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENT_BY_EMAIL_RESPONSE");
@@ -679,6 +842,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a REQUEST_PATIENTS_FROM_DOCTOR request by validating the doctor,
+     * retrieving all associated patients with their signals and reports,
+     * and sending the aggregated data in an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleRequestPatientsFromDoctor(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "REQUEST_PATIENTS_FROM_DOCTOR_RESPONSE");
@@ -723,7 +893,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
-
+    /**
+     * Handles a SAVE_COMMENTS_SIGNAL request by validating the doctor–patient
+     * relationship, updating the signal comments, and sending an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleSaveCommentsSignal(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SAVE_COMMENTS_SIGNAL_RESPONSE");
@@ -763,6 +938,12 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Handles a SAVE_REPORT request by validating the user and patient,
+     * inserting the report into the database, and sending an encrypted response.
+     * @param data
+     * @throws IOException
+     */
     private void handleSaveReportRequest(JsonObject data) throws IOException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "SAVE_REPORT_RESPONSE");
@@ -813,6 +994,13 @@ public class ClientHandler implements Runnable {
         sendEncrypted(response,out, token);
     }
 
+    /**
+     * Processes a CHANGE_PASSWORD request by validating the user, hashing the
+     * new password, updating it in the database, and sending an encrypted response.
+     * @param data
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
     private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
         JsonObject response = new JsonObject();
         response.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");

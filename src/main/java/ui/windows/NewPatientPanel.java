@@ -1,5 +1,6 @@
 package ui.windows;
 
+import encryption.TokenUtils;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import net.miginfocom.swing.MigLayout;
@@ -7,7 +8,10 @@ import org.example.entities_securitydb.Role;
 import org.example.entities_securitydb.User;
 import org.example.service.AdminLinkService;
 import ui.components.*;
+
+import java.util.Base64;
 import java.util.List;
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -319,8 +323,11 @@ public class NewPatientPanel extends JPanel implements ActionListener {
             if(!validatePassword(password.getText())) {return;}
 
             //Create user
+            SecretKey token = TokenUtils.generateToken();
+            String oneTimeToken = Base64.getEncoder().encodeToString(token.getEncoded());
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Patient");
-            User u = new User(p.getEmail(), password.getText(), role.getId());
+            User u = new User(p.getEmail(), password.getText(), role.getId(), false);
+            u.setPublicKey(oneTimeToken);
             //Assign Doctor
             int index = doctors.getSelectedIndex();
             p.setDoctorId(docs.get(index).getId());
@@ -334,8 +341,7 @@ public class NewPatientPanel extends JPanel implements ActionListener {
                     return;
                 }
                 saved = true;
-                resetView();
-                appMain.changeToMainMenu();
+                showUserCredentials(appMain, u, oneTimeToken);
             }
 
         } catch (Exception ex) {
@@ -502,5 +508,71 @@ public class NewPatientPanel extends JPanel implements ActionListener {
         errorMessage.setText(message);
         errorMessage.setForeground(Color.RED);
         errorMessage.setVisible(true);
+    }
+
+    /**
+     * Utility method to display the user credentials using a Night Guardian–styled window.
+     *
+     * @param parentFrame the parent frame for centering the dialog
+     * @param user the user just registered
+     */
+    private void showUserCredentials(JFrame parentFrame, User user, String oneTimeToken) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("wrap 2, fill, inset 15", "[30%][70%]", "push[][][][][]push"));
+        panel.setBackground(Color.white);
+        panel.setPreferredSize(new Dimension(350, 150));
+
+        JLabel title = new JLabel("User Credentials");
+        title.setFont(new Font("sansserif", 1, 20));
+        title.setBackground(Color.white);
+        title.setForeground(Application.dark_purple);
+        panel.add(title, "span 2,alignx center");
+
+        JLabel emailHeading = new JLabel("Email:");
+        JLabel passwordHeading = new JLabel("Temporal Password:");
+        JLabel tokenHeading = new JLabel("Single-Use Token:");
+        emailHeading.setFont(contentFont);
+        passwordHeading.setFont(contentFont);
+        tokenHeading.setFont(contentFont);
+        emailHeading.setForeground(Application.dark_turquoise);
+        passwordHeading.setForeground(Application.dark_turquoise);
+        tokenHeading.setForeground(Application.dark_turquoise);
+
+        JLabel email = new JLabel(user.getEmail());
+        JLabel password = new JLabel(user.getPassword());
+        JLabel token = new JLabel(oneTimeToken);
+        email.setFont(contentFont);
+        password.setFont(contentFont);
+        token.setFont(contentFont);
+        email.setForeground(Color.gray);
+        password.setForeground(Color.gray);
+        token.setForeground(Color.gray);
+
+        panel.add(emailHeading);
+        panel.add(email);
+        panel.add(passwordHeading);
+        panel.add(password);
+        panel.add(tokenHeading);
+        panel.add(token);
+
+        MyButton okButton = new MyButton("OK", Application.turquoise, Color.white);
+        panel.add(okButton, "center, span 2");
+
+        JDialog dialog = new JDialog(parentFrame, "Message dialog", true); //dont allow interacting with other panels at the same time
+        dialog.getContentPane().add(panel);
+        dialog.getContentPane().setBackground(Color.white);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parentFrame);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetView();
+                dialog.dispose();
+                appMain.changeToMainMenu();
+            }
+        });
+
+        dialog.setVisible(true);
     }
 }

@@ -4,10 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="Change password correctly &amp; login error fixed">
+    <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="commit db">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Medicaldb_try.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DataBases/Securitydb_try.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/DoctorJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/MedicalManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/medicaldb/PatientJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchDoctor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/windows/SearchPatient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +34,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MariaMM04/EpilepsyAdmin.git&quot;,
-    &quot;accountId&quot;: &quot;71dc38ad-21e7-42df-be36-38716886eb37&quot;
+    &quot;accountId&quot;: &quot;e387a1ed-66c0-4b42-9a08-e4d4d83c049c&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -48,13 +56,38 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.AdminLinkService.executor&quot;: &quot;Run&quot;,
     &quot;Application.Application.executor&quot;: &quot;Run&quot;,
     &quot;Application.MainAdmin.executor&quot;: &quot;Run&quot;,
     &quot;Application.MainAdmin_try.executor&quot;: &quot;Run&quot;,
     &quot;Application.MedicalManager.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NewPatientPanel.executor&quot;: &quot;Run&quot;,
     &quot;Application.SecurityManager.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectPatientRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectPatientRequest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleLoginUserNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByEmail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByID.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientByEmail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientSignals2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignal2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleSaveCommentsSignal2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleStopClient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testHandleStopClient2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ClientHandlerTest.testReleaseResources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.testServerCloseAllClients.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServerTest.testServerStartsAndAcceptsMultipleClient.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
@@ -69,11 +102,27 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pblan\OneDrive - Fundación Universitaria San Pablo CEU\Imágenes\CEU\4º Ingeniería Biomédica 25-26\Telemedicina_ProjectAdmin\src\main\java\org\example\DataBases" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.example.service" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Application">
+    <configuration name="AdminLinkService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.service.AdminLinkService" />
+      <module name="EpilepsyAdmin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ui.windows.Application" />
       <module name="EpilepsyAdmin" />
@@ -113,7 +162,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ClientHandlerTest.testHandleLoginCorrectDoctorRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ServerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EpilepsyAdmin" />
       <extension name="coverage">
         <pattern>
@@ -122,33 +171,34 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="network" />
-      <option name="MAIN_CLASS_NAME" value="network.ClientHandlerTest" />
-      <option name="METHOD_NAME" value="testHandleLoginCorrectDoctorRequest" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="network.ServerTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.SecurityManager" />
       <item itemvalue="Application.MedicalManager" />
+      <item itemvalue="Application.SecurityManager" />
+      <item itemvalue="Application.AdminLinkService" />
       <item itemvalue="Application.Application" />
-      <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
+      <item itemvalue="JUnit.ServerTest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
         <item itemvalue="Application.MedicalManager" />
         <item itemvalue="Application.SecurityManager" />
-        <item itemvalue="JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest" />
+        <item itemvalue="Application.AdminLinkService" />
+        <item itemvalue="JUnit.ServerTest" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -169,9 +219,7 @@
       <option name="presentableId" value="Default" />
       <updated>1764152614333</updated>
       <workItem from="1764152617418" duration="1374000" />
-      <workItem from="1764410600785" duration="14000" />
-      <workItem from="1764410630893" duration="2589000" />
-      <workItem from="1764437716195" duration="1304000" />
+      <workItem from="1764337881188" duration="10936000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -183,8 +231,74 @@
     <MESSAGE value="Manual of Admin done" />
     <option name="LAST_COMMIT_MESSAGE" value="Manual of Admin done" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java</url>
+          <line>202</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java</url>
+          <line>216</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/JDBC/securitydb/UserJDBC.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java</url>
+          <line>328</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java</url>
+          <line>329</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ui/windows/NewPatientPanel.java</url>
+          <line>343</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java</url>
+          <line>84</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/service/AdminLinkService.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
+          <line>63</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.example.entities_securitydb.User" memberName="active" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$Application.ic" NAME="Application Coverage Results" MODIFIED="1763945395477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+    <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$Application.ic" NAME="Application Coverage Results" MODIFIED="1764356596479" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>ui.windows.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/Telemedicina_ProjectAdmin$MainAdmin.ic" NAME="MainAdmin Coverage Results" MODIFIED="1761227925699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

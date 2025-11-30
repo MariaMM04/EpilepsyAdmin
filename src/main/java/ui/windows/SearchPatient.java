@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.miginfocom.swing.MigLayout;
-import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import org.example.service.AdminLinkService;
 import ui.components.MyButton;
@@ -56,7 +55,7 @@ import javax.swing.*;
  * <p>
  * The user can toggle a patient's {@code active} flag using the button
  * <b>SWITCH STATUS</b>, which internally calls:
- * {@link AdminLinkService#changePatientStatus(String, Boolean)}.
+ * {@link AdminLinkService#changePatientAndUserStatus(String, Boolean)}.
  * </p>
  * <p>
  * After successful status change, the list updates and a green message is displayed.
@@ -138,7 +137,7 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        switchStatus = new MyButton("TOGGLE STATUS");
+        switchStatus = new MyButton("DEACTIVATE USER");
         switchStatus.addActionListener(this);
         add(switchStatus, "cell 0 4, center, gapy 5, span 2, grow");
 
@@ -279,17 +278,13 @@ public class SearchPatient extends JPanel implements ActionListener, MouseListen
                 //IF false change to true
                 Boolean result = false;
                 try{
-                    result = appMain.adminLinkService.changePatientStatus(selectedPatient.getEmail(), !selectedPatient.isActive());
+                    result = appMain.adminLinkService.changePatientAndUserStatus(selectedPatient.getEmail(),false);
                 } catch (SQLException ex) {
                 }
                 if(result) {
                     selectedPatient.setActive(!selectedPatient.isActive());
                     updatePatientDefModel(allPatients);
-                    if(selectedPatient.isActive()) {
-                        showErrorMessage("Patient has been activated");
-                    }else {
-                        showErrorMessage("Patient has been deactivated");
-                    }
+                    showErrorMessage(selectedPatient.getName()+" "+selectedPatient.getSurname()+" has been deactivated");
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");

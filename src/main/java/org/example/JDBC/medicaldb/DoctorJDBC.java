@@ -40,7 +40,7 @@ public class DoctorJDBC {
             ps.setString(4, doctor.getEmail());
             ps.setString(5, doctor.getDepartment());
             ps.setString(6, doctor.getSpeciality());
-            ps.setBoolean(7, doctor.isActive());
+            ps.setBoolean(7, false); //false by default
             ps.executeUpdate();
             System.out.println("Doctor inserted: " + doctor.getEmail());
             return true;

@@ -6,14 +6,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
 import org.example.service.AdminLinkService;
-import ui.RandomData;
 import ui.components.DoctorCell;
 import ui.components.MyButton;
 import ui.components.MyTextField;
@@ -54,7 +52,7 @@ import javax.swing.*;
  * <h2>Doctor Status Management</h2>
  * <p>
  * The button <b>SWITCH STATUS</b> toggles a doctor’s active/inactive state by calling:
- * {@link AdminLinkService#changeDoctorStatus(String, Boolean)}.
+ * {@link AdminLinkService#changeDoctorAndUserStatus(String, Boolean)}.
  * </p>
  * <p>
  * The UI immediately refreshes, and a green success message is shown.
@@ -138,7 +136,7 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
         searchButton.addActionListener(this);
         add(searchButton, "cell 1 3, right, gapy 5, grow");
 
-        switchStatus = new MyButton("TOGGLE STATUS");
+        switchStatus = new MyButton("DEACTIVATE USER");
         switchStatus.addActionListener(this);
         add(switchStatus, "cell 0 4, center, gapy 5, span 2, grow");
 
@@ -284,17 +282,13 @@ public class SearchDoctor extends JPanel implements ActionListener, MouseListene
                 //IF false change to true
                 Boolean result = false;
                 try{
-                    result = appMain.adminLinkService.changeDoctorStatus(selectedDoctor.getEmail(), !selectedDoctor.isActive());
+                    result = appMain.adminLinkService.changeDoctorAndUserStatus(selectedDoctor.getEmail(), false);
                 } catch (SQLException ex) {
                 }
                 if(result) {
                     selectedDoctor.setActive(!selectedDoctor.isActive());
                     updateDoctorDefModel(allDoctors);
-                    if(selectedDoctor.isActive()) {
-                        showErrorMessage("Doctor has been activated");
-                    }else {
-                        showErrorMessage("Doctor has been deactivated");
-                    }
+                    showErrorMessage(selectedDoctor.getName()+" "+selectedDoctor.getSurname()+" has been deactivated");
                     errorMessage.setForeground(Color.green);
                 }else {
                     showErrorMessage("Error changing status");

@@ -1,5 +1,6 @@
 package ui.windows;
 
+import encryption.TokenUtils;
 import net.miginfocom.swing.MigLayout;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_securitydb.Role;
@@ -10,10 +11,12 @@ import ui.components.MyComboBox;
 import ui.components.MyTextField;
 import ui.components.QuestionDialog;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -274,21 +277,23 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
 
             if(!validateEmail(d.getEmail())){return;} //validateEmail already show an error message
             if(!validatePassword(password.getText())){return;} //validatePassword already shows an error message
+            // Generate one-time token
+            SecretKey token = TokenUtils.generateToken();
+            String oneTimeToken = Base64.getEncoder().encodeToString(token.getEncoded());
             Role role = appMain.securityManager.getRoleJDBC().findRoleByName("Doctor");
-            User u = new User(d.getEmail(), password.getText(), role.getId(), true);
+            User u = new User(d.getEmail(), password.getText(), role.getId(), false);
+            u.setPublicKey(oneTimeToken);
 
             if (d.getName().isEmpty() || d.getSurname().isEmpty() || d.getContact().isEmpty() || speciality.getText().isEmpty() || department.getText().isEmpty()) {
                 showErrorMessage("Please fill all the fields");
             }else {
-                //TODO: Cambiar para register
                 if(!appMain.adminLinkService.createUserAndDoctor(u, d)){
                     showErrorMessage("Error creating user and doctor");
                     saved = false;
                     return;
                 }
                 saved = true;
-                resetView();
-                appMain.changeToMainMenu();
+                showUserCredentials(appMain, u, oneTimeToken);
             }
 
         } catch (Exception ex) {
@@ -436,5 +441,71 @@ public class NewDoctorPanel extends JPanel implements ActionListener {
         errorMessage.setText(message);
         errorMessage.setForeground(Color.RED);
         errorMessage.setVisible(true);
+    }
+
+    /**
+     * Utility method to display the user credentials using a Night Guardian–styled window.
+     *
+     * @param parentFrame the parent frame for centering the dialog
+     * @param user the user just registered
+     */
+    private void showUserCredentials(JFrame parentFrame, User user, String oneTimeToken) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("wrap 2, fill, inset 15", "[30%][70%]", "push[][][][][]push"));
+        panel.setBackground(Color.white);
+        panel.setPreferredSize(new Dimension(350, 150));
+
+        JLabel title = new JLabel("User Credentials");
+        title.setFont(new Font("sansserif", 1, 20));
+        title.setBackground(Color.white);
+        title.setForeground(Application.dark_purple);
+        panel.add(title, "span 2,alignx center");
+
+        JLabel emailHeading = new JLabel("Email:");
+        JLabel passwordHeading = new JLabel("Temporal Password:");
+        JLabel tokenHeading = new JLabel("Single-Use Token:");
+        emailHeading.setFont(contentFont);
+        passwordHeading.setFont(contentFont);
+        tokenHeading.setFont(contentFont);
+        emailHeading.setForeground(Application.dark_turquoise);
+        passwordHeading.setForeground(Application.dark_turquoise);
+        tokenHeading.setForeground(Application.dark_turquoise);
+
+        JLabel email = new JLabel(user.getEmail());
+        JLabel password = new JLabel(user.getPassword());
+        JLabel token = new JLabel(oneTimeToken); //TODO: replace with user token
+        email.setFont(contentFont);
+        password.setFont(contentFont);
+        token.setFont(contentFont);
+        email.setForeground(Color.gray);
+        password.setForeground(Color.gray);
+        token.setForeground(Color.gray);
+
+        panel.add(emailHeading);
+        panel.add(email);
+        panel.add(passwordHeading);
+        panel.add(password);
+        panel.add(tokenHeading);
+        panel.add(token);
+
+        MyButton okButton = new MyButton("OK", Application.turquoise, Color.white);
+        panel.add(okButton, "center, span 2");
+
+        JDialog dialog = new JDialog(parentFrame, "Message dialog", true); //dont allow interacting with other panels at the same time
+        dialog.getContentPane().add(panel);
+        dialog.getContentPane().setBackground(Color.white);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parentFrame);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetView();
+                dialog.dispose();
+                appMain.changeToMainMenu();
+            }
+        });
+
+        dialog.setVisible(true);
     }
 }

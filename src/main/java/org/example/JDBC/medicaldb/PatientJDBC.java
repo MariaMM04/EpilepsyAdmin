@@ -44,7 +44,7 @@ public class PatientJDBC {
             ps.setString(4, patient.getContact());
             ps.setDate(5, patient.getDateOfBirth() != null ? Date.valueOf(patient.getDateOfBirth()) : null);
             ps.setString(6, patient.getGender());
-            ps.setBoolean(7, patient.isActive());
+            ps.setBoolean(7, false); //false by default
             ps.setInt(8, patient.getDoctorId());
             ps.executeUpdate();
             System.out.println("Patient inserted: " + patient.getEmail());
