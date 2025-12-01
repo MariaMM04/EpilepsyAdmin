@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1ca6306d-00e1-4b57-816b-26a31c7662b6" name="Changes" comment="commit db">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,53 +44,56 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AdminLinkService.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Application.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainAdmin.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainAdmin_try.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MedicalManager.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NewPatientPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SecurityManager.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginCorrectPatientRequest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectDoctorRequest2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginIncorrectPatientRequest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleLoginUserNotFound.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByEmail.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestDoctorByID.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientByEmail.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientSignals2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestSignal2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleRequestSignalPatient2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleSaveCommentsSignal2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleStopClient.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testHandleStopClient2.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ClientHandlerTest.testReleaseResources.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ServerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ServerTest.testServerCloseAllClients.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ServerTest.testServerStartsAndAcceptsMultipleClient.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AdminLinkService.executor": "Run",
+    "Application.Application.executor": "Run",
+    "Application.MainAdmin.executor": "Run",
+    "Application.MainAdmin_try.executor": "Run",
+    "Application.MedicalManager.executor": "Run",
+    "Application.NewPatientPanel.executor": "Run",
+    "Application.SecurityManager.executor": "Run",
+    "JUnit.ClientHandlerTest.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginCorrectDoctorRequest2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginCorrectPatientRequest.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginIncorrectDoctorRequest2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginIncorrectPatientRequest.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleLoginUserNotFound.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestDoctorByEmail.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestDoctorByID.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestPatientByEmail.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestPatientSignals2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestPatientsFromDoctor2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestSignal2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestSignalPatient.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleRequestSignalPatient2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleSaveCommentsSignal2.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleStopClient.executor": "Run",
+    "JUnit.ClientHandlerTest.testHandleStopClient2.executor": "Run",
+    "JUnit.ClientHandlerTest.testReleaseResources.executor": "Run",
+    "JUnit.ServerTest.executor": "Run",
+    "JUnit.ServerTest.testServerCloseAllClients.executor": "Run",
+    "JUnit.ServerTest.testServerStartsAndAcceptsMultipleClient.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\pblan\OneDrive - Fundación Universitaria San Pablo CEU\Imágenes\CEU\4º Ingeniería Biomédica 25-26\Telemedicina_ProjectAdmin\src\main\java\org\example\DataBases" />
@@ -213,7 +214,8 @@
       <workItem from="1764152617418" duration="1374000" />
       <workItem from="1764337881188" duration="10936000" />
       <workItem from="1764524554870" duration="161000" />
-      <workItem from="1764525360384" duration="310000" />
+      <workItem from="1764525360384" duration="414000" />
+      <workItem from="1764587010225" duration="392000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -275,12 +277,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>155</line>
+          <line>212</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/network/ClientHandler.java</url>
-          <line>129</line>
+          <line>186</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
