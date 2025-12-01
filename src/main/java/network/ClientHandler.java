@@ -10,6 +10,7 @@ import org.example.entities_securitydb.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.io.*;
 import java.net.Socket;
@@ -174,6 +175,7 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run(){
+        sendPublicKey();
         try {
             String line;
             label:
@@ -193,7 +195,6 @@ public class ClientHandler implements Runnable {
 
                 // Extract the type field from the JSON
                 String type = request.get("type").getAsString();
-
                 if(token == null){
                     switch (type){
                         case "ACTIVATION_REQUEST": {
@@ -232,8 +233,61 @@ public class ClientHandler implements Runnable {
                                 System.out.println("TOKEN_REQUEST received before CLIENT_PUBLIC_KEY");
                                 break;
                             }
-                            sendPublicKey();
+                            //sendPublicKey();
                             sendTokenToClient();
+                            break;
+                        }
+                        case "ENCRYPTED_MESSAGE": {
+                            try{
+                                String encryptedMessage = request.get("message").getAsString();
+                                String signatureBase64 = request.get("signature").getAsString();
+                                String clientEmail = request.get("clientEmail").getAsString();
+
+                                String decryptedJson = RSAUtil.decrypt(encryptedMessage, serverKeyPair.getPrivate());
+                                User user = server.getAdminLinkService().getSecurityManager().getUserJDBC().findUserByEmail(clientEmail);
+
+                                // Get the client key from DB
+                                if (user == null || user.getPublicKey() == null){
+                                    System.err.println("No user or public key found for: "+clientEmail);
+                                    break;
+                                }
+
+                                byte[] keyBytes = Base64.getDecoder().decode(user.getPublicKey());
+                                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+                                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                                this.clientPublicKey = keyFactory.generatePublic(keySpec);
+
+                                //Verify signature
+                                byte[] signatureBytes = Base64.getDecoder().decode(signatureBase64);
+                                Signature signature = Signature.getInstance("SHA256withRSA");
+                                signature.initVerify(clientPublicKey);
+                                signature.update(decryptedJson.getBytes(StandardCharsets.UTF_8));
+
+                                boolean verified = signature.verify(signatureBytes);
+                                if (!verified){
+                                    System.err.println("Signature verification failed");
+                                    break;
+                                }
+
+                                JsonObject decryptedMessage = JsonParser.parseString(decryptedJson).getAsJsonObject();
+                                String innerType = decryptedMessage.get("type").getAsString();
+
+                                if (innerType.equals("CHANGE_PASSWORD_REQUEST")){
+                                    JsonObject data = decryptedMessage.get("data").getAsJsonObject();
+                                    handleChangePassword(data);
+                                }
+
+                            }catch (Exception e){
+                                System.err.println("Error in ENCRYPTED_MESSAGE: " + e.getMessage());
+                                e.printStackTrace();
+
+                                // Send back an error response
+                                JsonObject err = new JsonObject();
+                                err.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");
+                                err.addProperty("status", "ERROR");
+                                err.addProperty("message", e.getMessage());
+                                out.println(gson.toJson(err));
+                            }
                             break;
                         }
                         default:
@@ -346,11 +400,6 @@ public class ClientHandler implements Runnable {
                         break;
                     }
 
-                    case "CHANGE_PASSWORD_REQUEST": {
-                        System.out.println("CHANGE_PASSWORD_REQUEST");
-                        handleChangePassword(decryptedRequest.getAsJsonObject("data"));
-                        break;
-                    }
                     case "ALERT_ADMIN": {
                         System.out.println("ALERT_ADMIN");
                         handleClientAlert(decryptedRequest.getAsJsonObject("data"));
@@ -1255,7 +1304,7 @@ public class ClientHandler implements Runnable {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    private void handleChangePassword (JsonObject data) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private void handleChangePassword (JsonObject data) throws Exception {
         JsonObject response = new JsonObject();
         response.addProperty("type", "CHANGE_PASSWORD_REQUEST_RESPONSE");
 
@@ -1280,9 +1329,24 @@ public class ClientHandler implements Runnable {
                 response.addProperty("message", "Failed to update password");
             }
         }
-        System.out.println("\n Before encryption, CHANGE_PASSWORD_RESPONSE to Client: "+response);
-        sendEncrypted(response, out, token);
 
+        String json = response.toString();
+        //Encrypt with client's public key
+        String encrypted = RSAUtil.encrypt(json, clientPublicKey);
+        //Sign with server private key
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(serverKeyPair.getPrivate());
+        signature.update(json.getBytes());
+        String signatureBase64 = Base64.getEncoder().encodeToString(signature.sign());
+
+        JsonObject wrapper = new JsonObject();
+        wrapper.addProperty("type", "ENCRYPTED_RESPONSE");
+        wrapper.addProperty("message", encrypted);
+        wrapper.addProperty("signature", signatureBase64);
+
+        System.out.println("\n Before encryption, CHANGE_PASSWORD_RESPONSE to Client: "+response);
+        out.println(gson.toJson(wrapper));
+        out.flush();
     }
 
     /**

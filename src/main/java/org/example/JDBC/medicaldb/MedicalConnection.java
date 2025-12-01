@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class MedicalConnection {
 
     // Ruta relativa al archivo dentro de tu proyecto
-    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Medicaldb_try.db";
+    private static final String URL = "jdbc:sqlite:src/main/java/org/example/DataBases/Medicaldb.db";
 
     static {
         try {
