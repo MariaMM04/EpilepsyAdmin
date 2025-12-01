@@ -3,6 +3,7 @@
 The **Night Guardian Admin Application** provides system administrators with all tools required to manage users and monitor server activity. This guide describes how to use the interface following the expected workflow.
 
 # Table of Contents
+- [Documentation](#documentation)
 - [How to Download and Run](#how-to-download-and-run)
 - [Initial Conditions](#initial-conditions)
 - [User Interface Guide](#user-interface-guide)
@@ -11,7 +12,17 @@ The **Night Guardian Admin Application** provides system administrators with all
 - [Closing the Application](#closing-the-application)
 - [Authors](#authors)
 
-## How to Download and Run
+# Documentation
+The project documentation can be found in the [docs](docs/) folder. The documentation includes: 
+* [Summary and motivation of the proyect](docs/)
+* [System design document](docs/System_design_document.pdf)): explaining the decisions taken (TCP vs UDP, use of decorators to Exchange data through sockets, encryption, etc.)
+* [Use case diagram](docs/DiagramaUserCaseDef.drawio.png): 
+* [UML diagrams](docs/) of the Admin, Patient and Doctor applications.
+* [ER diagram](docs/ERDiagram.png): showing the relationships between the entities in the DB. 
+* [UI Mock Up](docs/Admin_mock_up.pdf): with the design of the interface.
+* [Sequence diagrams](docs/Sequence_diagrams): showcasing the communication protocol
+
+# How to Download and Run
 1. Clone the repository:
 ```bash
 git clone https://github.com/MariaMM04/EpilepsyAdmin
@@ -19,7 +30,7 @@ git clone https://github.com/MariaMM04/EpilepsyAdmin
 2. Navigate to the project root folder `src/main/java/ui/windows`.
 3. Run the executable `.jar` or execute the `Application.java` class.
 
-## Initial Conditions
+# Initial Conditions
 When the Admin Application is launched for the first time:
 * The administrator needs to Log in
 * The database may be empty (no doctors/patients unless previously created) but will contain the Admin user
