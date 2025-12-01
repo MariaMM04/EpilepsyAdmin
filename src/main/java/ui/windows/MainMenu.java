@@ -1,12 +1,15 @@
 package ui.windows;
 
 import Exceptions.*;
+import encryption.PasswordHash;
 import network.Server;
 import org.example.entities_medicaldb.Doctor;
 import org.example.entities_medicaldb.Patient;
 import ui.components.*;
 
 import javax.swing.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -210,12 +213,18 @@ public class MainMenu extends MenuTemplate {
                         panel.showErrorMessage("Close all the connections before stopping the server");
                     }else{
                         try {
-                            //TODO: ask for correct password
                             String password = JOptionPane.showInputDialog(parentFrame, "Enter the password:");
                             String correctPass = "1234";
-                            //TODO: check if password is saved correctly in user to do this
-                            if(appMain.user != null && appMain.user.getPassword().isEmpty()) {
-                                correctPass = appMain.user.getPassword();
+                            if(appMain.user != null && !appMain.user.getPassword().isEmpty()) {
+                                System.out.println(appMain.user.getPassword());
+                                if(PasswordHash.verifyPassword(password,appMain.user.getPassword())){
+                                    appMain.server.stop();
+                                    panel.showErrorMessage("Server stopped");
+                                    return;
+                                }else {
+                                    panel.showErrorMessage("Wrong password");
+                                    return;
+                                }
                             }
                             if(password.equals(correctPass)){
                                 appMain.server.stop();
@@ -223,7 +232,7 @@ public class MainMenu extends MenuTemplate {
                             }else{
                                 panel.showErrorMessage("Incorrect password");
                             }
-                        } catch (ClientError ex) {
+                        } catch (ClientError | NoSuchAlgorithmException | InvalidKeySpecException ex) {
                             panel.showErrorMessage(ex.getMessage());
                             System.out.println(ex.getMessage());
                         }

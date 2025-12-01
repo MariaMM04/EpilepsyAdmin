@@ -29,33 +29,33 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import encryption.RSAKeyManager;
+import encryption.TokenUtils;
+import java.io.*;
 
 public class ClientHandlerTest {
+
     private Server server;
     private ServerSocket serverSocket;
     private InputStream in;
     private OutputStream out;
-    private ClientHandler handler;
     private KeyPair keyPair;
     private AdminLinkService adminLinkService;
-    private SecretKey aes;
-    private Application app;
 
     @BeforeEach
     void setUp() throws Exception {
         serverSocket = mock(ServerSocket.class);
         adminLinkService = mock(AdminLinkService.class);
+        // Real server instance (used in some tests)
         server = new Server(serverSocket, adminLinkService);
+
         in = mock(InputStream.class);
         out = mock(OutputStream.class);
-        keyPair = mock(KeyPair.class);
-        handler = mock(ClientHandler.class);
-        aes = TokenUtils.generateToken();
-        setField(handler, "token", aes);
 
+        // REAL RSA keypair – must not be mocked (sendPublicKey uses it)
+        keyPair = RSAKeyManager.generateKeyPair();
     }
 
     private static void setField(Object target, String fieldName, Object value) {
@@ -95,12 +95,9 @@ public class ClientHandlerTest {
         setField(handler, "in", mockReader);
         setField(handler, "out", mockWriter);
 
-        // ----------- 3) Simulate RSA handshake -----------
-        PublicKey clientPub = RSAKeyManager.generateKeyPair().getPublic();
-        setField(handler, "clientPublicKey", clientPub); // shortcut: skip parsing public key JSON
-
+        // ----------- 3) Simulate RSA handshake already done (AES token ready) -----------
         SecretKey aesKey = TokenUtils.generateToken();
-        setField(handler, "token", aesKey);               // shortcut: skip CLIENT_AES_KEY parsing
+        setField(handler, "token", aesKey);
 
         // ----------- 4) STOP_CLIENT encrypted payload -----------
         JsonObject stop = new JsonObject();
@@ -127,10 +124,8 @@ public class ClientHandlerTest {
         assertTrue(handler.isStopped());
     }
 
-
     /**
      * Check if it allows correct logIn of a Doctor in the Doctor App
-     * @throws Exception
      */
     @Test
     void testHandleLoginCorrectDoctorRequest() throws Exception {
@@ -141,6 +136,7 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
+        // Use the real server from setUp (so we can inject adminConn)
         ClientHandler handler = new ClientHandler(socket, server, keyPair);
 
         // --- Replace streams ---
@@ -169,13 +165,13 @@ public class ClientHandlerTest {
         // --- Mock DB behavior ---
         when(mockUserJDBC.isUser("doctor@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("doctor@mail.com", "123"))
-                .thenReturn(new User(1,"doctor@mail.com","123",true,1));
+                .thenReturn(new User(1, "doctor@mail.com", "123", true, 1, "dummyKey"));
         when(mockRole.findRoleByID(1)).thenReturn(new Role("Doctor"));
 
         // --- Correct JSON and encryption ---
         String plain =
-                "{\"type\":\"LOGIN_REQUEST\",\"data\":"
-                        + "{\"email\":\"doctor@mail.com\",\"password\":\"123\",\"access_permits\":\"Doctor\"}}";
+                "{\"type\":\"LOGIN_REQUEST\",\"data\":" +
+                        "{\"email\":\"doctor@mail.com\",\"password\":\"123\",\"access_permits\":\"Doctor\"}}";
 
         String enc = TokenUtils.encrypt(plain, aes);
 
@@ -188,13 +184,12 @@ public class ClientHandlerTest {
         // --- Act ---
         handler.run();
 
-        //Assert
+        // --- Assert ---
         ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass(JsonObject.class);
-
         verify(mockWriter, atLeastOnce()).println(captor.capture());
 
         JsonObject outJson = captor.getValue();
-        assertTrue(outJson.toString().contains("ENCRYPTED"));
+        assertEquals("ENCRYPTED", outJson.get("type").getAsString());
 
         // Extract encrypted field
         String encryptedPayload = outJson.get("data").getAsString();
@@ -212,7 +207,6 @@ public class ClientHandlerTest {
 
     /**
      * It should not allow a Patient or Admin to LogIn in the Doctor App
-     * @throws Exception
      */
     @Test
     void testHandleLoginIncorrectDoctorRequest() throws Exception {
@@ -246,11 +240,11 @@ public class ClientHandlerTest {
         // Users: patient + admin trying to log in as Doctor
         when(mockUserJDBC.isUser("patient@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("patient@mail.com", "123"))
-                .thenReturn(new User(2,"patient@mail.com","123",true,2));
+                .thenReturn(new User(2, "patient@mail.com", "123", true, 2, "dummy"));
 
         when(mockUserJDBC.isUser("admin@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("admin@mail.com", "123"))
-                .thenReturn(new User(3,"admin@mail.com","123",true,3));
+                .thenReturn(new User(3, "admin@mail.com", "123", true, 3, "dummy"));
 
         when(mockRole.findRoleByID(1)).thenReturn(new Role("Doctor"));
         when(mockRole.findRoleByID(2)).thenReturn(new Role("Patient"));
@@ -303,10 +297,8 @@ public class ClientHandlerTest {
         assertEquals(2, errorCount, "Both logins should be ERROR");
     }
 
-
     /**
      * Check if it allows correct logIn of a Patient on the Patient App
-     * @throws Exception
      */
     @Test
     void testHandleLoginCorrectPatientRequest() throws Exception {
@@ -339,7 +331,7 @@ public class ClientHandlerTest {
 
         when(mockUserJDBC.isUser("patient@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("patient@mail.com", "123"))
-                .thenReturn(new User(2,"patient@mail.com","123",true,2));
+                .thenReturn(new User(2, "patient@mail.com", "123", true, 2, "dummy"));
         when(mockRole.findRoleByID(2)).thenReturn(new Role("Patient"));
 
         String plain =
@@ -374,10 +366,8 @@ public class ClientHandlerTest {
         assertNotNull(success, "Expected SUCCESS patient login");
     }
 
-
     /**
      * It should not allow a Doctor or Admin to login on the Patient App
-     * @throws Exception
      */
     @Test
     void testHandleLoginIncorrectPatientRequest() throws Exception {
@@ -410,11 +400,11 @@ public class ClientHandlerTest {
 
         when(mockUserJDBC.isUser("doctor@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("doctor@mail.com", "123"))
-                .thenReturn(new User(2,"doctor@mail.com","123",true,1));
+                .thenReturn(new User(2, "doctor@mail.com", "123", true, 1, "dummy"));
 
         when(mockUserJDBC.isUser("admin@mail.com")).thenReturn(true);
         when(mockUserJDBC.login("admin@mail.com", "123"))
-                .thenReturn(new User(3,"admin@mail.com","123",true,3));
+                .thenReturn(new User(3, "admin@mail.com", "123", true, 3, "dummy"));
 
         when(mockRole.findRoleByID(1)).thenReturn(new Role("Doctor"));
         when(mockRole.findRoleByID(2)).thenReturn(new Role("Patient"));
@@ -431,12 +421,12 @@ public class ClientHandlerTest {
         String enc2 = TokenUtils.encrypt(p2, aes);
 
         JsonObject w1 = new JsonObject();
-        w1.addProperty("type","ENCRYPTED");
-        w1.addProperty("data",enc1);
+        w1.addProperty("type", "ENCRYPTED");
+        w1.addProperty("data", enc1);
 
         JsonObject w2 = new JsonObject();
-        w2.addProperty("type","ENCRYPTED");
-        w2.addProperty("data",enc2);
+        w2.addProperty("type", "ENCRYPTED");
+        w2.addProperty("data", enc2);
 
         when(mockReader.readLine())
                 .thenReturn(w1.toString())
@@ -462,10 +452,8 @@ public class ClientHandlerTest {
         assertEquals(2, errorCount);
     }
 
-
     /**
      * It should send an error if the user does not exist
-     * @throws Exception
      */
     @Test
     void testHandleLoginUserNotFound() throws Exception {
@@ -528,8 +516,6 @@ public class ClientHandlerTest {
         assertTrue(errorSeen);
     }
 
-
-    //TODO: check test
     @Test
     void testHandleRequestPatientByEmail() throws Exception {
         Socket socket = mock(Socket.class);
@@ -564,7 +550,6 @@ public class ClientHandlerTest {
         when(mockSignalJDBC.getSignalsByPatientId(anyInt())).thenReturn(List.of());
         when(mockReportJDBC.getReportsByPatientId(anyInt())).thenReturn(List.of());
 
-
         when(server.getAdminLinkService()).thenReturn(mockALS);
         when(mockALS.getSecurityManager()).thenReturn(mockSec);
         when(mockALS.getMedicalManager()).thenReturn(mockMed);
@@ -572,7 +557,7 @@ public class ClientHandlerTest {
         when(mockSec.getRoleJDBC()).thenReturn(mockRole);
         when(mockMed.getPatientJDBC()).thenReturn(mockPatientJDBC);
 
-        User user = new User(1, "pat@mail.com", "123", true, 1);
+        User user = new User(1, "pat@mail.com", "123", true, 1, "dummy");
         when(mockUserJDBC.findUserByID(1)).thenReturn(user);
 
         Patient patient = new Patient("A", "B", "pat@mail.com", "61235678",
@@ -593,8 +578,8 @@ public class ClientHandlerTest {
 
         String enc = TokenUtils.encrypt(plain, aes);
         JsonObject w = new JsonObject();
-        w.addProperty("type","ENCRYPTED");
-        w.addProperty("data",enc);
+        w.addProperty("type", "ENCRYPTED");
+        w.addProperty("data", enc);
 
         when(mockReader.readLine()).thenReturn(w.toString()).thenReturn(null);
 
@@ -618,12 +603,8 @@ public class ClientHandlerTest {
         assertNotNull(success);
     }
 
-
     /**
-     * If it receives a REQUEST_DOCTOR_BY_EMAIL request, it first checks whether the user asking for the info has access permits.
-     * - If yes, it sends a REQUES_DOCTOR_BY_EMAIL_RESPONSE with the doctor info
-     * - If the user asking is a PATIENT or ADMIN, then it sends an error
-     * @throws Exception
+     * REQUEST_DOCTOR_BY_EMAIL – only Doctor should succeed
      */
     @Test
     void testHandleRequestDoctorByEmail() throws Exception {
@@ -667,8 +648,8 @@ public class ClientHandlerTest {
         when(mockMed.getDoctorJDBC()).thenReturn(mockDoctorJDBC);
 
         // ---- Two users ----
-        User doctorUser = new User(1, "doc@mail.com", "123", true, 1); // DOCTOR
-        User patientUser = new User(2, "pat@mail.com", "123", true, 2); // PATIENT
+        User doctorUser = new User(1, "doc@mail.com", "123", true, 1, "dummy");
+        User patientUser = new User(2, "pat@mail.com", "123", true, 2, "dummy");
 
         when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
         when(mockUserJDBC.findUserByID(2)).thenReturn(patientUser);
@@ -677,7 +658,7 @@ public class ClientHandlerTest {
         when(mockRole.findRoleByID(2)).thenReturn(new Role(2, "Patient"));
 
         // ---- DB doctor ----
-        Doctor doctor = new Doctor("A","B","61234","doc@mail.com","Neuro","Science");
+        Doctor doctor = new Doctor("A", "B", "61234", "doc@mail.com", "Neuro", "Science");
         when(mockDoctorJDBC.findDoctorByEmail("doc@mail.com")).thenReturn(doctor);
 
         // ---- Requests ----
@@ -692,12 +673,12 @@ public class ClientHandlerTest {
         String enc2 = TokenUtils.encrypt(p2, aes);
 
         JsonObject w1 = new JsonObject();
-        w1.addProperty("type","ENCRYPTED");
-        w1.addProperty("data",enc1);
+        w1.addProperty("type", "ENCRYPTED");
+        w1.addProperty("data", enc1);
 
         JsonObject w2 = new JsonObject();
-        w2.addProperty("type","ENCRYPTED");
-        w2.addProperty("data",enc2);
+        w2.addProperty("type", "ENCRYPTED");
+        w2.addProperty("data", enc2);
 
         when(mockReader.readLine())
                 .thenReturn(w1.toString())
@@ -730,10 +711,7 @@ public class ClientHandlerTest {
     }
 
     /**
-     * If it receives a REQUEST_DOCTOR_BY_EMAIL request, it first checks whether the user asking for the info has access permits.
-     * - If yes, it sends a REQUES_DOCTOR_BY_EMAIL_RESPONSE with the doctor info
-     * - If the user asking is a PATIENT or ADMIN, then it sends an error
-     * @throws Exception
+     * REQUEST_DOCTOR_BY_ID – various authorization branches
      */
     @Test
     void testHandleRequestDoctorByID() throws Exception {
@@ -774,34 +752,34 @@ public class ClientHandlerTest {
         when(mockMed.getPatientJDBC()).thenReturn(mockPatientJDBC);
 
         // ---- Users ----
-        User doc1 = new User(1,"doc@mail.com","123",true,1);
-        User goodPatient = new User(2,"pat@mail.com","123",true,2);
-        User doc2 = new User(3,"doc2@mail.com","123",true,1);
-        User badPatient = new User(4,"pat2@mail.com","123",true,2);
+        User doc1 = new User(1, "doc@mail.com", "123", true, 1, "dummy");
+        User goodPatient = new User(2, "pat@mail.com", "123", true, 2, "dummy");
+        User doc2 = new User(3, "doc2@mail.com", "123", true, 1, "dummy");
+        User badPatient = new User(4, "pat2@mail.com", "123", true, 2, "dummy");
 
         when(mockUserJDBC.findUserByID(1)).thenReturn(doc1);
         when(mockUserJDBC.findUserByID(2)).thenReturn(goodPatient);
         when(mockUserJDBC.findUserByID(3)).thenReturn(doc2);
         when(mockUserJDBC.findUserByID(4)).thenReturn(badPatient);
 
-        when(mockRole.findRoleByID(1)).thenReturn(new Role(1,"Doctor"));
-        when(mockRole.findRoleByID(2)).thenReturn(new Role(2,"Patient"));
+        when(mockRole.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
+        when(mockRole.findRoleByID(2)).thenReturn(new Role(2, "Patient"));
 
         // ---- Doctors ----
-        Doctor d1 = new Doctor("A","B","6123","doc@mail.com","Neuro","Brain");
+        Doctor d1 = new Doctor("A", "B", "6123", "doc@mail.com", "Neuro", "Brain");
         d1.setId(1);
-        Doctor d2 = new Doctor("A","B","6123","doc2@mail.com","Neuro","Brain");
+        Doctor d2 = new Doctor("A", "B", "6123", "doc2@mail.com", "Neuro", "Brain");
         d2.setId(2);
 
         when(mockDoctorJDBC.getDoctor(1)).thenReturn(d1);
         when(mockDoctorJDBC.getDoctor(2)).thenReturn(d2);
 
         // ---- Patients ----
-        Patient p1 = new Patient("A","B","pat@mail.com","6123",LocalDate.now(),"Female",1);
+        Patient p1 = new Patient("A", "B", "pat@mail.com", "6123", LocalDate.now(), "Female", 1);
         p1.setId(1);
         when(mockPatientJDBC.findPatientByEmail("pat@mail.com")).thenReturn(p1);
 
-        Patient p2 = new Patient("A","B","pat2@mail.com","6123",LocalDate.now(),"Female",2);
+        Patient p2 = new Patient("A", "B", "pat2@mail.com", "6123", LocalDate.now(), "Female", 2);
         p2.setId(2);
         when(mockPatientJDBC.findPatientByEmail("pat2@mail.com")).thenReturn(p2);
 
@@ -811,15 +789,23 @@ public class ClientHandlerTest {
         String r3 = "{\"type\":\"REQUEST_DOCTOR_BY_ID\",\"data\":{\"doctor_id\":1,\"user_id\":3}}"; // WRONG doctor
         String r4 = "{\"type\":\"REQUEST_DOCTOR_BY_ID\",\"data\":{\"doctor_id\":1,\"user_id\":4}}"; // WRONG patient
 
-        String e1 = TokenUtils.encrypt(r1,aes);
-        String e2 = TokenUtils.encrypt(r2,aes);
-        String e3 = TokenUtils.encrypt(r3,aes);
-        String e4 = TokenUtils.encrypt(r4,aes);
+        String e1 = TokenUtils.encrypt(r1, aes);
+        String e2 = TokenUtils.encrypt(r2, aes);
+        String e3 = TokenUtils.encrypt(r3, aes);
+        String e4 = TokenUtils.encrypt(r4, aes);
 
-        JsonObject w1 = new JsonObject(); w1.addProperty("type","ENCRYPTED"); w1.addProperty("data",e1);
-        JsonObject w2 = new JsonObject(); w2.addProperty("type","ENCRYPTED"); w2.addProperty("data",e2);
-        JsonObject w3 = new JsonObject(); w3.addProperty("type","ENCRYPTED"); w3.addProperty("data",e3);
-        JsonObject w4 = new JsonObject(); w4.addProperty("type","ENCRYPTED"); w4.addProperty("data",e4);
+        JsonObject w1 = new JsonObject();
+        w1.addProperty("type", "ENCRYPTED");
+        w1.addProperty("data", e1);
+        JsonObject w2 = new JsonObject();
+        w2.addProperty("type", "ENCRYPTED");
+        w2.addProperty("data", e2);
+        JsonObject w3 = new JsonObject();
+        w3.addProperty("type", "ENCRYPTED");
+        w3.addProperty("data", e3);
+        JsonObject w4 = new JsonObject();
+        w4.addProperty("type", "ENCRYPTED");
+        w4.addProperty("data", e4);
 
         when(mockReader.readLine())
                 .thenReturn(w1.toString())
@@ -903,27 +889,26 @@ public class ClientHandlerTest {
         when(mockSignalJDBC.getSignalsByPatientId(anyInt())).thenReturn(List.of());
         when(mockReportJDBC.getReportsByPatientId(anyInt())).thenReturn(List.of());
 
-
         // --- USERS ---
-        User doctorUser = new User(1, "doc@mail.com", "pass", true, 1);
-        User wrongUserPat = new User(2, "other@mail.com", "pass", true, 2);
-        User wrongUserDoc = new User(3, "doc2@mail.com", "pass", true, 1);
+        User doctorUser = new User(1, "doc@mail.com", "pass", true, 1, "dummy");
+        User wrongUserPat = new User(2, "other@mail.com", "pass", true, 2, "dummy");
+        User wrongUserDoc = new User(3, "doc2@mail.com", "pass", true, 1, "dummy");
 
         when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
         when(mockUserJDBC.findUserByID(2)).thenReturn(wrongUserPat);
         when(mockUserJDBC.findUserByID(3)).thenReturn(wrongUserDoc);
 
-        when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1,"Doctor"));
-        when(mockRoleJDBC.findRoleByID(2)).thenReturn(new Role(2,"Patient"));
+        when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
+        when(mockRoleJDBC.findRoleByID(2)).thenReturn(new Role(2, "Patient"));
 
-        // --- DOCTORS ---
-        Doctor doctor = new Doctor("A","B","6123","doc@mail.com","Cardiology","Card");
+        // --- DOCTOR ---
+        Doctor doctor = new Doctor("A", "B", "6123", "doc@mail.com", "Cardiology", "Card");
         doctor.setId(10);
         when(mockDoctorJDBC.getDoctor(10)).thenReturn(doctor);
 
         // --- DOCTOR’s patients ---
-        Patient p1 = new Patient("Toni","Blue","t@c.com","999",LocalDate.now(),"M",1);
-        Patient p2 = new Patient("Rosa","Green","r@g.com","888",LocalDate.now(),"F",1);
+        Patient p1 = new Patient("Toni", "Blue", "t@c.com", "999", LocalDate.now(), "M", 1);
+        Patient p2 = new Patient("Rosa", "Green", "r@g.com", "888", LocalDate.now(), "F", 1);
         when(mockPatientJDBC.getPatientsOfDoctor(10)).thenReturn(List.of(p1, p2));
 
         // --- 3 requests (1 good, 2 forbidden) ---
@@ -937,9 +922,15 @@ public class ClientHandlerTest {
       {"type":"REQUEST_PATIENTS_FROM_DOCTOR","data":{"doctor_id":10,"user_id":3}}
     """;
 
-        JsonObject w1 = new JsonObject(); w1.addProperty("type","ENCRYPTED"); w1.addProperty("data",TokenUtils.encrypt(req1,aes));
-        JsonObject w2 = new JsonObject(); w2.addProperty("type","ENCRYPTED"); w2.addProperty("data",TokenUtils.encrypt(req2,aes));
-        JsonObject w3 = new JsonObject(); w3.addProperty("type","ENCRYPTED"); w3.addProperty("data",TokenUtils.encrypt(req3,aes));
+        JsonObject w1 = new JsonObject();
+        w1.addProperty("type", "ENCRYPTED");
+        w1.addProperty("data", TokenUtils.encrypt(req1, aes));
+        JsonObject w2 = new JsonObject();
+        w2.addProperty("type", "ENCRYPTED");
+        w2.addProperty("data", TokenUtils.encrypt(req2, aes));
+        JsonObject w3 = new JsonObject();
+        w3.addProperty("type", "ENCRYPTED");
+        w3.addProperty("data", TokenUtils.encrypt(req3, aes));
 
         when(mockReader.readLine())
                 .thenReturn(w1.toString())
@@ -969,8 +960,6 @@ public class ClientHandlerTest {
         assertEquals(1, success);
         assertEquals(2, error);
     }
-
-
 
     @Test
     void testHandleSaveCommentsSignal2() throws Exception {
@@ -1013,25 +1002,25 @@ public class ClientHandlerTest {
         when(mockMed.getPatientJDBC()).thenReturn(mockPatientJDBC);
         when(mockMed.getSignalJDBC()).thenReturn(mockSignalJDBC);
 
-        when(mockRole.findRoleByID(1)).thenReturn(new Role(1,"Doctor"));
+        when(mockRole.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
 
-        User doctorUser = new User(1,"doc@mail.com","123",true,1);
+        User doctorUser = new User(1, "doc@mail.com", "123", true, 1, "dummy");
         when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
 
-        Doctor doctor = new Doctor("A","B","999","doc@mail.com","Cardio","Cardio");
+        Doctor doctor = new Doctor("A", "B", "999", "doc@mail.com", "Cardio", "Cardio");
         when(mockDoctorJDBC.findDoctorByEmail("doc@mail.com")).thenReturn(doctor);
         when(mockDoctorJDBC.getDoctorFromPatient(5)).thenReturn(doctor);
 
-        when(mockSignalJDBC.updateSignalComments(7,"hello world")).thenReturn(true);
+        when(mockSignalJDBC.updateSignalComments(7, "hello world")).thenReturn(true);
 
         String plain = """
       {"type":"SAVE_COMMENTS_SIGNAL","data":{"comments":"hello world","signal_id":7,"patient_id":5,"user_id":1}}
     """;
 
-        String enc = TokenUtils.encrypt(plain,aes);
+        String enc = TokenUtils.encrypt(plain, aes);
         JsonObject w = new JsonObject();
-        w.addProperty("type","ENCRYPTED");
-        w.addProperty("data",enc);
+        w.addProperty("type", "ENCRYPTED");
+        w.addProperty("data", enc);
 
         when(mockReader.readLine())
                 .thenReturn(w.toString())
@@ -1050,7 +1039,6 @@ public class ClientHandlerTest {
         assertEquals("SUCCESS", resp.get("status").getAsString());
     }
 
-
     @Test
     void testForceShutdownClosesSocket() throws Exception {
         Socket socket = mock(Socket.class);
@@ -1058,13 +1046,22 @@ public class ClientHandlerTest {
         when(socket.getOutputStream()).thenReturn(out);
         when(socket.getInetAddress()).thenReturn(InetAddress.getByName("127.0.0.1"));
 
+        // Use real server from setUp (we don't need adminConn here)
         ClientHandler handler = new ClientHandler(socket, server, keyPair);
+
+        // Avoid blocking in run(): inject mocked reader that immediately EOFs
+        BufferedReader mockReader = mock(BufferedReader.class);
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        setField(handler, "in", mockReader);
+        setField(handler, "out", mockWriter);
+
+        when(mockReader.readLine()).thenReturn(null);
+
         handler.run();
         handler.forceShutdown();
 
         verify(socket).close();
     }
-
 
     @Test
     void testReleaseResources() throws Exception {
@@ -1208,7 +1205,6 @@ public class ClientHandlerTest {
         assertTrue(decryptedResponse.contains("Signal uploaded correctly"));
     }
 
-
     @Test
     void testHandleRequestSignal2() throws Exception {
         // ---- 1) Socket + Server + handler ----
@@ -1248,7 +1244,7 @@ public class ClientHandlerTest {
         when(mockSec.getRoleJDBC()).thenReturn(mockRoleJDBC);
 
         // User is a Doctor
-        User doctorUser = new User(1, "doc@mail.com", "pass", true, 1);
+        User doctorUser = new User(1, "doc@mail.com", "pass", true, 1, "dummy");
         when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
         when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
 
@@ -1299,11 +1295,9 @@ public class ClientHandlerTest {
         // Old assertions, but on decrypted payload
         assertTrue(decResp.contains("\"status\":\"SUCCESS\""));
         assertTrue(decResp.contains("zip-base64"));      // compression
-        assertTrue(decResp.contains("signal_88"));       // filename or id, like before
+        assertTrue(decResp.contains("signal_88"));       // filename or id
         assertTrue(decResp.contains("REQUEST_SIGNAL_RESPONSE"));
     }
-
-
 
     @Test
     void testHandleRequestPatientSignals2() throws Exception {
@@ -1342,12 +1336,11 @@ public class ClientHandlerTest {
 
         when(mockSec.getUserJDBC()).thenReturn(mockUserJDBC);
         when(mockSec.getRoleJDBC()).thenReturn(mockRoleJDBC);
-
         when(mockMed.getSignalJDBC()).thenReturn(mockSignalJDBC);
         when(mockMed.getPatientJDBC()).thenReturn(mockPatientJDBC);
 
         // Doctor user
-        User doctorUser = new User(1, "doc@mail.com", "123", true, 1);
+        User doctorUser = new User(1, "doc@mail.com", "123", true, 1, "dummy");
         when(mockUserJDBC.findUserByID(1)).thenReturn(doctorUser);
         when(mockRoleJDBC.findRoleByID(1)).thenReturn(new Role(1, "Doctor"));
 
@@ -1409,3 +1402,4 @@ public class ClientHandlerTest {
     }
 
 }
+

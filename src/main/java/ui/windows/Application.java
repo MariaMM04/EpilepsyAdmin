@@ -136,7 +136,7 @@ public class Application extends JFrame {
         appPanels.add(logInPanel);
         appPanels.add(mainMenu);
 
-        this.setContentPane(mainMenu);
+        this.setContentPane(logInPanel);
     }
     /**
      * Initializes basic window settings:
