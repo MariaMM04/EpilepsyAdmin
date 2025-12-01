@@ -14,7 +14,7 @@ The **Night Guardian Admin Application** provides system administrators with all
 
 # Documentation
 The project documentation can be found in the [docs](docs/) folder. The documentation includes: 
-* [Summary and motivation of the proyect](docs/)
+* [Summary and motivation of the project](docs/Project_Summary.pdf)
 * [System design document](docs/System_design_document.pdf)): explaining the decisions taken (TCP vs UDP, use of decorators to Exchange data through sockets, encryption, etc.)
 * [Use case diagram](docs/DiagramaUserCaseDef.drawio.png): with a list of actions available in each application (Server, Patient, Doctor).
 * [UML diagrams](docs/) of the Admin, Patient and Doctor applications.
