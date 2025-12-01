@@ -22,6 +22,12 @@ The project documentation can be found in the [docs](docs/) folder. The document
 * [UI Mock Up](docs/Admin_mock_up.pdf): with the design of the interface.
 * [Sequence diagrams](docs/Sequence_diagrams): showcasing the communication protocol
 
+> This app works with 2 other applications:
+> * [Doctor App](https://github.com/MamenCortes/EpilepsyDoctor)
+> * [Patient App](https://github.com/MamenCortes/EpilepsyPatient)
+>   
+> Check those projects for a full experience of the platform.
+
 # How to Download and Run
 1. Clone the repository:
 ```bash
